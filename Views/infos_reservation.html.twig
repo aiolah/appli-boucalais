@@ -6,6 +6,7 @@
     <p class="message green">La réservation a bien été confirmée.</p>
 {% endif %}
 
+<h3>{{client.nomGroupe}}</h3>
 <h3>Réservation n°{{reservation.idReservation}}, <a href="?action=consulter-devis&devis={{reservation.idDevis}}&id={{client.id}}">devis n°{{reservation.idDevis}}</a></h3>
 {% if reservation.statut == 0 %}
     <p class="mb-4">Statut réservation : en attente de confirmation</p>

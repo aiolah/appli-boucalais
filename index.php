@@ -599,13 +599,29 @@ if(isset($_GET['action']))
             elseif(isset($_GET['reservation']) && !isset($_POST['confirmer']))
             {
                 $reservation = $reservationManager->getReservationFromIdReserv($_GET['reservation']/* $_SESSION["'" . $_GET['groupe'] . "'"] */);
-                $devis = $devisManager->getDevisFromIdReservation($reservation->getIdReservation());
-                $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
-                $nbreDevis = $devisManager->getCountDevis($client->getId());
-                $allDevis = $devisManager->getDevisFromUser($client->getId());
-                $documentClient = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
-                $documentsAnnexes = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
-                echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'documentClient'=>$documentClient, 'documentsAnnexes'=>$documentsAnnexes, 'confirmation'=>'non', 'form'=>'form'));
+                if(!$reservation)
+                {
+                    echo "La réservation n'existe pas.";
+                }
+                else
+                {
+                    $devis = $devisManager->getDevisFromIdReservation($reservation->getIdReservation());
+                    $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
+                    $nbreDevis = $devisManager->getCountDevis($client->getId());
+                    $allDevis = $devisManager->getDevisFromUser($client->getId());
+                    // Si la réservation n'a pas été confirmée
+                    if($reservation->getStatut() == 0)
+                    {
+                        echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'confirmation'=>'non', 'form'=>'form'));
+                    }
+                    // Si la réservation a été confirmée
+                    elseif($reservation->getStatut() == 1) 
+                    {
+                        $documentClient = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                        $documentsAnnexes = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                        echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'documentClient'=>$documentClient, 'documentsAnnexes'=>$documentsAnnexes, 'confirmation'=>'non', 'form'=>'form'));
+                    }    
+                }
             }
             connectYourself($twig);
 

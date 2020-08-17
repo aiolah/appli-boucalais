@@ -143,10 +143,11 @@
                     {% endfor %}
                     </ul>
                     <div class="contenu">
+                    {{assuranceGroup}}
                         {% if assuranceIndividuelle == 0 %}
                             <p>Assurance annulation individuelle non sélectionnée</p>
                         {% endif %}
-                        {% if assuranceIndividuelle == 0 %}
+                        {% if assuranceGroupe == 0 %}
                             <p>Assurance annulation groupe non sélectionnée</p>
                         {% endif %}
                     </div>

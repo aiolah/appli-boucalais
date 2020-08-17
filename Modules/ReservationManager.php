@@ -119,18 +119,26 @@ class ReservationManager {
 			WHERE LE_BOUCALAIS_RESERVATION.ID_RESERVATION = ?";
 		$stmt = $this->_db->prepare($req);
 		$stmt->execute(array($idReservation));
+		$result = $stmt->fetch();
+		
+		if($result)
+		{
+			$reservation = new Reservation($result);
+			return $reservation;
+		}
+		else return false;
+		
+		/* rowCount() compte le nombre de lignes renvoyées par la requête */
+		// if($stmt->rowCount() == 0)
+		// {
+		// 	return 0;
+		// }
 
 		// pour debuguer les requêtes SQL
 		$errorInfo = $stmt->errorInfo();
 		if ($errorInfo[0] != 0) {
 			print_r($errorInfo);
 		}
-		
-		while($donnees = $stmt->fetch())
-		{
-			$reservation = new Reservation($donnees);
-		}
-		return $reservation;
 	}
 
     /**
