@@ -1,0 +1,95 @@
+{% extends "index.html.twig" %}
+
+{% block recupererMdp %}
+
+{% if message is defined and succesMail == "non" %}
+    <p class="message red">{{ message }}</p>
+{% elseif message is defined and (succesMail == 'oui' or succesNouveauMdp == 'oui') %}
+    <p class="message green">{{ message }}</p>
+{% endif %}
+
+{% if token == 'non' %}
+  <form method="post" action="?action=recuperer-mdp" class="well">
+  <fieldset>
+    <legend>Renseignez votre adresse email</legend><br/>
+      <div class="form-group row">
+        <div class="col-sm-4">
+          <input  type="text" id="email" class="form-control form-control-sm" name="email" required placeholder="" />
+        </div>
+      </div><br/>
+    <input type="submit" name="recuperation" class="bouton" value="Réinitialiser le mot de passe"/>
+  </fieldset>
+  </form>
+{% endif %}
+
+{% if token == 'oui' and succesLien == 'oui' %}
+  <form method="post" action="?action=recuperer-mdp" class="well">
+    <fieldset>
+      <legend>Renseigner un nouveau mot de passe</legend><br/>
+        <div class="form-group row">
+          <div class="col-sm-4 block">
+            <input  type="password" id="mdp" class="form-control form-control-sm" name="mdp" required placeholder="" />
+            <button id="bouton" class="open" title="Afficher le mot de passe"></button>
+          </div>
+      </div><br/>
+    <input type="submit" name="reinitialisation" class="bouton" value="Valider"/>
+  </fieldset>
+  </form>
+{% endif %}
+
+{% if token == 'oui' and validité == 'non' %}
+  <p class="message red">Vous avez déjà réinitialisé votre mot de passe, le lien a expiré.<br/>
+  Si vous souhaitez modifier de nouveau votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</p>
+{% endif %}
+
+{% if token == 'oui' and succesLien == 'non' %}
+  <p class="message red">Votre lien de réinitilisation a expiré.<br/>
+  Si vous souhaitez en générer un nouveau pour modifier votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</p>
+{% endif %}
+
+<script>
+  // PreventDefault pour éviter un bug : quand on appuie sur la touche entrée, le bouton du mot de passe s'active.. Problème !
+  if(document.getElementById("mdp"))
+  {
+    let input = document.getElementById("mdp");
+    input.addEventListener("keypress", preventDefault);
+    function preventDefault(evt)
+    {
+      if(evt.keyCode == 13)
+      {
+        evt.preventDefault();
+      }
+    }
+  }
+  // Bouton mot de passe
+  if(document.getElementById("bouton"))
+  {
+    let champ = document.getElementById("mdp");
+    let bouton = document.getElementById("bouton");
+    bouton.addEventListener("click", affiche);
+    // Au clic du bouton, on change le type du champs (password/text) et on rajoute/supprime la classe open et la classe closed (pour changer d'icône)
+    function affiche(evt)
+    {
+      evt.preventDefault();
+      if(bouton.className == "open")
+      {
+        champ.type = "text";
+      }
+      else
+      {
+        champ.type = "password";
+      }
+      bouton.classList.toggle("open");
+      bouton.classList.toggle("closed");
+    }
+  }
+{# Si le changement de mot de passe est réussi, on redirige vers la page de connexion au bout de 5 secondes #}
+{% if succes == "oui" %}
+  if(document.location.href == "http://leboucalais.fr/application/?action=recuperer-mdp")
+  {
+    setTimeout("window.location='http://leboucalais.fr/application/?action=connexion'", 4000);
+  }
+{% endif %}
+</script>
+
+{% endblock %}

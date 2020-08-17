@@ -1,0 +1,176 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+<h2 class="mb-4">Aperçu des clients</h2>
+
+<div class="row" id="aperçu">
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr class="oneline">
+                <th>Demande de devis</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients1 %}
+            {% if client.date == "now" %}
+                <tr class="today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>Inscription sur l'application</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients2 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-success today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-success">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr class="oneline">
+                <th>Devis composé</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients3 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-info today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-info">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>Demande de réservation</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients4 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-warning today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-warning">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>Réservation confirmée</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients5 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-danger today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-danger">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark">
+            <tr class="oneline">
+                <th>Convention envoyée</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients6 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-danger today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-danger">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th>Convention retournée</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients7 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-danger today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-danger">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-bordered col-lg-2">
+        <thead class="thead-dark text-center">
+            <tr class="oneline">
+                <th class="table-danger">Statut 8</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients8 %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
+                <tr class="table-danger today">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% else %}
+                <tr class="table-danger">
+                    <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
+                </tr>
+            {% endif %}        
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

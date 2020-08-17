@@ -1,0 +1,302 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+
+{% if confirmation == 'oui' %}
+    <p class="message green">La réservation a bien été confirmée.</p>
+{% endif %}
+
+<h3>Réservation n°{{reservation.idReservation}}, <a href="?action=consulter-devis&devis={{reservation.idDevis}}&id={{client.id}}">devis n°{{reservation.idDevis}}</a></h3>
+{% if reservation.statut == 0 %}
+    <p class="mb-4">Statut réservation : en attente de confirmation</p>
+{% elseif reservation.statut == 1 %}
+    <p class="mb-4">Statut réservation : confirmée</p>
+{% endif %}
+
+{{ block("composition_groupe", "consulter_devis.html.twig") }}
+
+{# <section class="">
+    <h3 class="mb-4">Réservation pour {{ reservation.organisme }}</h3>
+    <p>
+        Du {{ reservation.dateDebut|date("j/m/Y") }} au {{ reservation.dateFin|date("j/m/Y") }}<br>
+        Jour de départ : {{ reservation.dateFin|date_modify("+1 day")|date("j/m/Y") }}
+    </p>
+    <ul>
+        <li>Durée du séjour : {{ reservation.duree }} nuits.</li>
+        <li>{{ reservation.tailleGroupe }} personnes au total dont {{ reservation.nbEnfants is defined ? reservation.nbEnfants : "" }} enfants, {{ reservation.nbAdos }} adolescents et {{ reservation.nbAdultes }} adultes.</li>
+
+        <li>Type de pension souhaité : {{ reservation.pension }}</li>
+    </ul>
+</section> #}
+
+{% if reservation.statut == 0 %}
+<section class="mb-4 mt-4">
+    <h4 class="mb-4">Gestion de la réservation</h4>
+    <p>Choix de l'hébergement</p>
+    <div class="container">
+        <div class="row">
+            <form method="post" action={{ "?action=infos_reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
+                <div id="hebergement">
+                    <!-- Pas de name pour le select car on quels secteurs sont sélectionnés grâce aux inputs -->
+                    <select class="custom-select col-lg-2 mr-5" size="11" multiple>
+                        <option value="PE">Petite enfance</option>
+                        <option value="RDC">Rez-de-chaussée</option>
+                        <option value="1er">1er étage</option>
+                        <option value="M1">M1</option>
+                        <option value="M2">M2</option>
+                        <option value="M3">M3</option>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="B3">B3</option>
+                        <option value="B4">B4</option>
+                        <option value="B5">B5</option>
+                    </select>
+
+                    <div id="inputs" class="row"></div>
+                </div>
+
+                <input value={{ reservation.idReservation }} type="text" hidden>
+
+                <div class="boutons mt-4">
+                    <input type="submit" value="Confirmer la réservation" class="bouton mr-4" name="confirmer">
+                    <!--<input type="submit" value="Annuler la réservation" class="bouton" name="annuler">-->
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# {% if reservation.statut == 0 %}
+    <p class="message orange mb-5">Statut réservation : en attente de confirmation</p>
+{% elseif reservation.statut == 1 %}
+    <p class="message blue mb-5">Statut réservation : confirmée</p>
+{% endif %} #}
+
+<br><br>
+
+{{ block("fiche_client", "fiche_client.html.twig") }}
+
+{% if reservation.statut == 1 %}
+    <ul>
+    <div class="mt-5">
+        <li class="mb-5">
+            <h4 class="mb-4">Convention</h4>
+
+            {% if documentClient.convention == NULL %}
+                <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                    <div class="custom-file col-lg-5">
+                        <input type="file" class="custom-file-input" id="customFile1" name="file" required>
+                        <label class="custom-file-label" for="customFile1" id="file-name1">Choisissez un fichier</label>
+                    </div>
+                    <br>
+                    <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                    <input class="mt-3" type="submit" value="Téléverser" name="convention">
+                </form>
+            {% else %}
+                <ul>
+                    <li><a href="{{documentClient.convention}}" target="_blank">Convention</a></li>
+                </ul>
+            {% endif %}
+        </li>
+    </div>
+
+    <div class="mt-5">
+        <li class="mb-5">
+            <h4 class="mb-4">Facture d'acompte</h4>
+
+            {% if documentClient.factureAcompte == NULL %}
+                <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                    <div class="custom-file col-lg-5">
+                        <input type="file" class="custom-file-input" id="customFile2" name="file" required>
+                        <label class="custom-file-label" for="customFile2" id="file-name2">Choisissez un fichier</label>
+                    </div>
+                    <br>
+                    <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                    <input class="mt-3" type="submit" value="Téléverser" name="facture-acompte">
+                </form>
+            {% else %}
+                <ul>
+                    <li><a href="{{documentClient.factureAcompte}}" target="_blank">Facture d'acompte</a></li>
+                </ul>
+            {% endif %}
+        </li>
+    </div>
+
+    {% if documentClient.conventionSignee != NULL %}
+        <div class="mt-5">
+            <li class="mb-5">
+                <h4 class="mb-4">Convention signée</h4>
+                <ul>
+                    <li><a href="{{documentClient.factureAcompte}}" target="_blank">Convention signée</a></li>
+                </ul>
+            </li>
+        </div>
+    {% endif %}
+
+    {% if client.statut >= 7 %}
+        <div class="mt-5">
+            <li class="mb-5">
+                <h4 class="mb-4">Plan des chambres</h4>
+
+                {% if documentClient.planChambres == NULL %}
+                    <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                        <div class="custom-file col-lg-5">
+                            <input type="file" class="custom-file-input" id="customFile3" name="file" required>
+                            <label class="custom-file-label" for="customFile3" id="file-name3">Choisissez un fichier</label>
+                        </div>
+                        <br>
+                        <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                        <input class="mt-3" type="submit" value="Téléverser" name="plan-chambres">
+                    </form>
+                {% else %}
+                    <ul>
+                        <li><a href="{{documentClient.planChambres}}" target="_blank">Plan des chambres</a></li>
+                    </ul>
+                {% endif %}
+            </li>
+        </div>
+
+        <div class="mt-5">
+            <li class="mb-5">
+                <h4 class="mb-4">Planning des activités</h4>
+
+                {% if documentClient.planningActivites == NULL %}
+                    <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                        <div class="custom-file col-lg-5">
+                            <input type="file" class="custom-file-input" id="customFile4" name="file" required>
+                            <label class="custom-file-label" for="customFile4" id="file-name4">Choisissez un fichier</label>
+                        </div>
+                        <br>
+                        <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                        <input class="mt-3" type="submit" value="Téléverser" name="planning-activites">
+                    </form>
+                {% else %}
+                    <ul>
+                        <li><a href="{{documentClient.planningActivites}}" target="_blank">Planning des activités</a></li>
+                    </ul>
+                {% endif %}
+            </li>
+        </div>
+
+        <div class="mt-5">
+            <li class="mb-5">
+                <h4 class="mb-4">Menus</h4>
+
+                {% if documentClient.menus == NULL %}
+                    <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                        <div class="custom-file col-lg-5">
+                            <input type="file" class="custom-file-input" id="customFile5" name="file" required>
+                            <label class="custom-file-label" for="customFile5" id="file-name5">Choisissez un fichier</label>
+                        </div>
+                        <br>
+                        <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                        <input class="mt-3" type="submit" value="Téléverser" name="menus">
+                    </form>
+                {% else %}
+                    <ul>
+                        <li><a href="{{documentClient.menus}}" target="_blank">Menus</a></li>
+                    </ul>
+                {% endif %}
+            </li>
+        </div>
+    {% endif %}
+
+    <div class="mt-5">
+        <li class="mb-5">
+            <h4 class="mb-4">Documents annexes</h4>
+
+            {% if documentsAnnexes|length > 0 and reservation.statut == 1 %}
+                {% for documentAnnexe in documentsAnnexes %}
+                    <ul>
+                        <li><a href="{{documentAnnexe.lien}}" target="_blank">{{documentAnnexe.nom}}</a></li>
+                    </ul>
+                {% endfor %}
+            {% endif %}
+
+            <h5 class="mt-5 mb-4">Téléverser un autre document au client</h5>
+            <form method="post" action={{ "?action=fiche-client&id=" ~ client.id}} enctype="multipart/form-data">
+                <div class="form-group row mb-4">
+                    <label class="col-sm-3 col-form-label" for="nomFichier">Donnez un nom au fichier :</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="nom_fichier" id="nomFichier" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="custom-file col-lg-5">
+                    <input type="file" class="custom-file-input" id="customFile3" name="file" required>
+                    <label class="custom-file-label" for="customFile3" id="file-name3">Choisissez un fichier</label>
+                </div>
+                <br>
+                <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                <input class="mt-3" type="submit" value="Téléverser" name="documents-annexes">
+            </form>
+                
+        </li>
+    </div>
+    </ul>
+{% endif %}
+
+<script>
+
+    let allOptions = document.getElementsByTagName('option');
+    for(let option of allOptions)
+    {
+        document.addEventListener('click', selectedOrNot);
+    }
+
+    // Parcourt toutes les options de la page, si elles sont sélectionnées, on génère le label et l'input qui y sont rattachés. Si l'option n'est pas sélectionnée et que la div qui contient label + input existe, on la supprime
+    function selectedOrNot()
+    {
+        for(let option of document.getElementsByTagName('option'))
+        {
+            if(option.selected == true && document.getElementById("input-" + option.value) == null)
+            {
+                genererInput(option);
+            }
+            else if(option.selected == false)
+            {
+                let div = document.getElementById("div-" + option.value);
+                if(div != null)
+                {
+                    supprimerInput(div);
+                }
+            }
+        }
+    }
+
+    function genererInput(option)
+    {
+        let div = document.createElement('div');
+        div.setAttribute("id", "div-" + option.value);
+        div.setAttribute("class", "row");
+        div.classList.add("mb-2");
+        div.classList.add("mt-2");
+
+        let label = document.createElement('label');
+        label.setAttribute("for", option.value);
+        label.setAttribute("id", "label-" + option.value);
+        label.setAttribute("class", "col-lg-7");
+        label.classList.add("col-form-label");
+        label.innerHTML = "Nombre de personnes pour " + option.value;
+
+        let input = document.createElement('input');
+        input.setAttribute("name", option.value);
+        input.setAttribute("id", "input-" + option.value);
+        input.setAttribute("type", "number");
+        input.setAttribute("class", "form-control");
+        input.classList.add("col-lg-4");
+
+        div.appendChild(label);
+        div.appendChild(input);
+        document.getElementById("inputs").appendChild(div);
+    }
+
+    function supprimerInput(div)
+    {
+        div.remove();
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+<div class="mb-3">
+    <a href="?action=fiche-client&id={{idClient}}">← Fiche client</a>
+</div>
+
+{# On va chercher le block template devis définit sur la vue consulter_devis #}
+{{ block("devis", "consulter_devis.html.twig") }}
+
+{% endblock %}

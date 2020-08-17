@@ -1,0 +1,190 @@
+{% extends "index.html.twig" %}
+{% block section %}
+{# <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="En basse saison, pour un séjour de plus de 3 nuits, la nuitée est 4€ moins chère !">
+  Tooltip on top
+</button>
+<button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="top" data-content="En basse saison, pour un séjour de plus de 3 nuits, la nuitée est 4€ moins chère !">
+  Popover on top
+</button> #}
+    <h1 class="mb-5">Formulaire de devis</h1>
+    <form method="POST" action="?action=form-devis" id="form">
+        <div id="prix-total" class="div-prix">
+            <span id="label-prix-total" class="label-div-prix">Prix total : </span>
+            <span id="prixTotal">0</span>
+            <span id="euro">€</span>
+            <input type="number" name="PRIX_TOTAL" hidden>
+        </div>
+        <fieldset class="form-group">
+            <div>
+                <legend class="mb-3" id="sejour"> Frais d'hébergement </legend>
+                <div class="form-group row">
+                    <label for="typeGroupe" class="col-lg-2 col-sm-4 col-form-label">Type de groupe</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <span id="valueTypeGroupe" style="display: none;">{{client.typeGroupe}}</span>
+                        <select id="typeGroupe" name="TYPE_GROUPE" class="form-control" required>
+                            {# <option disabled selected value> -- Sélectionnez votre type de groupe -- </option> #}
+                            <option value="scolaire"> Scolaire </option>
+                            <option value="association"> Association </option>
+                            <option value="établissement médico-social"> Etablissement médico-social</option>
+                            <option value="club sportif"> Club sportif</option>
+                            <option value="familial"> Familial </option>
+                            <option value="informel"> Informel </option>
+                            <option value="colonie/mini-camps"> Colonie de vacances/mini-camps</option>
+                            <option value="agence de voyage/autocariste"> Agence de voyage/autocariste</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="scolaire">
+                </div>
+                <div id="compoClient">
+                </div>
+                <div class="form-group row">
+                    <label for="dateDebutReserv" class="col-lg-2 col-sm-4 col-form-label">Date de début</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="date" id="dateDebutReserv" name="DATE_DEBUT" class="form-control" required>
+                        <div id="msg-dateDebutReserv" class="invalid"></div>
+                    </div>
+                </div>
+                <input type="text" id="saison" value="" hidden>
+                <div class="form-group row">
+                    <label for="dateFinReserv" class="col-lg-2 col-sm-4 col-form-label">Date de fin</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="date" id="dateFinReserv" name="DATE_FIN" class="form-control" required>
+                        <div id="msg-dateFinReserv" class="invalid"></div>
+                        <div id="date-dateFinReserv" class="invalid"></div>
+                    </div>
+                </div>
+                <div class="form-group row mb-5">
+                    <label for="dureeReserv" class="col-lg-2 col-sm-4 col-form-label">Nombre de nuits</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="number" placeholder="0" id="dureeReserv" name="DUREE" class="form-control" readonly required>
+                    </div>
+                </div>
+            </div>
+            <div id="type-hebergement"></div>
+            <div class="row">
+                <legend class="col-form-label col-lg-2 col-sm-4 pt-0">Choix de la pension</legend>
+                <div class="custom-control custom-radio custom-control-inline mr-4 d-flex flex-column div-pension" id="pension-complete">
+                    <input type="radio" id="pension" name="TYPE_PENSION" value="pensioncomplète" class="custom-control-input" required>
+                    <label for="pension" class="custom-control-label">Pension complète</label>
+                    <div id="prix-pensioncomplète-enfants" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="prix-pensioncomplète-ados" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="prix-pensioncomplète-adultes" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="frais-pensioncomplète-enfants" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                    <div id="frais-pensioncomplète-ados" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                    <div id="frais-pensioncomplète-adultes" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline mr-4 d-flex flex-column div-pension">
+                    <input type="radio" id="demipension" name="TYPE_PENSION" value="demipension" class="custom-control-input" required>
+                    <label for="demipension" class="custom-control-label">Demi-pension</label>
+                    <div id="prix-demipension-enfants" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="prix-demipension-ados" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="prix-demipension-adultes" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                    <div id="frais-demipension-enfants" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                    <div id="frais-demipension-ados" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                    <div id="frais-demipension-adultes" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                </div>
+                <div class="custom-control-inline mr-4 d-flex flex-column div-pension gestionlibre">
+                    <div class="custom-control custom-radio mb-3">
+                        <input type="radio" id="gestionlibre" name="TYPE_PENSION" value="gestionlibre" class="custom-control-input" required>
+                        <label for="gestionlibre" class="custom-control-label">Gestion libre</label>
+                        <div id="prix-gestionlibre" class="prix-hebergement"><span class="prix"></span><span class="label-prix"></span></div>
+                        <div id="frais-gestionlibre" class="frais-hebergement"><span class="frais"></span><span class="label-frais"></span></div>
+                    </div>
+                    <div id="chapiteau-cuisine" class="frais-hebergement"></div>
+                </div>
+            </div>
+            <div id="prix-hebergement" class="mb-4 div-prix">
+                <span id="label-prix-hebergement" class="label-div-prix">Prix hébergement : </span>
+                <span id="prixHebergement">0</span>
+                <span class="euro">€</span>
+                <input type="number" name="PRIX_HEBERGEMENT" hidden>
+            </div>
+        </fieldset>
+        <br/>
+        <fieldset class="form-group">
+            <legend class="mb-3"><span id="activites"> Frais d'activités </span> (Ne modifiez pas la partie Séjour après avoir complété cette partie)</legend>
+            <div id="infos-activites" class="col-lg-10 mb-4">
+                Tarif des activités disponibles auprès de clubs partenaires, choisies pour leur stricte application des règlementations.<br>
+                L'UMCV peut réserver pour vous ces activités et en faire l'avance des frais. Pour cela, cochez la case ci-dessous :
+                <div class="custom-control custom-checkbox mt-2 mb-2 d-flex flex-column align-items-center">
+                    <input type="checkbox" id="option{{option3.idOption}}" value="{{option3.idOption}}" class="custom-control-input" name="OPTIONS[]">
+                    <label for="option{{option3.idOption}}" class="custom-control-label"> {{option3.nomOption}} : <span id="descriptionOption">{{option3.descriptionOption}}</span></label>
+                    <div id="prix-option{{option3.idOption}}" class="prix-option">
+                        <span class="prix"></span>
+                        <span class="label-prix"></span>
+                        <input type="number" step="any" id="prixOption-{{option3.idOption}}" name="PRIX_OPTION[]" hidden disabled>
+                    </div>
+                </div>
+            </div>
+            <div>
+            {% for activite in activites %}
+                {% if activite.affichageActivite == "oui" %}
+                    <div class="col-lg-5 mb-4 mr-4 d-inline-block activite" id="div-{{activite.idActivite}}">
+                        <div class="custom-control custom-checkbox d-flex flex-column align-items-center div-checkbox">
+                            <input type="checkbox" name="ACTIVITES[]" value="{{activite.idActivite}}" class="custom-control-input" id="input{{activite.idActivite}}">
+                            <label class="custom-control-label label-activite" for="input{{activite.idActivite}}">
+                                {{activite.nomActivite}}
+                                (<span id="prixUnite{{activite.idActivite}}">{{activite.prixActiviteUnite}}<span>€)
+                            </label>
+                        </div>
+                        <p class="col-10">{{activite.descriptionActivite}}</p>
+                        <span style="display: none;" id="personnes-{{activite.idActivite}}">{{activite.nbParticipantsGroupe}}</span>
+
+                        <div class="form-group row">
+                            <label for="seances{{activite.idActivite}}" class="col-lg-7 col-sm-3 ml-1 col-form-label"> Nombre de séances par groupe</label>
+                            <div class="col-lg-4 col-sm-2">
+                                <input type="number" id="seances{{activite.idActivite}}" placeholder="0" min="0" name="ACTIVITE_SEANCES[]" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="participants{{activite.idActivite}}" class="col-lg-7 col-sm-3 ml-1 col-form-label"> Nombre de participants </label>
+                            <div class="col-lg-4 col-sm-2">
+                                <input type="number" id="participants{{activite.idActivite}}" placeholder="0" min="0" name="ACTIVITE_PARTICIPANTS[]" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="prix-activite"><span id="estimation-{{activite.idActivite}}"></span><span id="euro-{{activite.idActivite}}" class="invisible">€</span></div>
+                        <input type="number" step="any" id="prixActivite-{{activite.idActivite}}" name="PRIX_ACTIVITE[]" hidden disabled>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            <div id="prix-activites" class="mb-4 div-prix">
+                <span id="label-prix-activites" class="label-div-prix">Prix activités : </span>
+                <span id="prixActivites">0</span>
+                <span class="euro">€</span>
+                <input type="number" name="PRIX_ACTIVITES" hidden>
+            </div>
+        </fieldset>
+        <br/>
+        <fieldset class="form-group">
+            <legend class="mb-4"><span id="options"> Frais optionnels </span>(Ne modifiez pas la partie Séjour après avoir complété cette partie) </legend>
+            {% for option in options %}
+                {% if option.idOption != 5 and option.idOption != 3 %}
+                    <div class="custom-control custom-checkbox mt-2 mb-2">
+                        <input type="checkbox" id="option{{option.idOption}}" value="{{option.idOption}}" class="col-6 ml-1 mb-1 custom-control-input" name="OPTIONS[]">
+                        <label for="option{{option.idOption}}" class="col-10 custom-control-label"> {{option.nomOption}} : <span id="descriptionOption">{{option.descriptionOption}}</span></label>
+                        <div id="prix-option{{option.idOption}}" class="prix-option">
+                            <span class="prix"></span>
+                            <span class="label-prix"></span>
+                            <input type="number" step="any" id="prixOption-{{option.idOption}}" name="PRIX_OPTION[]" hidden disabled>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div id="div-option-3"></div>
+            <div id="prix-options" class="mb-4 div-prix">
+                <span id="label-prix-options" class="label-div-prix">Prix frais optionnels : </span>
+                <span id="prixFraisOptionnels">0</span>
+                <span class="euro">€</span>
+                <input type="number" name="PRIX_FRAIS_OPTIONNELS" hidden>
+            </div>
+        </fieldset>
+        <span id="prix_estimation"></span>
+        <br/>
+        <div id="block-confirmation"></div>
+        <input type="submit" name="commande" id="enregistrer" {# name="demande"#} value="Enregistrer">
+    </form>
+    <script src='Js/ScolaireFormV2.js'></script>
+    <script src='Js/AffichagePrixV2.js'></script>
+{% endblock %}

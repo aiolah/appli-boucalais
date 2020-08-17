@@ -1,0 +1,87 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+
+<div class="mb-4">
+
+{# {% if client.statut == 2 %} #}
+    <p class="notification">
+        Bienvenue sur l'application web du Boucalais !<br>
+        Dans cette application, vous pouvez composer un ou plusieurs devis, les modifier et effectuer votre réservation.
+        Une fois celle-ci confirmée par le gérant, vous aurez accès aux espaces documents administratifs et ressources documentaires.
+        Par la suite, vous aurez accès au pack séjour.
+    </p>
+{# {% endif %} #}
+
+{% if client.statut == 2 %}
+    <p>Ce qu'il vous reste à faire...</p>
+    <a class="btn button-action" href="?action=form-devis">Composer un devis</a>
+{% endif %}
+
+{% if client.statut == 3 %}
+    <p>Vous pouvez...</p>
+    <a class="btn button-action mr-3" href="?action=form-devis">Composer un devis</a>
+    <a class="btn button-action" href="?action=liste-devis-client">Consulter vos devis</a>
+{% endif %}
+
+{% if client.statut == 4 %}
+    <p>Votre devis a bien été validé. Vous recevrez un mail quand le gérant aura confirmé votre réservation.</p>
+{% endif %}
+
+{% if client.statut == 5 %}
+    <p>Votre réservation a été confirmée ! Vous pouvez maintenant accéder aux documents administratifs et aux ressources documentaires.</p>
+{% endif %}
+
+{% if client.statut == 6 %}
+    <p></p>
+{% endif %}
+
+{% if client.statut == 7 %}
+    <p></p>
+{% endif %}
+
+{% if client.statut == 8 %}
+    <p></p>
+{% endif %}
+
+</div>
+
+<div class="row">
+    <div class="col-lg-4 {# bg-secondary #} menu d-flex align-items-center menu"><!-- btn ?! -->
+        {% if client.statut >= 1 and client.statut <= 3  %}
+            <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=liste-devis-client">
+                <span class="item-text">1 - Mes devis</span>
+        {% endif %}
+        {% if client.statut >= 4 and client.statut <= 8  %}
+            <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=liste-devis-client">
+                <span class="item-text">1 - Ma réservation</span>
+        {% endif %}
+        </a>
+    </div>
+    <div class="col-lg-4 {# bg-secondary #} menu d-flex align-items-center menu">
+        <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=convention_facture_acompte">
+            <span class="item-text">3 - Ma convention et facture d'acompte</span>
+        </a>
+    </div>
+    <div class="w-100"></div>
+    <div class="col-lg-4 {# bg-secondary #} menu d-flex align-items-center menu">
+        <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=documents_administratifs">
+            <span class="item-text">2 - Documents administratifs</span>
+        </a>
+    </div>
+    <div class="col-lg-4 {# bg-secondary #} menu d-flex align-items-center menu">
+        <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=pack_sejour">
+            <span class="item-text">4 - Mon pack séjour</span>
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 {# bg-secondary #} menu d-flex align-items-center petit-menu"><!-- btn ?! -->
+        <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=ressources_documentaires">
+            <span class="item-text">Ressources documentaires</span>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

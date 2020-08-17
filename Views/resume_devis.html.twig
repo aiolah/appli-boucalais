@@ -1,0 +1,37 @@
+{% extends "index.html.twig" %}
+{% block section %}
+<div>
+    <h3> Compte-rendu de la réservation </h3>
+    <form method="POST" action="index.php">
+        <p> Type de groupe: <input type="text" name="TYPE_GROUPE" value="{{commande.typeGroupe}}" readonly></p>
+        <fieldset>
+            <legend>Composition du groupe</legend>
+            <p> - <input type="number" name="NB_ADULTES" value="{{commande.nbAdultes}}" readonly> adultes</p>
+            <p> - <input type="number" name="NB_ENFANTS" value="{{commande.nbEnfants}}" readonly> enfants</p>
+            <p> - <input type="number" name="NB_ADOS" value="{{commande.NbAdos}}" readonly> adolescents</p>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend> Séjour </legend>
+            <div>Nombre de nuits: <input type="number" name="DUREE" value="{{commande.duree}}" readonly></div>
+            <div>Date de début du séjour: <input type="text" name="DATE_DEBUT" value="{{commande.dateDebut}}" readonly></div>
+            <div>Date de fin du séjour: <input type="text" name="DATE_FIN" value="{{commande.dateFin}}" readonly></div>
+            <div>Hébergement: <input type="text" name="TYPE_PENSION" value="{{commande.typePension}}" readonly></div>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Séances d'activité commandées: </legend>
+            <div>
+                <p> Séances d'activités: <input type="text" name="ACTIVITE_SEANCES" value="{{commande.activiteSeances}}"> </p>
+                <p> Nombre de participants aux activités: <input type="text" name="ACTIVITE_PARTICIPANTS" value="{{commande.activiteParticipants}}"> </p>
+            </div>
+            <div>
+                <p>Options facultatives supplémentaires:</p>
+                <input type="text" name="OPTIONS" value="{{commande.options}}">
+            </div>
+        </fieldset>
+        <input type="submit" name="commande" value="Valider">
+    </form>
+</div>
+<script src='js/FormCheck.js'></script>
+{% endblock %}

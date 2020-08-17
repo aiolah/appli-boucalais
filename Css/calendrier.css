@@ -1,0 +1,83 @@
+.calendar__table {
+    width: 99%;
+    height: calc(100vh - 112px);
+}
+
+.day, .calendar__othermonth {
+    border-top: solid 2px grey;
+    height: 20%;
+}
+
+.calendar__othermonth.firstWeek {
+    border-top: solid 1px grey;
+}
+
+.day.firstWeek {
+    border-top: solid 1px grey;
+    height: 20%;
+}
+
+.calendar__table td {
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    vertical-align: top;
+    /* 100 / 7 jours = 14.29 */
+    width: 14.29%;
+}
+
+.calendar__table--6weeks td {
+    height: 16.66px;
+}
+
+.calendar__weekday {
+    font-weight: bold;
+    color: black;
+    font-size: 1.2em;
+}
+
+.calendar__day {
+    padding: 10px;
+    font-size: 1.3em;
+}
+
+.calendar__reservation {
+    font-size: 0.8em;
+    color: white;
+    padding: 7px;
+    display: flow-root;
+    /*justify-content: space-between;*/
+}
+
+.name_group {
+    padding-left: 15px;
+}
+
+.name_group > a {
+    color: white;
+}
+
+.size_group {
+    font-weight: bold;
+    position: relative;
+    float: right;
+}
+
+.div__sector {
+    border-bottom: 1px solid rgb(128, 128, 128);
+    line-height: 1.2em;
+    display: flex;
+    align-items: center;
+    font-size: 0.8em;
+}
+
+.sector_name {
+    border-right: 1px solid rgb(128, 128, 128);
+    margin-right: 0.5em;
+    padding: 6px;
+    flex-basis: 50px;
+    text-align: center;
+}
+
+.calendar__othermonth .calendar__day {
+    opacity: 0.3;
+}

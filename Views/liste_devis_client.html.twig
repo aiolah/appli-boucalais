@@ -1,0 +1,108 @@
+{% extends 'index.html.twig' %}
+{% block section %}
+    <h1 class="mb-5">Mes devis</h1>
+    {% if succes == 'oui' %}
+        {% if nbreDevis == 2 %}
+            <p class="message green">Les devis ont bien été supprimés.</p>
+        {% else %}
+            <p class="message green">Le devis a bien été supprimé.</p>
+        {% endif %}
+    {% elseif succes == "non" %}
+        {% if nbreDevis == 2 %}
+            <p class="message red">Les devis n'ont pu être supprimés.</p>
+        {% else %}
+            <p class="message red">Le devis n'a pu être supprimé.</p>
+        {% endif %}
+    {% endif %}
+
+    {% if devis is not empty %}
+        <form method="post" action="?action=liste-devis-client" id="div-dvi">
+            <table class="table">
+                <thead>
+                    <th scope="col" class="p-3 border-right text-center">Sélectionner</th>
+                    <th scope="col" class="p-3 border-right text-center">Identifiant</th>
+                    <th scope="col" class="p-3 border-right text-center">Statut</th>
+                    <th scope="col" class="p-3 border-right text-center">Date de début</th>
+                    <th scope="col" class="p-3 border-right text-center">Date de fin</th>
+                    <th scope="col" class="p-3 border-right text-center">Nombre de nuits</th>
+                    <th scope="col" class="p-3 border-right text-center">Pension</th>
+                    <th scope="col" class="p-3 text-center">Action<th>
+                </thead>
+                <tbody>
+                {% for devisClient in devis %}
+                    {% if devisClient.statut == 1 %}
+                        <tr class="p-1" style="background-color: #4bde6d;">
+                    {% else %}
+                        <tr class="p-1">
+                    {% endif %}
+                        <td class="py-2 border-bottom text-center"><input type="checkbox" name="devis[]" value="{{devisClient.idDevis}}"></td>
+                        <th scope="row" class="py-2 border-bottom text-center">{{devisClient.idDevis}}</th>
+                        {% if devisClient.statut == 0 %}
+                            <td class="py-2 border-bottom text-center">Enregistré</td>
+                        {% elseif devisClient.statut == 1 %}
+                            <td class="py-2 border-bottom text-center">Validé</td>
+                        {% endif %}
+                            <td class="py-2 border-bottom text-center">{{devisClient.dateDebut|date('d/m/Y')}}</td>
+                            <td class="py-2 border-bottom text-center">{{devisClient.dateFin|date('d/m/Y')}}</td>
+                            <td class="py-2 border-bottom text-center">{{devisClient.duree}}</td>
+                            <td class="py-2 border-bottom text-center">{{devisClient.typePension}}</td>
+                            <td class="py-2 border-bottom text-center"><a href="?action=consulter-devis&devis={{devisClient.idDevis}}"> Consulter </a></td>
+                            {# <td class="py-2 border-bottom text-center"><a href="?action=modifier-devis&devis={{devisClient.idDevis}}"> Modifier </a></td> #}
+                        </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="row m-3">
+                {# <select class="form-control col-3 mr-3">
+                    <option disabled selected>--- Choisir une action---</option>
+                    <option value="supprimer">Supprimer</option>
+                </select> #}
+                <input type="submit" name="supprimer-devis-client" id="supprimer" value="Supprimer">
+            </div>
+        </form>
+    {% elseif devis is empty %}
+        <p>C'est vide ! Vous n'avez pas encore fait de devis. Créez-en un ici : <a href="?action=form-devis">Faire un devis</a></p>
+    {% endif %}
+
+    <script>
+
+        // Affiche un message d'erreur si aucun devis n'est sélectionné (si le nombre de checkboxs non cochées i est égal au nombre total de devis). Si le message existe déjà, on ne fait rien !!)
+        document.getElementById("supprimer").addEventListener('click', alert);
+        function alert(e)
+        {
+            let i = 0;
+            let nbreDevis = 0;
+            let devis = document.querySelectorAll("[name='devis[]']");
+            for(checkbox of devis)
+            {
+                nbreDevis++;
+                if(!checkbox.checked)
+                {
+                    i++;
+                }
+            }
+            if(i == nbreDevis)
+            {
+                e.preventDefault();
+                let a = 0
+                let children = document.getElementById("div-dvi").children;
+                for(let i=0; i < children.length; i++)
+                {
+                    if(children[i].classList.contains("message"))
+                    {
+                        return;
+                    }
+                    else a++;
+                }
+                if(a > 0)
+                {
+                    let p = document.createElement('p');
+                    p.classList.add('message', 'orange');
+                    p.innerHTML = "Aucun devis n'est sélectionné.";
+                    document.getElementById("div-dvi").appendChild(p);
+                }
+            }
+        }
+
+    </script>
+{% endblock %}

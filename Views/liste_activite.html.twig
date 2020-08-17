@@ -1,0 +1,24 @@
+{% extends "index.html.twig" %}
+{% block section %}
+    <div>
+        <h3> Activités </h3>
+        <table>
+            <thead class="border-bottom">
+                <th scope="col" class="p-3 border-right text-center"> Identifiant d'activité </th>
+                <th scope="col" class="p-3 border-right text-center"> Nom de l'activité </th>
+                <th scope="col" class="p-3 border-right text-center"> Prix de la séance </th>
+                <th scope="col" class="p-3 border-right text-center"> Actions </th>
+            </thead>
+            <tbody>
+            {% for activite in activites %}
+                <tr>
+                    <th scope="row" class="py-2 border-bottom text-center"> {{activite.idActivite}} </th>
+                    <td class="py-2 border-bottom text-center"> {{activite.nomActivite}} </td>
+                    <td class="py-2 border-bottom text-center"> {{activite.prixActiviteUnite}} </td>
+                    <td class="py-2 border-bottom text-center"> <a href="?action=modifier-activite&activite={{activite.idActivite}}">Modifier</a> </td>
+                </tr>
+            {% endfor %}
+            <tbody>
+        <table>
+    </div>
+{% endblock %}

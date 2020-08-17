@@ -1,0 +1,52 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+
+<main>
+
+    <h3 class="mb-4">Ressources documentaires</h3>
+
+    {% if statut >= 1 and statut < 5 %}
+        <p class="mb-4">Les documents ci-dessous seront disponibles une fois votre réservation effectuée et confirmée par le gérant du centre.</p>
+    {% elseif statut >= 5 %}
+        <p class="mb-4">Ces documents sont disponibles. Ils peuvent vous apporter des informations supplémentaires concernant les Landes et Vieux-Boucau.</p>
+    {% endif %}
+
+    {% if statut >= 1 and statut < 5 %}
+        <table id="table" class="table table-bordered non-cliquable">
+    {% elseif statut >= 5 %}
+        <table id="table" class="table table-bordered">
+    {% endif %}
+        <tbody>
+        {% for doc in fichiers %}
+            <tr>
+                <td>
+                    <a href={{ doc.lien }} target="_blank">{{ doc.nom }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+</main>
+
+<script>
+
+// Si le tableau a la classe non-cliquable, chaque lien qu'il contient n'est "pas cliquable" et le contenu de son attribut href est supprimé
+if(document.getElementById('table').classList.contains('non-cliquable'))
+{
+    for(let a of document.getElementById('table').getElementsByTagName('a'))
+    {
+        a.addEventListener('click', inactive);
+        a.href = '';
+    }
+}
+
+    function inactive(e)
+    {
+        e.preventDefault();
+    }
+    
+</script>
+
+{% endblock %}

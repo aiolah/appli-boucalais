@@ -1,0 +1,215 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+    {% if confirmation == 'non'%}
+        <p class="message red">{{message}}</p>
+    {% endif %}
+    <a href="?action=liste-devis-client">← Retour à la liste de vos devis</a>
+
+    {# Block template pour afficher un devis ! #}
+    {% block devis %}
+        <h1>UMCV - Centre de vacances le Boucalais</h1>
+        <h1>{{nomGroupe}}</h1>
+        <h2 class="mb-4"> Devis n°{{devis.idDevis}} {% if devis.dateDevis != "" %}composé le {{devis.dateDevis|date('d/m/Y')}} {% endif %} </h2>
+        <input type="hidden" id="idDevis" name="ID_DEVIS" value="{{devis.idDevis}}">
+        <input type="hidden" id="statut" name="STATUT" value="{{devis.statut}}">
+
+        {% block composition_groupe %}
+            <div id="composition" class="col-5 carte">
+                <p class="titre-devis"> Composition du groupe </p>
+                <hr class="hr-devis">
+                <div class="contenu">
+                    <p>Type de groupe : {{devis.typeGroupe}}</p>
+                    <div class="row" id="personnes">
+                        <p>{{devis.tailleGroupe}} personnes :
+                            <ul>
+                                {% if devis.nbEnfants > 0 or devis.nbEnfants != NULL %}
+                                    {% if devis.nbEnfants > 1 %}
+                                        <li>{{devis.nbEnfants}} enfants</li>
+                                    {% else %}
+                                        <li>{{devis.nbEnfants}} enfant</li>
+                                    {% endif %}                        
+                                {% endif %}
+                                {% if devis.nbAdos > 0 or devis.nbAdos != NULL %}
+                                    {% if devis.nbAdos > 1 %}
+                                        <li>{{devis.nbAdos}} adolescents</li>
+                                    {% else %}
+                                        <li>{{devis.nbAdos}} adolescent</li>
+                                    {% endif %}
+                                {% endif %}
+                                {% if devis.nbAdultes > 0 or devis.nbAdultes != NULL %}
+                                    {% if devis.nbAdultes > 1 %}
+                                        <li>{{devis.nbAdultes}} adultes</li>
+                                    {% else %}
+                                        <li>{{devis.nbAdultes}} adulte</li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div id="sejour-consulter" class="col-5 carte">
+                <p class="titre-devis" id="sejour"> Frais d'hébergement : {{devis.prixHebergement}}€ </p>
+                <hr class="hr-devis sejour">
+                <div class="contenu">
+                    <p>Commence le {{devis.dateDebut|date('d/m/Y')}} et finit le {{devis.dateFin|date('d/m/y')}}.</p>
+                    {% if devis.duree > 1 %}
+                        <p>Dure {{devis.duree}} nuits.</p>
+                    {% else %}
+                        <p>Dure {{devis.duree}} nuit.</p>
+                    {% endif %}
+                    <p>Choix de la pension :
+                    {% if devis.typePension == "pensioncomplète" %}
+                        Pension complète </p>
+                    {% elseif devis.typePension == "demipension" %}
+                        Demi-pension </p>
+                    {% elseif devis.typePension == "gestionlibre" %}
+                        Gestion libre </p>
+                    {% elseif devis.typePension == "gestionlibre, chapiteau" %}
+                        Gestion libre avec chapiteau cuisine ou salle à manger </p>
+                    {% endif %}
+                    {% if devis.typeHebergement != NULL %}
+                            <p>Type d'hébergement : {{devis.typeHebergement}}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        {% endblock %}
+
+        <br/>
+
+        <div id="activites-consulter" class="col-5 carte">
+            {% if activites != false %}
+                <p class="titre-devis" id="activites"> Frais d'activités : {{devis.prixActivites}}€ </p>
+                <hr class="hr-devis activites">
+                <div>
+                    <ul>
+                    {% for activite in activites %}
+                        <li>
+                            <p>{{activite.nomActivite}} : {{activite.nbSeances}}
+                            {% if activite.nbSeances > 1 %}
+                                séances
+                            {% else %}
+                                séance
+                            {% endif %}
+                            pour {{activite.nbParticipants}} participants.<br>
+                            Coût total de l'activité : {{activite.prixActivite}}€, prix à l'unité : {{ activite.prixActiviteUnite }}€</p>
+                        </li>
+                    {% endfor %}
+                    {% for option in options %}
+                        {% if option.idOption == 3 %}
+                            <li>
+                                <p>{{option.nomOption}} ({{option.prixOption}}€)</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    </ul>
+                </div>
+            {% else %}
+                <p class="titre-devis" id="pas-activites"> Pas d'activités </p>
+            {% endif %}
+        </div>
+
+        <br/>
+
+        <div id="options-consulter" class="col-5 carte">
+            {% if options != false %}
+                <p class="titre-devis" id="options"> Frais optionnels : {{devis.prixOptions}}€ </p>
+                <hr class="hr-devis options">
+                <div>
+                    <ul>
+                    {% set assuranceIndividuelle, assuranceGroupe = 0, 0 %}
+                    {% for option in options %}
+                        {% if option.idOption != 3 %}
+                            {% if option.idOption != 1 and assuranceIndividuelle != 1 %}
+                                {% set assuranceIndividuelle = 0 %}
+                            {% elseif option.idOption == 1 %}
+                                {% set assuranceIndividuelle = 1 %}
+                            {% endif %}
+                            {% if option.idOption != 2 and assuranceGroupe != 1 %}
+                                {% set assuranceGroupe = 0 %}
+                            {% elseif option.idOption == 2 %}
+                                {% set assuranceGroupe = 1 %}
+                            {% endif %}
+                            <li>
+                                <p>{{option.nomOption}} ({{option.prixOption}}€)</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                    <div class="contenu">
+                        {% if assuranceIndividuelle == 0 %}
+                            <p>Assurance annulation individuelle non sélectionnée</p>
+                        {% endif %}
+                        {% if assuranceIndividuelle == 0 %}
+                            <p>Assurance annulation groupe non sélectionnée</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <p class="titre-devis mb-3" id="pas-options"> Pas d'options </p>
+                <div class="contenu">
+                    <p>Assurance annulation groupe non sélectionnée</p>
+                    <p>Assurance annulation individuelle non sélectionnée</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <br/>
+
+        <div id="total-consulter" class="col-5 carte">
+            <p class="titre-devis" id="prix-total-consulter"> Prix total du devis : {{devis.prixTotal}}€ </p>
+        </div>
+        <br/>
+    {% endblock %}
+
+    {% if devis.statut == 0 and date("now"|date("Y-m-d"), "Europe/Paris") > date(devis.dateDebut|date("Y-m-d")) %}
+        <p class="message red">Le devis ne peut pas être validé car la date de début du séjour est passée.</p>
+    {% elseif devis.statut == 0 %}
+        <form method="post" action="?action=consulter-devis">
+            <div id="block-confirmation">
+            </div>
+            <input type="number" value="{{devis.idDevis}}" name="ID_DEVIS" hidden>
+            <input type="submit" id="valider" name="valider-devis" value="Valider le devis">
+        </form>
+    {% else %}
+        <p class="message blue">Le devis a été validé.</p>
+    {% endif %}
+
+
+<script>
+
+document.getElementById("valider").addEventListener("click", message);
+let i = 0;
+function message(e)
+{
+    i++;
+    if(i == 1)
+    {
+        e.preventDefault();
+        if(document.getElementById("block-confirmation").textContent != "")
+        {
+            let html = "<div id='confirmation' class='mb-4'>";
+            html += "<p>Attention, la signature d'un devis est un engagement juridique. Un acompte de 30% va vous être demandé.</p>";
+            html += "<div class='form-check mt-2 mb-2'>";
+            html += "<input type='checkbox' id='caseacocher' value='confirmation' class='form-check-input' name='confirmation' required>";
+            html += "<label for='caseacocher' class='form-check-label pb-1'>J'ai lu et compris, j'ai pouvoir à signer ce devis.</label>";
+            html += "</div>";
+            html += "</div>";
+            document.getElementById("block-confirmation").innerHTML = html;
+        }
+    }
+    else if(i > 1)
+    {
+        return;
+    }
+}
+
+</script>
+
+{% endblock %}

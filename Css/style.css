@@ -1,0 +1,403 @@
+nav {
+    margin-bottom: 5vh;
+}
+
+/* Couleur de clic sur les items dropdown du menu */
+.dropdown-item:active {
+	background-color: #78c4fa;
+}
+
+.button-action {
+	background-color: #78c4fa;
+}
+
+.button-suppression {
+	background-color: #ff4b4b;
+}
+
+/* --- MENU CLIENT ---*/
+.menu {
+	height: 17vh;
+}
+
+.petit-menu {
+	height: 12vh;
+}
+
+.menu-item {
+	height: 75%;
+	border-radius: 7px;
+}
+
+.item-text {
+	margin: auto;
+}
+
+.well {
+	min-height: 20px;
+	padding: 19px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	background-color: #f5f5f5;
+	border: 1px solid #e3e3e3;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+			box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+/* --- MESSAGES D'INFORMATION --- */
+
+.message {
+	padding: 25px 10px;
+}
+
+.message.blue {
+    border: 1px solid #240fe6;
+    background-color: #b2a9ff;
+}
+
+.message.red {
+    border: 1px solid #e60f21;
+    background-color: #eb7e99;
+}
+
+.message.green {
+	border: 1px solid #186916;
+    background-color: #63d368;
+}
+
+.message.orange {
+	border: 1px solid #9c5512ed;
+	background-color: #ff8304e3;
+}
+
+
+.block {
+	/* Pour que le champ et le bouton soient sur la même ligne !!! */
+	display: flex;
+}
+
+#bouton {
+	cursor: pointer;
+	width: 27px;
+	height: 27px;
+	/* Pour que le bouton soit collé au champs*/ 
+	margin-left: -1.2vw;
+	border: 1px solid gray;
+	background-size: cover;
+	background-color: white;
+}
+
+.open {
+	background-image: url('https://img.icons8.com/windows/32/000000/visible.png');
+}
+
+.closed {
+	background-image: url('https://img.icons8.com/windows/32/000000/closed-eye.png');
+}
+
+#hebergement {
+	display: flex;
+	align-items: center;
+}
+
+.boutons {
+	display: flex;
+}
+
+/* --- DOCUMENTS_ADMINISTRATIFS --- */
+#table.non-cliquable a {
+	color: gray;
+	cursor: not-allowed;
+}
+
+/* --- TELEVERSER_FICHIERS.HTML ---*/
+
+/* Bouton téleverser fichier */
+.custom-file-label::after /*#button*/ {
+	content : 'Parcourir';
+}
+
+/* --- DOCUMENTS_GERANT.HTML --- */
+#selectionner {
+	width: 10%;
+}
+
+#nom_fichier {
+	width: 50%;
+}
+
+#afficher {
+	width: 10%;
+}
+
+.docs {
+	margin-bottom: 15vh;
+}
+
+/* --- FORMULAIRE DEVIS --- */
+.div-prix {
+	background-color: white;
+	font-size: 1.7rem;
+    font-weight: bold;
+    padding: 15px 30px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.label-div-prix {
+	font-weight: normal;
+	font-size: 1.45rem;
+}
+
+#prix-total {
+	border: 2px solid orangered;
+	color: orangered;
+    position: fixed;
+    right: 0;
+	top: 8.55vh;
+	z-index: 1;
+}
+
+#sejour {
+	color: crimson;
+	font-weight: bold;
+}
+
+#button-hebergement {
+	border: 1px solid crimson;
+	background-color: crimson;
+	color: white;
+	transition: background-color 0.25s linear;
+}
+
+#button-hebergement:hover {
+	background-color: rgb(190, 17, 52);
+}
+
+#button-hebergement:focus {
+	box-shadow: 0 0 0 0.2rem rgba(231, 31, 71, 0.562);
+}
+
+#activites {
+	color: navy;
+	font-weight: bold;
+}
+
+#button-activites {
+	border: 1px solid navy;
+	background-color: navy;
+	color: white;
+	transition: background-color 0.25s linear;
+}
+
+#button-activites:focus {
+	box-shadow: 0 0 0 0.2rem rgba(0, 0, 128, 0.685);
+}
+
+#button-activites:hover {
+	background-color: rgb(5, 5, 88);
+}
+
+#infos-activites {
+	border-radius: 14px;
+    border: 2px dashed gray;
+    padding: 15px 10px;
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.2);
+}
+
+#options {
+	color: darkgreen;
+	font-weight: bold;
+}
+
+#prix-hebergement {
+	border: 2px solid crimson;
+	color: crimson;
+	width: 76vw;
+    margin-top: 8vh;
+}
+
+#prix-activites {
+	border: 2px solid navy;
+	color: navy;
+	width: 76vw;
+    margin-top: 8vh;
+}
+
+#prix-options {
+	border: 2px solid darkgreen;
+	color: darkgreen;
+	width: 76vw;
+    margin-top: 8vh;
+}
+
+.invalid {
+	width: 100%;
+    margin-top: .25rem;
+    font-size: 90%;
+    color: #dc3545;
+}
+
+.invalid-input {
+	border-color: #dc3545;
+}
+
+.div-pension {
+	width: 18vw;
+}
+
+.div-pension.gestionlibre {
+	width: 23vw;
+}
+
+#pension-complete {
+	margin-left: 14.5px;
+}
+
+.div-pension.selected {
+	border: 2px solid #0879f1;
+	border-radius: 7px;
+}
+
+.prix-hebergement, .frais-hebergement, .prix-option, .prix-activite {
+	font-size: 1.75rem;
+    color: #0879f1;
+    font-weight: bold;
+}
+
+.prix-option {
+	margin-left: 12px;
+}
+
+.label-prix, .label-frais {
+	font-weight: normal;
+	font-size: 1.25rem;
+}
+
+#chapiteau-cuisine {
+	color: initial;
+	font-size: initial;
+	font-weight: initial;
+	margin-left: 24px;
+}
+
+.activite {
+	background-color: #40a2ef6b;
+	border-radius: 8px;
+	margin-left: -4px;
+	transition: box-shadow 0.3s ease-in-out;
+}
+
+.activite:hover {
+	cursor: pointer;
+	box-shadow: 2px 3px 5px 0px gray;
+}
+
+.div-checkbox {
+	margin-bottom: 20px;
+	margin-top: 13px;
+	max-height: 25px;
+}
+
+.label-activite {
+	font-weight: bold;
+    font-size: 1.07rem;
+}
+
+.invisible {
+	display: none;
+}
+
+/* --- CONSULTER DEVIS --- */
+.carte {
+	padding: 1.5% 3%;
+}
+
+#composition {
+	border: 1.5px #80808061 solid;
+}
+
+#sejour-consulter {
+	border: 1.5px rgba(215, 23, 58, 0.877) solid;
+}
+
+#activites-consulter {
+	border: 1.5px rgba(0, 1, 128, 0.877) solid;
+}
+
+#options-consulter {
+	border: 1.5px rgba(0, 100, 1, 0.877) solid;
+}
+
+#total-consulter {
+	border: 1.5px orangered solid;
+}
+
+#pas-activites {
+	color: navy;
+}
+
+#pas-options {
+	color: darkgreen;
+}
+
+#prix-total-consulter {
+	font-weight: bold;
+	color: orangered;
+}
+
+#personnes {
+	margin-left: initial;
+}
+
+.contenu {
+	text-indent: 1.8rem;
+}
+
+.titre-devis {
+	font-size: 1.55rem;
+    margin-bottom: 0px;
+}
+
+.hr-devis {
+	margin-top: 6.5px;
+}
+
+.hr-devis.sejour {
+	border-color: rgba(215, 23, 58, 0.877);
+}
+
+.hr-devis.activites {
+	border-color: rgba(0, 1, 128, 0.877);
+}
+
+.hr-devis.options {
+	border-color: rgba(0, 100, 1, 0.877);
+}
+
+#confirmation {
+	border-radius: 14px;
+    border: 2px dashed rgb(170, 0, 0);
+    padding: 15px 10px;
+    text-align: center;
+    background-color: rgb(245 102 102 / 81%);
+}
+
+/* --- APERÇU CLIENTS --- */
+#aperçu a {
+	color: black;
+}
+
+.oneline {
+	line-height: 47px;
+}
+
+#aperçu thead th {
+	height: 74px;
+}
+
+.today {
+	font-weight: bold;
+}

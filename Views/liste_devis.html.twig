@@ -1,0 +1,26 @@
+{% extends 'index.html.twig' %}
+{% block section %}
+<div>
+    <table>
+        <tr class="border-bottom">
+            <th scope="col" class="p-4 border-right">Responsable</th>
+            <th scope="col" class="p-4 border-right">Groupe</th>
+            <th scope="col" class="p-4 border-right">Email</th>
+            <th scope="col" class="p-4 border-right">Date de début</th>
+            <th scope="col" class="p-4 border-right">Type de groupe</th>
+            <th scope="col" class="p-4 border-right">Pension</th>
+            <th scope="col" class="p-4 border-right">Actions</th>
+        </tr>
+        {% for commande in devis %}
+            <tr class="border-bottom">
+                <td class="py-2 text-center" scope="row">{{commande.NOM}} {{commande.PRENOM}}</td>
+                <td class="py-2 text-center">{{commande.NOM_GROUPE}}</td>
+                <td class="py-2 text-center">{{commande.MAIL}}</td>
+                <td class="py-2 text-center">{{commande.DATE_DEBUT}}</td>
+                <td class="py-2 text-center">{{commande.TYPE_GROUPE}}</td>
+                <td class="py-2 text-center">{{commande.TYPE_PENSION}}</td>
+                <td class="py-2 text-center"><a href="?action=modifier-devis&devis={{commande.ID_DEVIS}}"> Modifier </a></tr>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

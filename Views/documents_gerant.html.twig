@@ -1,0 +1,319 @@
+{% extends 'index.html.twig' %}
+
+{% block section %}
+
+<!--- /// RESSOURCES DOCUMENTAIRES /// -->
+
+{% if message is defined and succes == 'oui' %}
+    <p class="message green">{{ message }}</p>
+{% elseif message is defined and succes == 'non' %}
+    <p class="message red">{{ message }}</p>
+{% endif %}
+
+<div class="mb-5" id="firstDiv">
+
+    <h3 class="mb-4">Ressources documentaires</h3>
+
+    <ul>
+        <li class="docs">
+        
+            <p>Liste des documents sur le serveur</p>
+    
+            <form method="post" action="?action=documents_gerant">
+
+                <table id="table" class="table table-bordered mb-5">
+                    <thead>
+                        <th scope="col" id="selectionner" class="text-center">
+                            Sélectionner <br>
+                            <input type="checkbox" id="ressources-documentaires"><label for="ressources-documentaires" style="font-weight: normal;">&nbsp;(tous)</label>
+                        </th>
+                        <th scope="col" id="nom_fichier" class="text-center">Nom du fichier (pour les clients)</th>
+                        <th scope="col" id="afficher" class="text-center">Affiché ?</th>
+                    </thead>
+                    <tbody class="ressources-documentaires">
+                    {% for doc in ressources_documentaires %}
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="fichiers[]" value={{ doc.chemin }}></td>
+                            <td>
+                                <a href={{ doc.lien }} target="_blank">{{ doc.nom }}</a>
+                            </td>
+                            <td class="text-center">{{ doc.afficher }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="form-group row mb-4">
+                    <label class="col-sm-2 col-form-label">Action :</label>
+                    <select class="form-control col-sm-4" name="action">
+                        <option value="" disabled selected>-- Choisir une action --</option>
+                        <option value="afficher">Afficher pour les clients</option>
+                        <option value="cacher">Cacher pour les clients</option>
+                        <option value="supprimer">Supprimer du serveur</option>
+                    </select>
+                    <input type="submit" name="gerer-ressources-documentaires" value="Executer" class="ml-4">
+                </div>
+            </form>
+
+        </li>
+
+        <li class="docs">
+        
+            <p>Rajouter un fichier</p>
+
+            <form method="post" action="?action=documents_gerant" enctype="multipart/form-data" id="form1">
+                <div class="form-group row mb-4">
+                    <label class="col-sm-3 col-form-label" for="nomFichier1">Donnez un nom au fichier :</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="nom_fichier" id="nomFichier1" class="form-control">
+                    </div>
+                </div>
+
+                <div class="custom-file col-lg-5">
+                    <input type="file" class="custom-file-input" id="customFile1" name="file" required>
+                    <label class="custom-file-label" for="customFile" id="file-name1">Choisissez un fichier</label>
+                </div>
+
+                <br>
+
+                <input class="mt-4 mb-4 submit" id="submit1" type="submit" value="Téléverser" name="televerser-ressources-documentaires">
+            </form>
+
+        </li>
+    </ul>
+
+</div>
+
+
+<!--- /// DOCUMENTS ADMINISTRATIFS /// -->
+
+<div class="mb-5">
+
+    <h3 class="mb-4">Documents administratifs</h3>
+
+    <ul>
+        <li class="docs">
+        
+            <p>Liste des documents sur le serveur</p>
+    
+            <form method="post" action="?action=documents_gerant">
+
+                <table id="table" class="table table-bordered mb-5">
+                    <thead>
+                        <th scope="col" id="selectionner" class="text-center">
+                            Sélectionner<br>
+                            <input type="checkbox" id="documents-administratifs"><label for="documents-administratifs" style="font-weight: normal;">&nbsp;(tous)</label>    
+                        </th>
+                        <th scope="col" id="nom_fichier" class="text-center">Nom du fichier (pour les clients)</th>
+                        <th scope="col" id="afficher" class="text-center">Affiché ?</th>
+                    </thead>
+                    <tbody class="documents-administratifs">
+                    {% for doc in documents_administratifs %}
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="fichiers[]" value={{ doc.chemin }}></td>
+                            <td>
+                                <a href={{ doc.lien }} target="_blank">{{ doc.nom }}</a>
+                            </td>
+                            <td class="text-center">{{ doc.afficher }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="form-group row mb-4">
+                    <label class="col-sm-2 col-form-label">Action :</label>
+                    <select class="form-control col-sm-4" name="action">
+                        <option value="" disabled selected>-- Choisir une action --</option>
+                        <option value="afficher">Afficher pour les clients</option>
+                        <option value="cacher">Cacher pour les clients</option>
+                        <option value="supprimer">Supprimer du serveur</option>
+                    </select>
+                    <input type="submit" name="gerer-documents-administratifs" value="Executer" class="ml-4">
+                </div>
+            </form>
+
+        </li>
+
+        <li class="docs">
+        
+            <p>Rajouter un fichier</p>
+
+            <form method="post" action="?action=documents_gerant" enctype="multipart/form-data" id="form2">
+                <div class="form-group row mb-4">
+                    <label class="col-sm-3 col-form-label" for="nomFichier2">Donnez un nom au fichier :</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="nom_fichier" id="nomFichier2" class="form-control">
+                    </div>
+                </div>
+
+                <div class="custom-file col-lg-5">
+                    <input type="file" class="custom-file-input" id="customFile2" name="file" required>
+                    <label class="custom-file-label" for="customFile" id="file-name2">Choisissez un fichier</label>
+                </div>
+
+                <br>
+
+                <input class="mt-4 mb-4 submit" id="submit2" type="submit" value="Téléverser" name="televerser-documents-administratifs">
+            </form>
+
+        </li>
+    </ul>
+
+</div>
+
+
+<!-- /// PACK SÉJOUR /// -->
+
+<div class="mb-5">
+
+    <h3 class="mb-4">Pack séjour</h3>
+
+    <ul>
+        <li class="docs">
+        
+            <p>Liste des documents sur le serveur</p>
+    
+            <form method="post" action="?action=documents_gerant">
+
+                <table id="table" class="table table-bordered mb-5">
+                    <thead>
+                        <th scope="col" id="selectionner" class="text-center">
+                            Sélectionner<br>
+                            <input type="checkbox" id="pack-sejour"><label for="pack-sejour" style="font-weight: normal;">&nbsp;(tous)</label>
+                        </th>
+                        <th scope="col" id="nom_fichier" class="text-center">Nom du fichier (pour les clients)</th>
+                        <th scope="col" id="afficher" class="text-center">Affiché ?</th>
+                    </thead>
+                    <tbody class="pack-sejour">
+                    {% for doc in pack_sejour %}
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="fichiers[]" value={{ doc.chemin }}></td>
+                            <td>
+                                <a href={{ doc.lien }} target="_blank">{{ doc.nom }}</a>
+                            </td>
+                            <td class="text-center">{{ doc.afficher }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="form-group row mb-4">
+                    <label class="col-sm-2 col-form-label">Action :</label>
+                    <select class="form-control col-sm-4" name="action">
+                        <option value="" disabled selected>-- Choisir une action --</option>
+                        <option value="afficher">Afficher pour les clients</option>
+                        <option value="cacher">Cacher pour les clients</option>
+                        <option value="supprimer">Supprimer du serveur</option>
+                    </select>
+                    <input type="submit" name="gerer-pack-sejour" value="Executer" class="ml-4">
+                </div>
+            </form>
+
+        </li>
+
+        <li class="docs">
+        
+            <p>Rajouter un fichier</p>
+
+            <form method="post" action="?action=documents_gerant" enctype="multipart/form-data" id="form3">
+                <div class="form-group row mb-4">
+                    <label class="col-sm-3 col-form-label" for="nomFichier3">Donnez un nom au fichier :</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="nom_fichier" id="nomFichier3" class="form-control">
+                    </div>
+                </div>
+
+                <div class="custom-file col-lg-5">
+                    <input type="file" class="custom-file-input" id="customFile3" name="file" required>
+                    <label class="custom-file-label" for="customFile" id="file-name3">Choisissez un fichier</label>
+                </div>
+
+                <br>
+
+                <input class="mt-4 mb-4 submit" id="submit3" type="submit" value="Téléverser" name="televerser-pack-sejour">
+            </form>
+
+        </li>
+    </ul>
+
+</div>
+
+
+<script>
+
+// Sélectionner tous les documents d'un tableau : toutes les checkbox du tbody sur false ou true
+document.getElementById('ressources-documentaires').addEventListener('change', checkAll);
+document.getElementById('documents-administratifs').addEventListener('change', checkAll);
+document.getElementById('pack-sejour').addEventListener('change', checkAll);
+function checkAll(e)
+{
+    let checkboxes = document.querySelectorAll(`.${e.target.id} input[type=checkbox]`);
+    checkboxes.forEach( (checkbox) =>
+    {
+        if(!checkbox.checked)
+        {
+            checkbox.checked = true;
+        }
+        else checkbox.checked = false;
+    })
+}
+
+
+//document.getElementById('orange').style.display = "none";
+
+// Ecouteurs sur les champs input file pour détecter quand un fichier est déposé
+document.getElementById('customFile1').addEventListener('change', updateFileName);
+document.getElementById('customFile2').addEventListener('change', updateFileName);
+document.getElementById('customFile3').addEventListener('change', updateFileName);
+// Récupère et affiche le nom du fichier
+function updateFileName(e)
+{
+    let name = extractFilename(document.getElementById(e.target.id).value);
+    document.getElementById('file-name' + document.getElementById(e.target.id).id.substr(10)).textContent = name;
+}
+
+// Extraction du nom du fichier déposé
+function extractFilename(path)
+{
+    if(path.substr(0, 12) == "C:\\fakepath\\")
+    {
+        return path.substr(12); // modern browser
+
+    }
+    let x;
+    x = path.lastIndexOf('/');
+    if(x >= 0) // Unix-based path
+    {
+        return path.substr(x+1);
+
+    }
+    x = path.lastIndexOf('\\');
+    if(x >= 0) // Windows-based path
+    {
+        return path.substr(x+1);
+    }
+    return path; // just the file name
+}
+
+// Écouteurs d'évènements sur les submits téléverser
+for(let input of document.getElementsByClassName('submit'))
+{
+    input.addEventListener('click', verifieNomExiste);
+}
+
+// On vérifie si le champ nom de fichier est vide ou pas
+function verifieNomExiste(e)
+{
+    if(document.getElementById('nomFichier' + document.getElementById(e.target.id).id.substr(6)).value == '')
+    {
+        e.preventDefault();
+        let p = document.createElement('p');
+        p.classList.add('message', 'orange');
+        p.innerHTML = "Veuillez renseigner un nom de fichier";
+        document.getElementById('form' + document.getElementById(e.target.id).id.substr(6)).appendChild(p);
+    }
+}
+
+</script>
+
+{% endblock %}

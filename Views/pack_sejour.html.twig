@@ -1,0 +1,128 @@
+{% extends "index.html.twig" %}
+
+{% block section %}
+
+{% if message is defined and succes == "oui" %}
+    <p class="message green">{{message}}</p>
+{% elseif message is defined and succes == "non" %}
+    <p class="message red">{{message}}</p>
+{% endif %}
+
+<main>
+
+    <h2 class="mb-5">Mon pack séjour</h2>
+
+    {% if user.statut < 7 %}
+        <ul>
+            <li class="mb-5">
+                <h4 class="mb-4">Plan des chambres</h4>
+                <p>Pas de plan des chambres disponible pour le moment.</p>
+            </li>
+            <li class="mb-5">
+                <h4 class="mb-4">Facture d'acompte</h4>
+                <p>Pas de facture d'acompte disponible pour le moment.</p>
+            </li>
+            <li class="mb-5">
+                <h4 class="mb-4">Documents annexes</h4>
+                <p>Pas de document annexe disponible pour le moment.</p>
+            </li>
+        </ul>
+    {% else %}
+        {% for reservation in reservations %}
+            <ul>
+            {% for documentClient in documentsClient %}
+                {% if documentClient.idReservation == reservation.idReservation %}
+                    <li class="mb-5">
+                        <h4 class="mb-4">Plan des chambres</h4>
+                        {% if documentClient.planChambres == NULL or user.statut <= 6 %}
+                            <p>Pas de plan des chambres disponible pour le moment.</p>
+                        {% elseif documentClient.planChambres != NULL %}
+                            <ul>
+                                <li>
+                                    <a href="{{documentClient.planChambres}}" target="_blank">Plan des chambres</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </li>
+
+                    <li class="mb-5">
+                        <h4 class="mb-4">Planning des activités</h4>
+                        {% if documentClient.planningActivites == NULL or user.statut <= 6 %}
+                            <p>Pas de planning des activités disponible pour le moment.</p>
+                        {% elseif documentClient.planningActivites != NULL %}
+                            <ul>
+                                <li>
+                                    <a href="{{documentClient.planningActivites}}" target="_blank">Planning des activités</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </li>
+
+                    <li class="mb-5">
+                        <h4 class="mb-4">Menus</h4>
+                        {% if documentClient.menus == NULL or user.statut <= 6 %}
+                            <p>Pas de menus disponibles pour le moment.</p>
+                        {% elseif documentClient.menus != NULL %}
+                            <ul>
+                                <li>
+                                    <a href="{{documentClient.menus}}" target="_blank">Menus</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endif %}
+
+    <ul>
+        <li class="mb-5">
+            <h4 class="mb-4">Documents</h4>
+
+            {% if user.statut >= 1 and user.statut < 7 %}
+                <p class="mb-4">Les documents ci-dessous seront disponibles une fois que vous aurez retourné votre convention signée (après confirmation de votre réservation par le gérant du centre).</p>
+            {% elseif user.statut >= 7 %}
+                <p class="mb-4">Ces documents sont disponibles. Ils peuvent vous apporter des informations supplémentaires concernant le Boucalais et vous aider à préparer votre séjour.</p>
+            {% endif %}
+
+            {% if user.statut >= 1 and user.statut < 7 %}
+                <table id="table" class="table table-bordered non-cliquable">
+            {% elseif user.statut >= 7 %}
+                <table id="table" class="table table-bordered">
+            {% endif %}
+                <tbody>
+                {% for doc in fichiers %}
+                    <tr>
+                        <td>
+                            <a href={{ doc.lien }} target="_blank">{{ doc.nom }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </li>
+    </ul>
+
+</main>
+    
+<script>
+
+// Si le tableau a la classe non-cliquable, chaque lien qu'il contient n'est "pas cliquable" et le contenu de son attribut href est supprimé
+if(document.getElementById('table').classList.contains('non-cliquable'))
+{
+    for(let a of document.getElementById('table').getElementsByTagName('a'))
+    {
+        a.addEventListener('click', inactive);
+        a.href = '';
+    }
+}
+
+    function inactive(e)
+    {
+        e.preventDefault();
+    }
+    
+</script>
+
+{% endblock %}

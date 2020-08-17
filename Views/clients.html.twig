@@ -1,0 +1,17 @@
+{% extends 'index.html.twig' %}
+
+{% block section %}
+
+<h2>Tous les clients</h2>
+
+<table id="table" class="table table-bordered mb-5">
+    <tbody>
+    {% for client in clients %}
+        <tr>
+            <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{ client.nomGroupe }}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

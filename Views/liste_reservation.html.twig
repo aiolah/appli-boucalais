@@ -1,0 +1,21 @@
+{% extends 'index.html.twig' %}
+{% block message %}
+<div>
+    <tr>
+        <th>Responsable (Nom du groupe)</th>
+        <th>Email</th>
+        <th>Date de début</th>
+        <th>Type de groupe</th>
+        <th>Pension</th>
+    </tr>
+    {% for commande in reservation %}
+        <tr>
+            <td>{{commande.nom}} {{commande.prenom}} ({{commande.groupe}})</td>
+            <td>{{commande.email}}</td>
+            <td>{{commande.dateDebut}}</td>
+            <td>{{commande.typeGroupe}}</td>
+            <td>{{commande.typePension}}</td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+{% if message is defined %}
+    <p class="message red">{{message}}</p>
+{% endif %}
+
+<h2>Ajouter un client</h2>
+
+<form method="post" action="?action=ajouter-client" class="mt-5">
+    <fieldset class="form-group">
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-4 col-form-label">Type de groupe</label>
+            <div class="col-lg-4 col-sm-8">
+                <select class="form-control" name="type_groupe" required>
+                    <option value="" disabled="" selected="">-- Sélectionner un type de groupe --</option>
+                    <option value="établissement médico-social">un établissement médico-social</option>
+                    <option value="scolaire">un groupe scolaire</option>
+                    <option value="colonie/mini-camps">un organisateur de colonies/mini-camps</option>
+                    <option value="association">une association</option>
+                    <option value="club sportif">un club sportif</option>
+                    <option value="familial">un groupe familial</option>
+                    <option value="informel">un groupe informel</option>
+                    <option value="agence de voyage/autocariste">une agence de voyage/autocariste</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-4 col-form-label" for="nom-organisme">Nom de l'organisme</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="text" name="nom_organisme" id="nom-organisme" class="form-control" placeholder="Mon Association" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <h6 class="col-lg-12 mt-4 mb-4"><strong>Coordonnées du responsable</strong></h6>
+            <label class="col-lg-2 col-sm-4 col-form-label" for="prenom">Prénom </label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="text" name="prenom" id="prenom" class="form-control" placeholder="Jean" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-4 col-form-label" for="nom">Nom</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="text" name="nom" id="nom" class="form-control" placeholder="Dupont" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-4 col-form-label" for="email">E-mail</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="email" name="email" id="email" class="form-control" placeholder="jeandupont@gmail.com" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-4 col-form-label" for="telephone">Téléphone</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="tel" name="telephone" id="telephone" class="form-control" placeholder="06 59 41 35 78" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-6 col-form-label" for="personnes">Taille du groupe<br>(nombre de personnes)</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="number" min="1" name="nombre_personnes" id="personnes" class="form-control" placeholder="1" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-6 col-form-label" for="nuits">Nombre de nuits</label>
+            <div class="col-lg-4 col-sm-8">
+                <input type="number" min="1" name="nombre_nuits" id="nuits" class="form-control" placeholder="1" required>
+            </div>
+        </div>
+
+        <div class="form-group row mt-5">
+            <label class="col-lg-2 col-sm-6 col-form-label" for="nuits"><strong>Statut</strong> </label>
+            <div class="col-lg-4 col-sm-8">
+                <select class="form-control" name="statut" required>
+                    <option value="" disabled="" selected="">-- Sélectionner un statut --</option>
+                    <option value="1">1 - Demande de devis</option>
+                    <option value="2">2 - Inscription sur l'application</option>
+                    <option value="3">3 - Devis composé</option>
+                    <option value="4">4 - Demande de réservation</option>
+                    <option value="5">5 - Réservation confirmée</option>
+                    <option value="6">6 - Convention envoyée</option>
+                    <option value="7">7 - Convention retournée</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+        </div>
+
+    <input type="hidden" name="moyen" value="Ajouté par {{prenom}}">
+
+    <input class="mt-3" type="submit" name="ajouter-client" value="Ajouter">
+
+    </fieldset>
+</form>
+
+{% endblock %}
