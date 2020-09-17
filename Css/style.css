@@ -90,10 +90,14 @@ nav {
 
 .open {
 	background-image: url('https://img.icons8.com/windows/32/000000/visible.png');
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .closed {
 	background-image: url('https://img.icons8.com/windows/32/000000/closed-eye.png');
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 #hebergement {
@@ -400,4 +404,26 @@ nav {
 
 .today {
 	font-weight: bold;
+}
+
+/* --- PRIX DEVIS --- */
+.gras {
+	font-weight: bold;
+}
+
+.space {
+	margin-bottom: 12vh;
+}
+
+.prix-sejour {
+	cursor: pointer;
+	margin-bottom: 0px;
+	padding: 3px 0px;
+}
+
+.input-prix {
+	display: none;
+	position: relative;
+	width: 5vw;
+	margin: auto;
 }
