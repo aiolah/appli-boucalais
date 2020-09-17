@@ -2,12 +2,13 @@
 class Devis {
     private $_idDevis;
     private $_dateDevis;
+    private $_dateDebut;
+    private $_dateFin;
+    private $_organisme;
     private $_typeGroupe;
     private $_nbAdultes;
     private $_nbEnfants;
     private $_nbAdos;
-    private $_dateDebut;
-    private $_dateFin;
     private $_duree;
     private $_typePension;
     private $_typeHebergement;
@@ -90,12 +91,13 @@ class Devis {
     // GETTERS
     public function getIdDevis() { return $this->_idDevis; }
     public function getDateDevis() { return $this->_dateDevis; }
+    public function getDateDebut() { return $this->_dateDebut; }
+    public function getDateFin() { return $this->_dateFin; }
+    public function getOrganisme() { return $this->_organisme; }
     public function getTypeGroupe() { return $this->_typeGroupe; }
     public function getNbAdultes() { return $this->_nbAdultes; }
     public function getNbEnfants() { return $this->_nbEnfants; }
     public function getNbAdos() { return $this->_nbAdos; }
-    public function getDateDebut() { return $this->_dateDebut; }
-    public function getDateFin() { return $this->_dateFin; }
     public function getDuree() { return $this->_duree; }
     public function getTypePension() { return $this->_typePension; }
     public function getTypeHebergement() { return $this->_typeHebergement; }
@@ -110,13 +112,13 @@ class Devis {
     // SETTERS
     public function setIdDevis($id) { $this->_idDevis = $id; }
     public function setDateDevis($date) { $this->_dateDevis = $date; }
+    public function setDateDebut($dateD) { $this->_dateDebut = $dateD; }
+    public function setDateFin($dateF) { $this->_dateFin = $dateF; }
+    public function setOrganisme($organisme) { $this->_organisme = $organisme; }
     public function setTypeGroupe($value) { $this->_typeGroupe = $value; }
-    public function setOrganisme($orgName) { $this->_organisme = $orgName; }
     public function setNbAdultes($nombre) { $this->_nbAdultes = $nombre; }
     public function setNbEnfants($nombre) { $this->_nbEnfants = $nombre; }
     public function setNbAdos($nombre) { $this->_nbAdos = $nombre; }
-    public function setDateDebut($dateD) { $this->_dateDebut = $dateD; }
-    public function setDateFin($dateF) { $this->_dateFin = $dateF; }
     public function setDuree($duree) { $this->_duree = $duree; }
     public function setTypePension($choix) { $this->_typePension = $choix; }
     public function setTypeHebergement($hebergement) { $this->_typeHebergement = $hebergement; }

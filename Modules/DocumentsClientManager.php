@@ -15,18 +15,16 @@ class DocumentsClientManager
     }
 
     /**
-     * Enregistre le lien et le chemin du fichier téléversé pour le client en bdd : convention, facture d'acompte, convention signée, plan des chambres, planning d'activités ou menus + envoie un mail de notification
-     * @param nom nom du fichier (uniquement pour les documents annexes)
+     * Enregistre le lien et le chemin du fichier téléversé pour le client en bdd : convention, facture d'acompte, convention signée, plan des chambres, planning d'activités, menus ou document annexe + envoie un mail de notification
      * @param type type du document : convention ou facture d'acompte = colonne pour le lien en bdd
      * @param lien lien du document
      * @param colonne type du document + chemin : convention_chemin ou facture_acompte_chemin = colonne pour le chemin en bdd
      * @param chemin chemin pour accéder au fichier sur le serveur
      * @param idReservation
-     * @param id id du client
-     * @param nomGroupe nom du groupe
-     * @param mail email du client
+     * @param client instance de la classe Utilisateur = client pour lequel on a téléversé un fichier
+     * @param user instance de la classe Utilisateur = utilisateur connecté
      */
-    public function ajouterDocument($type, $lien, $colonne, $chemin, $idReservation, $user)
+    public function ajouterDocument($type, $lien, $colonne, $chemin, $idReservation, $client, $user)
     {
         // 1 ligne (bdd) par document annexe
         if($type == "documents-annexes")
@@ -51,7 +49,7 @@ class DocumentsClientManager
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -68,12 +66,12 @@ class DocumentsClientManager
                 <body>
                     Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
                 
-                    Le responsable du groupe " . $user->getNomGroupe() . " vient de vous envoyer un document annexe. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $user->getId() . "' target='_blank'>\"Fiche client\"</a>.<br>
+                    Le responsable du groupe " . $client->getNomGroupe() . " vient de vous envoyer un document annexe. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $client->getId() . "' target='_blank'>\"Fiche client\"</a>.<br>
         
                     <a href='http://leboucalais.fr/application' target='_blank'>Se connecter sur l'application</a>
                 </body>
                 </html>";
-                $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = "contact@leboucalais.fr" /* 'yoyo31.music@gmail.com' */;
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -105,7 +103,7 @@ class DocumentsClientManager
     
             $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = ? WHERE id_utilisateur = ?";
             $stmt = $this->_db->prepare($req);
-            $stmt->execute(array($statut, $user->getId()));
+            $stmt->execute(array($statut, $client->getId()));
     
             // Envoi mail de notification au client ou au gérant en fonction du fichier transféré
             if($type == "convention")
@@ -122,7 +120,7 @@ class DocumentsClientManager
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -144,7 +142,7 @@ class DocumentsClientManager
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -157,20 +155,20 @@ class DocumentsClientManager
             {
                 $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 7 WHERE id_utilisateur = ?";
                 $stmt = $this->_db->prepare($req);
-                $stmt->execute(array($user->getId()));    
+                $stmt->execute(array($client->getId()));
 
-                $objet = "Processus de réservation : le groupe " . $user->getNomGroupe() . " a déposé la convention signée";
+                $objet = "Processus de réservation : le groupe " . $client->getNomGroupe() . " a déposé la convention signée";
                 $message = "
                 <html>
                 <body>
                     Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
                 
-                    Le responsable du groupe ". $user->getNomGroupe() . " vient de déposer la convention signée. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $user->getId() . "' target='_blank'>\"Fiche client\"</a>.<br><br>
+                    Le responsable du groupe ". $client->getNomGroupe() . " vient de déposer la convention signée. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $client->getId() . "' target='_blank'>\"Fiche client\"</a>.<br><br>
         
                     <a href='http://leboucalais.fr/application' target='_blank'>Se connecter sur l'application</a>
                 </body>
                 </html>";
-                $destinataire = "contact@leboucalais.fr" /* 'yoyo31.music@gmail.com' */;
+                $destinataire = "contact@leboucalais.fr"; /* 'yoyo31.music@gmail.com' */
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -184,17 +182,20 @@ class DocumentsClientManager
                 if($type == "plan-chambres")
                 {
                     $doc = "le plan des chambres";
+                    $docObjet = "du plan des chambres";
                 }
                 elseif($type == "plannig-activites")
                 {
                     $doc = "le planning des activités";
+                    $docObjet = "du planning des activités";
                 }
                 elseif($type == "menus")
                 {
                     $doc = "les menus";
+                    $docObjet = "des menus";
                 }
 
-                $objet = "Processus de réservation : réception de la facture d'acompte";
+                $objet = "Processus de réservation : réception " . $docObjet;
                 $message = "
                 <html>
                 <body>
@@ -205,14 +206,14 @@ class DocumentsClientManager
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
                 $headers .= "From: \"Le Boucalais\"<contact@leboucalais.fr>\n";
                 $headers .= "Reply-To: contact@leboucalais.fr";
         
-                mail($destinataire, $objet, $message, $headers);        
+                mail($destinataire, $objet, $message, $headers);
             }
         }
     }
@@ -220,7 +221,6 @@ class DocumentsClientManager
     /**
      * Récupère les liens et les chemins de tous les documents rattachés à un client pour la réservation spécifiée
      * @param idReservation
-     * @return documentsClient instance de la classe DocumentsClient
      */
     public function getDocumentsClient($idReservation)
     {
@@ -235,7 +235,6 @@ class DocumentsClientManager
     /**
      * Récupère les noms, liens et les chemins de tous les documents annexes rattachés à un client pour la réservation spécifiée
      * @param idReservation
-     * @return documentsClient instance de la classe DocumentsClient
      */
     public function getDocumentsAnnexes($idReservation)
     {

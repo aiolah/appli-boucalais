@@ -12,22 +12,20 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-md navbar-toggleable-sm navbar-light sticky-top navbar navbar-light" style="background-color: #e3f2fd;">
-		<div class="navbar-header">
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			{% if acces == "oui" %}
-				<a class="navbar-brand" href="?action=accueil">
-					Appli Boucalais
-				</a>
-			{% else %}
-				<a class="navbar-brand" href="?action=connexion">
-					Appli Boucalais
-				</a>
-			{% endif %}
-		</div>
-		<div class="collapse navbar-collapse">
+	<nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #e3f2fd;">
+		{% if acces == "oui" %}
+			<a class="navbar-brand" href="?action=accueil">
+				Appli Boucalais
+			</a>
+		{% else %}
+			<a class="navbar-brand" href="?action=connexion">
+				Appli Boucalais
+			</a>
+		{% endif %}
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav mr-auto">
 				{% if role == "client" or role == "prospect" %}
 					<li class="nav-item"><a class="nav-link" href="?action=accueil">Accueil</a></li>

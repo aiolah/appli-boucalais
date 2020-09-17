@@ -9,8 +9,6 @@
 		<meta http-equiv="refresh" content="">
 	{% elseif yes is defined %}
 		<meta http-equiv="refresh" content="15">
-	{% else %}
-		<meta http-equiv="refresh" content="120">
 	{% endif %}
     <title> Appli Boucalais </title>
 
@@ -19,7 +17,7 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #e3f2fd;">
+	<nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbar" style="background-color: #e3f2fd;">
 		{% if acces == "oui" %}
 			<a class="navbar-brand" href="?action=accueil">
 				Appli Boucalais
@@ -59,7 +57,16 @@
 							<a class="dropdown-item" href="?action=ajouter-client">Ajouter</a>
 						</div>
 					</li>
-					<li class="nav-item"><a class="nav-link" href="calendrier.php">Planning des réservations</a></li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Plannings
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="Calendriers/calendrier-devis.php">Planning des devis</a>
+							<a class="dropdown-item" href="Calendriers/calendrier-reservations-non-confirmees.php">Planning des demandes de réservation</a>
+							<a class="dropdown-item" href="#">Planning</a>
+						</div>
+					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Paramétrage
@@ -67,6 +74,7 @@
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<a class="dropdown-item" href="?action=documents_gerant">Documents</a>
 							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="?action=prix-devis">Prix devis</a>
 							<a class="dropdown-item" href="?action=liste-activite">Activités devis</a>
 							<a class="dropdown-item" href="?action=liste-option">Options devis</a>
 						</div>

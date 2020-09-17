@@ -190,6 +190,52 @@ class ReservationManager {
 		return $reservations;
 	}
 
+	/**
+	 * Récupère les réservations pour la semaine
+	 * @param lundi Format date : premier jour de la semaine
+	 * @param dimanche Format date : dernier jour de la semaine
+	 */
+	// 3 conditions OR : 1 - si la date de début est antérieure ou égale à lundi et la date de fin supérieure ou égale à dimanche (= pour les réservations sur plusieurs semaines ou de lundi à dimanche), 2 - si la date de début se trouve entre lundi et dimanche inclus (= début d'une réservation sur plusieurs semaines ou réservation contenue dans la semaine), 3 - si la date de fin se trouve entre lundi et dimanche inclus (= fin d'une réservation sur plusieurs semaines ou réservation contenue dans la semaine). [Note : les réservations contenues dans la semaine vérifient donc les 2 dernières conditions !]
+	public function getListeReservationsNotConfirmedByWeeks($lundi, $dimanche)
+	{
+		$reservations = array();
+		$req = "SELECT * FROM LE_BOUCALAIS_RESERVE
+			INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_RESERVE.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
+			INNER JOIN LE_BOUCALAIS_RESERVATION ON LE_BOUCALAIS_RESERVE.ID_RESERVATION = LE_BOUCALAIS_RESERVATION.ID_RESERVATION
+			WHERE LE_BOUCALAIS_RESERVATION.statut = 0 AND (date_debut <= ? AND date_fin >= ? OR date_debut BETWEEN ? AND ? OR date_fin BETWEEN ? AND ?)
+			ORDER BY date_debut ASC";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($lundi, $dimanche, $lundi, $dimanche, $lundi, $dimanche));
+
+		// pour debuguer les requêtes SQL
+		$errorInfo = $stmt->errorInfo();
+		if ($errorInfo[0] != 0) {
+			print_r($errorInfo);
+		}
+
+		// recup des données
+		while ($donnees = $stmt->fetch())
+		{
+			$reservations[] = new Reservation($donnees);
+		}
+		return $reservations;
+	}
+
+	public function effectifTotalNotConfirmed($date)
+	{
+		$req = "SELECT SUM(taille_groupe) AS effectif_total FROM LE_BOUCALAIS_RESERVATION WHERE date_debut <= ? AND ? < date_fin AND LE_BOUCALAIS_RESERVATION.statut = 0";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($date, $date));
+
+		$result = $stmt->fetch();
+
+		if($result['effectif_total'] != NULL)
+		{
+			return $result['effectif_total'];
+		}
+		else return 0;
+	}
+
 	public function getListeReservationNotConfirmed()
 	{
 		$reservations = array();
@@ -379,6 +425,7 @@ class ReservationManager {
 		// Sinon, on insère une ligne vide et on la modifie ensuite pour chaque secteur
 		else
 		{
+			// Le secteur d'une réservation pour laquelle le gérant a choisi plusieurs hébergements correpond au premier sélectionné
 			$secteur = key($POST);
 			$req = "INSERT INTO LE_BOUCALAIS_HEBERGEMENT(id_reservation) values (?)";
 			$stmt = $this->_db->prepare($req);
@@ -460,6 +507,18 @@ class ReservationManager {
 
 		// mail($mail, $objet, $message, $headers)
 		mail($destinataire, $objet, $message, $headers);
+	}
+
+	/**
+	 * Récupère les types d'hébergement et le nombre de personnes pour chacun d'entre eux
+	 * @param idReservation
+	 */
+	public function getHebergement($idReservation)
+	{
+		$req = "SELECT PE, RDC, 1er, M1, M2, M3, B1, B2, B3, B4, B5 FROM LE_BOUCALAIS_HEBERGEMENT WHERE LE_BOUCALAIS_HEBERGEMENT.id_reservation = ? ";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($idReservation));
+		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 	
     /**

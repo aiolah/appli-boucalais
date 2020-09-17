@@ -1,11 +1,21 @@
+/* PLANNING DES RÉSERVATIONS NON CONFIRMÉES */
+
+body {
+    line-height: 1.3;
+}
+
 .calendar__table {
     width: 99%;
-    height: calc(100vh - 112px);
+    border-bottom: solid 1px grey;
+    /* height: calc(100vh - 112px); */
+}
+
+.day {
+    max-height: 46px;
 }
 
 .day, .calendar__othermonth {
     border-top: solid 2px grey;
-    height: 20%;
 }
 
 .calendar__othermonth.firstWeek {
@@ -26,7 +36,7 @@
 }
 
 .calendar__table--6weeks td {
-    height: 16.66px;
+    min-height: 16.66px;
 }
 
 .calendar__weekday {
@@ -36,8 +46,21 @@
 }
 
 .calendar__day {
-    padding: 10px;
-    font-size: 1.3em;
+    padding: 8.5px 0 10px 10px;
+    font-size: 1.27em;
+    /* color: black;
+    font-weight: 500; */
+}
+
+.effectif {
+    display: block;
+    float: right;
+    color: #ff2424;
+    padding: 1px 8px 1px 8px;
+    border-radius: 5px;
+    border: 1px solid #ff2424;
+    margin-right: 10px;
+    font-weight: bold;
 }
 
 .calendar__reservation {
@@ -46,6 +69,12 @@
     padding: 7px;
     display: flow-root;
     /*justify-content: space-between;*/
+}
+
+.calendar__reservation__weeks {
+    font-size: 0.8em;
+    color: white;
+    padding: 7px;
 }
 
 .name_group {
@@ -78,6 +107,159 @@
     text-align: center;
 }
 
-.calendar__othermonth .calendar__day {
+.calendar__othermonth .calendar__day, .opacity {
     opacity: 0.3;
+}
+
+/* Réservations non confirmées */
+.not-confirmed {
+    background-color: #908282;
+    /* border: 3px double red; */
+    display: inline-block;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+depart {
+    height: 100%;
+}
+
+.depart span {
+    visibility: hidden;
+}
+
+/* A mettre juste pour la version imprimable */
+/* .depart .name_group {
+    display: none;
+} */
+
+.empty {
+    background-color: white;
+}
+
+.icon {
+    width: 45px;
+    height: 38px;
+    border: 2px solid #007bff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.openBlue {
+	background-image: url('https://img.icons8.com/nolan/64/visible.png');
+}
+
+.closedBlue {
+	background-image: url('https://img.icons8.com/nolan/64/closed-eye.png');
+}
+
+.compression {
+    background-image: url("https://img.icons8.com/nolan/64/compress.png");
+}
+
+.large {
+    background-image: url("https://img.icons8.com/nolan/64/resize-diagonal.png");
+    margin-right: 10px;
+}
+
+.hide {
+    display: none;
+}
+
+/* PLANNING DE TOUS LES DEVIS */
+.calendar__devis__weeks {
+    font-size: 0.8em;
+    color: white;
+    padding: 7px;
+}
+
+.devis {
+    background-color: rgb(70, 70, 211);
+    /* border: 3px double red; */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+thead {
+    text-align: center;
+    font-size: 1.2em;
+    color: black;
+    padding: 2.5px;
+    border: 1px solid grey;
+}
+
+/* VERSION COMPRESSÉE MOUHAHAHAHA */
+#smallNav.compress {
+    display: block;
+    position: fixed;
+    bottom: 15px;
+    background-color: white;
+    padding: 18px 20px;
+    border-radius: 8px;
+    z-index: 1;
+    left: calc(100vw - (50vw + 205px));
+    box-shadow: 0px 1px 10px 0px #000000b8;
+    animation: disappear 0.75s ease-in 0.4s 1 normal;
+    animation-fill-mode: forwards;
+}
+
+#smallNav.compress:hover {
+    animation: reappear 0s linear 0.01s 1 normal;
+    animation-fill-mode: none;
+}
+
+@keyframes disappear {
+    0% {opacity: 1;}
+    100% {opacity: 0; display: none;}
+}
+
+@keyframes reappear {
+    0% {opacity: 0;}
+    100% {opacity: 1; display: block;}
+}
+
+#currentMonth.compress {
+    margin-right: 10px;
+}
+
+.calendar__weekday.compress {
+    font-size: 1em;
+}
+
+.calendar__day.compress {
+    font-size: 1.05em;
+    padding: 5px 0 7px 10px;
+}
+
+.day.compress {
+    border-top: solid 1px grey;
+}
+
+.calendar__othermonth.compress {
+    border-top: solid 1px grey;
+}
+
+.devis.compress {
+    padding: 1px 2px;
+    font-size: 0.7em;
+}
+
+.not-confirmed.compress {
+    padding: 1px 2px;
+    font-size: 0.7em;
+}
+
+thead {
+    display: none;
+}
+
+h1.compress {
+    display: none;
+}
+
+thead.compress {
+    display: table-header-group;
 }

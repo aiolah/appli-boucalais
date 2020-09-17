@@ -14,20 +14,53 @@ class OptionManager {
     /**
      * Récupération de toutes les données des options
      */
-    public function getOptions() {
-        $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_OPTIONS';
-        $stmt = $this->_db->prepare($req);
-        $stmt->execute();
+    public function getOptions($page)
+    {
+        if($page == 'form-devis')
+        {
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_OPTIONS';
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute();
 
-        $errorInfo = $stmt->errorInfo();
-		if ($errorInfo[0] != 0) {
-			print_r($errorInfo);
+            $errorInfo = $stmt->errorInfo();
+            if ($errorInfo[0] != 0) {
+                print_r($errorInfo);
+            }
+            
+            while ($donnees = $stmt->fetch()) {
+                $options[] = new Option($donnees);
+            }
+            return $options;
         }
-        
-        while ($donnees = $stmt->fetch()) {
-			$options[] = new Option($donnees);
+        else
+        {
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_OPTIONS WHERE AFFICHAGE_OPTION = 1';
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute();
+
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_OPTIONS WHERE AFFICHAGE_OPTION = 0';
+            $stmt2 = $this->_db->prepare($req);
+            $stmt2->execute();
+
+            $errorInfo = $stmt->errorInfo();
+            if ($errorInfo[0] != 0) {
+                print_r($errorInfo);
+            }
+            
+            $optionsAffichees = array();
+            $optionsCachees = array();
+
+            while($donnees = $stmt->fetch()) {
+                $optionsAffichees[] = new Option($donnees);
+            }
+
+            while($donnees = $stmt2->fetch()) {
+                $optionsCachees[] = new Option($donnees);
+            }
+
+            // Et oui on peut retourner des tableaux en php :O !!!
+            return array($optionsAffichees, $optionsCachees);
         }
-        return $options;
     }
 
     public function getOptionsFromDevis($idDevis)
@@ -103,13 +136,15 @@ class OptionManager {
         
         $req = "UPDATE LE_BOUCALAIS_TARIF_OPTIONS SET NOM_OPTION = :nomOption, 
                     PRIX_OPTION_UNITE = :prixOptionUnite, 
-                    DESCRIPTION_OPTION = :descriptionOption 
+                    DESCRIPTION_OPTION = :descriptionOption,
+                    AFFICHAGE_OPTION = :affichageOption 
                     WHERE ID_OPTION = :idOption";
 
 		$stmt = $this->_db->prepare($req);
 		$stmt->execute(array(":nomOption" => $option->getNomOption(),
                                 ":prixOptionUnite" => floatval($option->getPrixOptionUnite()),
                                 ":descriptionOption" => $option->getDescriptionOption(),
+                                ":affichageOption" => $option->getAffichageOption(),
                                 ":idOption" => intval($option->getIdOption())
                             ));
         //var_dump($stmt);

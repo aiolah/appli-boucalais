@@ -14,20 +14,48 @@ class ActiviteManager {
     /**
      * Récupération des prix
      */
-    public function getActivites() {
-        $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_ACTIVITES ORDER BY DESCRIPTION_ACTIVITE DESC';
-        $stmt = $this->_db->prepare($req);
-        $stmt->execute();
-
-        $errorInfo = $stmt->errorInfo();
-		if ($errorInfo[0] != 0) {
-			print_r($errorInfo);
-        }
+    public function getActivites($page) {
         
-        while ($donnees = $stmt->fetch()) {
-			$activites[] = new Activite($donnees);
+        if($page == 'form-devis')
+        {
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_ACTIVITES WHERE AFFICHAGE_ACTIVITE = 1 ORDER BY DESCRIPTION_ACTIVITE DESC';
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute();
+
+            while($donnees = $stmt->fetch()) {
+                $activites[] = new Activite($donnees);
+            }
+            return $activites;
         }
-        return $activites;
+        else
+        {
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_ACTIVITES WHERE AFFICHAGE_ACTIVITE = 1';
+            $stmt = $this->_db->prepare($req);
+            $stmt->execute();
+
+            $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_ACTIVITES WHERE AFFICHAGE_ACTIVITE = 0';
+            $stmt2 = $this->_db->prepare($req);
+            $stmt2->execute();
+
+            $errorInfo = $stmt->errorInfo();
+            if ($errorInfo[0] != 0) {
+                print_r($errorInfo);
+            }
+            
+            $activitesAffichees = array();
+            $activitesCachees = array();
+
+            while($donnees = $stmt->fetch()) {
+                $activitesAffichees[] = new Activite($donnees);
+            }
+
+            while($donnees = $stmt2->fetch()) {
+                $activitesCachees[] = new Activite($donnees);
+            }
+
+            // Et oui on peut retourner des tableaux en php :O !!!
+            return array($activitesAffichees, $activitesCachees);
+        }
     }
 
     public function getActivitesFromDevis($idDevis)
@@ -69,8 +97,8 @@ class ActiviteManager {
 			print_r($errorInfo);
         }
         
-        $donneesActivite = $stmt->fetch();
-        return $donneesActivite;
+        $activite = new Activite($stmt->fetch());
+        return $activite;
     }
 
     /**
@@ -82,9 +110,11 @@ class ActiviteManager {
         $stmt->execute();
         $activite->setIdActivite($stmt->fetchColumn()+1);
         
-        $req = 'INSERT INTO LE_BOUCALAIS_TARIF_ACTIVITES (NOM_ACTIVITE,PRIX_ACTIVITE_UNITE,DESCRIPTION_ACTIVITE,NB_PARTICIPANTS_GROUPE) VALUES (?,?,?,?)';
+        $req = 'INSERT INTO LE_BOUCALAIS_TARIF_ACTIVITES(ID_ACTIVITE, NOM_ACTIVITE, PRIX_ACTIVITE_UNITE, DESCRIPTION_ACTIVITE, NB_PARTICIPANTS_GROUPE, AFFICHAGE_ACTIVITE) VALUES (?, ?, ?, ?, ?, ?)';
         $stmtActivite = $this->_db->prepare($req);
-        $resActivite = $stmtActivite->execute(array($activite->getNomActivite(),$activite->getPrixActiviteUnite(),$activite->getDescriptionActivite(),$activite->getNbParticipantsGroupe()));
+        $resActivite = $stmtActivite->execute(array($activite->getIdActivite(), $activite->getNomActivite(), $activite->getPrixActiviteUnite(), $activite->getDescriptionActivite(), $activite->getNbParticipantsGroupe(), $activite->getAffichageActivite()));
+
+        return $resActivite;
 
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();

@@ -1,0 +1,35 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+<div>
+    <h3 class="mb-4">Ajout d'une activité</h3>
+    <form method="post" action="?action=ajouter-activite">
+        <div class="form-group row">
+            <label for="nomActivite" class="col-4 col-form-label">Nom de l'activité</label>
+            <input type="text" id="nomActivite" class="col-6 form-control" name="NOM_ACTIVITE" placeholder="Nom de l'activité" required>
+        </div>
+        <div class="form-group row">
+            <label for="prixActivite" class="col-4 col-form-label">Prix à l'unité</label>
+            <input type="number" id="prixActivite" class="col-1 form-control" name="PRIX_ACTIVITE_UNITE" placeholder="0" required>
+        </div>
+        <div class="form-group row">
+            <label for="descriptionActivite" class="col-4 col-form-label">Description</label>
+            <textarea class="col-6 form-control" id="descriptionActivite" name="DESCRIPTION_ACTIVITE" width="512" placeholder="Eventuelle description..."></textarea>
+        </div>
+        <div class="form-group row">
+            <label for="nbParticipants" class="col-4 col-form-label">Séances par groupe de :</label>
+            <input type="number" id="nbParticipants" class="col-1 form-control" name="NB_PARTICIPANTS_GROUPE" value="1">
+        </div>
+        <div class="form-group row">
+            <label for="afficher" class="col-4 col-form-label">Aficher lors de la composition d'un devis :</label>
+            <select name="AFFICHAGE_ACTIVITE" class="col-1 form-control">
+                <option value="1">Oui</option>
+                <option value="0">Non</option>
+            </select>
+        </div>
+
+        <input type="submit" name="ajout-activite" value="Ajouter l'activité" class="mt-3">
+    </form>
+</div>
+
+{% endblock %}

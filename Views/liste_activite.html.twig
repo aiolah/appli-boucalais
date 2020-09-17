@@ -1,24 +1,61 @@
 {% extends "index.html.twig" %}
 {% block section %}
     <div>
-        <h3> Activités </h3>
-        <table>
-            <thead class="border-bottom">
-                <th scope="col" class="p-3 border-right text-center"> Identifiant d'activité </th>
-                <th scope="col" class="p-3 border-right text-center"> Nom de l'activité </th>
-                <th scope="col" class="p-3 border-right text-center"> Prix de la séance </th>
-                <th scope="col" class="p-3 border-right text-center"> Actions </th>
-            </thead>
-            <tbody>
-            {% for activite in activites %}
-                <tr>
-                    <th scope="row" class="py-2 border-bottom text-center"> {{activite.idActivite}} </th>
-                    <td class="py-2 border-bottom text-center"> {{activite.nomActivite}} </td>
-                    <td class="py-2 border-bottom text-center"> {{activite.prixActiviteUnite}} </td>
-                    <td class="py-2 border-bottom text-center"> <a href="?action=modifier-activite&activite={{activite.idActivite}}">Modifier</a> </td>
-                </tr>
-            {% endfor %}
-            <tbody>
-        <table>
+        <h3 class="mb-4"> Activités </h3>
+        <a class="btn button-action mb-4" href="?action=ajouter-activite">Ajouter une activité</a>
+
+        <ul>
+            <li class="mb-4">
+                <h4 class="mb-3">Activités affichées</h4>
+                {% if activitesAffichees is not empty %}
+                    <table>
+                        <thead class="border-bottom">
+                            <th scope="col" class="p-3 border-right text-center"> Identifiant d'activité </th>
+                            <th scope="col" class="p-3 border-right text-center"> Nom de l'activité </th>
+                            <th scope="col" class="p-3 border-right text-center"> Prix de la séance </th>
+                            <th scope="col" class="p-3 border-right text-center"> Actions </th>
+                        </thead>
+                        <tbody>
+                        {% for activite in activitesAffichees %}
+                            <tr>
+                                <th scope="row" class="py-2 border-bottom text-center"> {{activite.idActivite}} </th>
+                                <td class="py-2 border-bottom text-center"> {{activite.nomActivite}} </td>
+                                <td class="py-2 border-bottom text-center"> {{activite.prixActiviteUnite}} </td>
+                                <td class="py-2 border-bottom text-center"> <a href="?action=modifier-activite&activite={{activite.idActivite}}">Modifier</a> </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucune activité n'est affichée, elles sont toutes cachées !</p>
+                {% endif %}
+            </li>
+
+            <li>
+                <h4 class="mb-3">Activités cachées</h4>
+                {% if activitesCachees is not empty %}
+                    <table>
+                        <thead class="border-bottom">
+                            <th scope="col" class="p-3 border-right text-center"> Identifiant d'activité </th>
+                            <th scope="col" class="p-3 border-right text-center"> Nom de l'activité </th>
+                            <th scope="col" class="p-3 border-right text-center"> Prix de la séance </th>
+                            <th scope="col" class="p-3 border-right text-center"> Actions </th>
+                        </thead>
+                        <tbody>
+                        {% for activite in activitesCachees %}
+                            <tr>
+                                <th scope="row" class="py-2 border-bottom text-center"> {{activite.idActivite}} </th>
+                                <td class="py-2 border-bottom text-center"> {{activite.nomActivite}} </td>
+                                <td class="py-2 border-bottom text-center"> {{activite.prixActiviteUnite}} </td>
+                                <td class="py-2 border-bottom text-center"> <a href="?action=modifier-activite&activite={{activite.idActivite}}">Modifier</a> </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucune activité n'est cachée, elles sont toutes affichées !</p>
+                {% endif %}
+            </li>
+        </ul>
     </div>
 {% endblock %}

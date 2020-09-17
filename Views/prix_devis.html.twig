@@ -1,0 +1,404 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+<h3 class="mb-5">Prix des séjours - formulaire de devis</h3>
+
+<p><em>Pour modifier un prix, cliquer dessus, le modifier puis appuyer sur la touche "Entrée".</em></p>
+
+<h4 class="mb-4">Basse saison - pension</h4>
+<table class="table table-bordered text-center space">
+    <tbody>
+        <tr>
+            <td rowspan="2"></td>
+            <td colspan="2" class="gras">3 nuits et -</td>
+            <td colspan="2" class="gras">+ de 3 nuits</td>
+        </tr>
+        <tr>
+            <td>Pension complète</td>
+            <td>Demi-pension</td>
+            <td>Pension complète</td>
+            <td>Demi-pension</td>
+        </tr>
+        <tr>
+            <td class="gras">Primaires</td>
+            <td>
+                <div id="div-1">
+                    <p id="prix-1" class="prix-sejour"></p>
+                    <input id="input-1" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-2">
+                    <p id="prix-2" class="prix-sejour"></p>
+                    <input id="input-2" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-3">
+                    <p id="prix-3" class="prix-sejour"></p>
+                    <input id="input-3" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-4">
+                    <p id="prix-4" class="prix-sejour"></p>
+                    <input id="input-4" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="gras">Collèges</td>
+            <td>
+                <div id="div-5">
+                    <p id="prix-5" class="prix-sejour"></p>
+                    <input id="input-5" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-6">
+                    <p id="prix-6" class="prix-sejour"></p>
+                    <input id="input-6" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-7">
+                    <p id="prix-7" class="prix-sejour"></p>
+                    <input id="input-7" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-8">
+                    <p id="prix-8" class="prix-sejour"></p>
+                    <input id="input-8" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="gras">Lycées</td>
+            <td>
+                <div id="div-9">
+                    <p id="prix-9" class="prix-sejour"></p>
+                    <input id="input-9" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-10">
+                    <p id="prix-10" class="prix-sejour"></p>
+                    <input id="input-10" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-11">
+                    <p id="prix-11" class="prix-sejour"></p>
+                    <input id="input-11" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-12">
+                    <p id="prix-12" class="prix-sejour"></p>
+                    <input id="input-12" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h4 class="mb-4">Basse saison - gestion libre</h4>
+<table class="table table-bordered text-center space">
+    <tbody>
+        <tr>
+            <td colspan="2" class="gras">- 30 pers</td>
+            <td colspan="2" class="gras">- 50 pers</td>
+            <td colspan="2" class="gras">- 80 pers</td>
+            <td colspan="2" class="gras">- 100 pers</td>
+            <td colspan="2" class="gras">- 150 pers</td>
+        </tr>
+        <tr>
+            <td>1 jour</td>
+            <td>2 jours et +</td>
+            <td>1 jour</td>
+            <td>2 jours et +</td>
+            <td>1 jour</td>
+            <td>2 jours et +</td>
+            <td>1 jour</td>
+            <td>2 jours et +</td>
+            <td>1 jour</td>
+            <td>2 jours et +</td>
+        </tr>
+        <tr>
+            <td>
+                <div id="div-13">
+                    <p id="prix-13" class="prix-sejour"></p>
+                    <input id="input-13" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-14">
+                    <p id="prix-14" class="prix-sejour"></p>
+                    <input id="input-14" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-15">
+                    <p id="prix-15" class="prix-sejour"></p>
+                    <input id="input-15" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-16">
+                    <p id="prix-16" class="prix-sejour"></p>
+                    <input id="input-16" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-17">
+                    <p id="prix-17" class="prix-sejour"></p>
+                    <input id="input-17" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-18">
+                    <p id="prix-18" class="prix-sejour"></p>
+                    <input id="input-18" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-19">
+                    <p id="prix-19" class="prix-sejour"></p>
+                    <input id="input-19" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-20">
+                    <p id="prix-20" class="prix-sejour"></p>
+                    <input id="input-20" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-21">
+                    <p id="prix-21" class="prix-sejour"></p>
+                    <input id="input-21" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-22">
+                    <p id="prix-22" class="prix-sejour"></p>
+                    <input id="input-22" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h4 class="mb-4">Haute saison - hébergement</h4>
+<table class="table table-bordered text-center space">
+    <thead>
+        <tr>
+            <th>Hébergement</th>
+            <th>Période</th>
+            <th>5 nuits et -</th>
+            <th>+ de 5 nuits</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">Dur</td>
+            <td>Juillet</td>
+            <td>
+                <div id="div-29">
+                    <p id="prix-29" class="prix-sejour"></p>
+                    <input id="input-29" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-30">
+                    <p id="prix-30" class="prix-sejour"></p>
+                    <input id="input-30" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Août</td>
+            <td>
+                <div id="div-31">
+                    <p id="prix-31" class="prix-sejour"></p>
+                    <input id="input-31" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-32">
+                    <p id="prix-32" class="prix-sejour"></p>
+                    <input id="input-32" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Toile</td>
+            <td>Juillet/Août</td>
+            <td colspan="2">
+                <div id="div-33">
+                    <p id="prix-33" class="prix-sejour"></p>
+                    <input id="input-33" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Chapiteau</td>
+            <td>Juillet/Août</td>
+            <td>
+                <div id="div-34">
+                    <p id="prix-34" class="prix-sejour"></p>
+                    <input id="input-34" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-35">
+                    <p id="prix-35" class="prix-sejour"></p>
+                    <input id="input-35" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h4 class="mb-4">Haute saison - frais de pension</h4>
+<table class="table table-bordered text-center space">
+    <thead>
+        <tr>
+            <th>Frais de pension</th>
+            <th>- 12 ans</th>
+            <th>+ 12 ans</th>
+            <th>+ 17 ans</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Pension complète</td>
+            <td>
+                <div id="div-23">
+                    <p id="prix-23" class="prix-sejour"></p>
+                    <input id="input-23" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-24">
+                    <p id="prix-24" class="prix-sejour"></p>
+                    <input id="input-24" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-25">
+                    <p id="prix-25" class="prix-sejour"></p>
+                    <input id="input-25" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Demi-pension</td>
+            <td>
+                <div id="div-26">
+                    <p id="prix-26" class="prix-sejour"></p>
+                    <input id="input-26" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-27">
+                    <p id="prix-27" class="prix-sejour"></p>
+                    <input id="input-27" class="input-prix" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="div-28">
+                    <p id="prix-28" class="prix-sejour"></p>
+                    <input id="input-28" class="input-prix" type="number">
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<script>
+
+    // Récupération des prix
+    function takePrix(idPriceChanged)
+    {
+        let fetchOptions = { method: 'GET' };
+        const url = 'http://leboucalais.fr/application-dev/API/prixSejours.php';
+        fetch(url, fetchOptions)
+        .then( (response) => { return response.json() } )
+        .then( (dataJSON) => {
+            dataJSON.forEach( (prixSejour) => {
+                setPrix(prixSejour['ID_SEJOUR'], prixSejour['PRIX_SEJOUR_UNITE'], idPriceChanged);
+            });
+        });
+    }
+
+    // On change la valeur du p et de l'input associés à l'id
+    function setPrix(id, prix, idPriceChanged)
+    {
+        let p = document.getElementById(`prix-${id}`)
+        let input = document.getElementById(`input-${id}`);
+        p.innerHTML = `${prix}€`;
+        input.value = prix;
+        // On affiche le p et on cache l'input pour le champ qui vient d'être modifié : on remplit ainsi le p avant de l'afficher
+        if(p.id.substr(5) == idPriceChanged)
+        {
+            p.style.display = "";
+            p.style.cursor = "pointer";
+            input.style.display = "none";
+        }
+    }
+
+    for(p of document.querySelectorAll('.prix-sejour'))
+    {
+        p.addEventListener('click', modify);
+    }
+
+    for(input of document.querySelectorAll('.input-prix'))
+    {
+        input.addEventListener("keypress", save);
+    }
+
+    // Au clic sur le prix, le p disparaît et l'input apparaît
+    function modify(e)
+    {
+        let p = e.target;
+        p.style.display = "none";
+        p.style.cursor = "auto";
+        let input = document.querySelector(`#div-${e.target.id.substr(5)} > input`);
+        input.style.display = "block";
+        input.focus();
+        input.select();
+    }
+
+    // Si la touche entrée est appuyée, le p apparaît et l'input disparaît
+    function save(e)
+    {
+        if(e.key == "Enter")
+        {
+            let sejour = {
+                id: e.target.id.substr(6),
+                prix: e.target.value
+            }
+            let fetchOptions = {
+                method: 'POST',
+                body : JSON.stringify(sejour)
+            };
+            const url = 'http://leboucalais.fr/application-dev/API/savePrix.php';
+            fetch(url, fetchOptions)
+            .then( (response) => { return response.json() } )
+            .then( (dataJSON) => {
+                //console.log(dataJSON);
+                takePrix(e.target.id.substr(6));
+            });
+        }
+    }
+
+    // Au chargement de la page, aucun prix n'a été modifié donc idPriceChanged = null
+    takePrix(null);
+
+</script>
+
+{% endblock %}

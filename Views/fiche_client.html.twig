@@ -83,7 +83,7 @@
                         <td class="py-2 border-bottom text-center">{{devisClient.dateFin|date('d/m/Y')}}</td>
                         <td class="py-2 border-bottom text-center">{{devisClient.duree}}</td>
                         <td class="py-2 border-bottom text-center">{{devisClient.typePension}}</td>
-                        <td class="py-2 border-bottom text-center"><a href="?action=consulter-devis&devis={{devisClient.idDevis}}&id={{client.id}}"> Consulter </a></td>
+                        <td class="py-2 border-bottom text-center"><a href="?action=consulter-devis&devis={{devisClient.idDevis}}"> Consulter </a></td>
                         {# <td class="py-2 border-bottom text-center"><a href="?action=modifier-devis&devis={{devisClient.idDevis}}"> Modifier </a></td> #}
                     </tr>
             {% endfor %}
@@ -97,7 +97,7 @@
     <p>Faire des liens pour les réservations.. HAHA</p>
 {% else %}
     {% for reservation in reservations %}
-        <h3><a href="?action=infos_reservation&reservation={{reservation.idReservation}}">Réservation n°{{reservation.idReservation}}</a>, <a href="?action=consulter-devis&devis={{reservation.idDevis}}&id={{client.id}}">devis n°{{reservation.idDevis}}</a></h3>
+        <h3><a href="?action=infos_reservation&reservation={{reservation.idReservation}}">Réservation n°{{reservation.idReservation}}</a>, <a href="?action=consulter-devis&devis={{reservation.idDevis}}">devis n°{{reservation.idDevis}}</a></h3>
         {% if reservation.statut == 0 %}
             <p>Statut réservation : en attente de confirmation</p>
         {% elseif reservation.statut == 1 %}

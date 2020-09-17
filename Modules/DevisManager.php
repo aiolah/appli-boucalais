@@ -309,6 +309,47 @@ class DevisManager {
 		return $devis;
 	}
 
+	// 3 conditions OR : 1 - si la date de début est antérieure ou égale à lundi et la date de fin supérieure ou égale à dimanche (= pour les devis sur plusieurs semaines ou de lundi à dimanche), 2 - si la date de début se trouve entre lundi et dimanche inclus (= début d'un devis sur plusieurs semaines ou devis contenu dans la semaine), 3 - si la date de fin se trouve entre lundi et dimanche inclus (= fin d'un devis sur plusieurs semaines ou devis contenu dans la semaine). [Note : les devis contenus dans la semaine vérifient donc les 2 dernières conditions !]
+	public function getListeDevisByWeeks($lundi, $dimanche)
+	{
+		$devis = array();
+		$req = "SELECT * FROM LE_BOUCALAIS_EFFECTUE_DEVIS
+			INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
+			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
+			WHERE LE_BOUCALAIS_DEVIS.statut = 0 AND (date_debut <= ? AND date_fin >= ? OR date_debut BETWEEN ? AND ? OR date_fin BETWEEN ? AND ?)
+			ORDER BY date_debut, LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS ASC ";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($lundi, $dimanche, $lundi, $dimanche, $lundi, $dimanche));
+
+		// pour debuguer les requêtes SQL
+		$errorInfo = $stmt->errorInfo();
+		if ($errorInfo[0] != 0) {
+			print_r($errorInfo);
+		}
+
+		// recup des données
+		while ($donnees = $stmt->fetch())
+		{
+			$devis[] = new Devis($donnees);
+		}
+		return $devis;
+	}
+
+	public function effectifTotal($date)
+	{
+		$req = "SELECT SUM(taille_groupe) AS effectif_total FROM LE_BOUCALAIS_DEVIS WHERE date_debut <= ? AND ? < date_fin AND LE_BOUCALAIS_DEVIS.statut = 0";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($date, $date));
+	
+		$result = $stmt->fetch();
+
+		if($result['effectif_total'] != NULL)
+		{
+			return $result['effectif_total'];
+		}
+		else return 0;
+	}
+
 	/**
 	 * Récupère le nombre de devis pour l'utilisateur passé en paramètre
 	 * @param id Id de l'utilisateur
@@ -324,11 +365,11 @@ class DevisManager {
 	}
 
 	/**
-	 * Récupère le devis avec l'ID fourni en paramètre.
+	 * Récupère le devis avec l'ID fourni en paramètre et vérifie que le devis cherché est rattaché à l'utilisateur connecté.
 	 * @param Number $idDevis ID du devis.
 	 * @return Devis
 	 */
-	public function getDevisFromId($id, $idDevis) {
+	public function getDevisFromIdUser($id, $idDevis) {
 		//print_r($idDevis);
 		$req = "SELECT LE_BOUCALAIS_DEVIS.ID_DEVIS, DATE_DEVIS, DATE_DEBUT, DATE_FIN, DUREE, LE_BOUCALAIS_DEVIS.TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ADULTES, NB_ENFANTS, NB_ADOS, LE_BOUCALAIS_DEVIS.TAILLE_GROUPE, LE_BOUCALAIS_DEVIS.STATUT FROM LE_BOUCALAIS_EFFECTUE_DEVIS
 			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
@@ -336,6 +377,37 @@ class DevisManager {
 			WHERE LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = ? AND LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = ?";
 		$stmt = $this->_db->prepare($req);
 		$stmt->execute(array($id, $idDevis));
+
+		$errorInfo = $stmt->errorInfo();
+		if ($errorInfo[0] != 0) {
+			print_r($errorInfo);
+		}
+
+		$devis = 0;
+		while($donnees = $stmt->fetch())
+		{
+			$devis = new Devis($donnees);
+		}
+		//print_r($devis);
+		if($devis != null)
+		{
+			return $devis;
+		}
+		else return false;
+	}
+
+	/**
+	 * Récupère le devis avec l'ID fourni en paramètre.
+	 * @return Devis
+	 */
+	public function getDevisFromId($idDevis) {
+		//print_r($idDevis);
+		$req = "SELECT LE_BOUCALAIS_DEVIS.ID_DEVIS, DATE_DEVIS, DATE_DEBUT, DATE_FIN, DUREE, LE_BOUCALAIS_DEVIS.TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ADULTES, NB_ENFANTS, NB_ADOS, LE_BOUCALAIS_DEVIS.TAILLE_GROUPE, LE_BOUCALAIS_DEVIS.STATUT FROM LE_BOUCALAIS_EFFECTUE_DEVIS
+			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
+			INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
+			WHERE LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = ?";
+		$stmt = $this->_db->prepare($req);
+		$stmt->execute(array($idDevis));
 
 		$errorInfo = $stmt->errorInfo();
 		if ($errorInfo[0] != 0) {
@@ -461,48 +533,6 @@ class DevisManager {
         }
     }
 
-	// /**
-	//  * Mise à jour en base de données des changements effectués sur les devis
-	//  * @param Devis
-	//  **/
-	// public function updateDevis(Devis $devis) {
-	// 	$req = "UPDATE LE_BOUCALAIS_DEVIS SET DATE_DEBUT = :dateDebut,"
-	// 					. "DATE_FIN = :dateFin, "
-	// 					. "DUREE = :duree, "
-	// 					. "TYPE_GROUPE = :typeGroupe, "
-	// 					. "TYPE_PENSION  = :pension, "
-	// 					. "ACTIVITE_SEANCES = :activiteSeances, "
-	// 					. "ACTIVITE_PARTICIPANTS = :activiteParticipants, "
-	// 					. "NB_ADULTES = :nbAdultes, "
-	// 					. "NB_ENFANTS = :nbEnfants, "
-	// 					. "NB_ADOS = :nbAdos, "
-	// 					. "OPTIONS = :options, "
-	// 					. "STATUT = :statut, "
-	// 					. "TAILLE_GROUPE = :tailleGroupe"
-	// 					. " WHERE ID_DEVIS = :idDevis";
-	// 	//var_dump($devis);
-
-	// 	$stmt = $this->_db->prepare($req);
-	// 	$tailleGrp = $devis->getNbAdultes()+$devis->getNbAdos()+$devis->getNbEnfants();;
-	// 	$devis->setTailleGroupe($tailleGrp);
-	// 	$stmt->execute(array(":dateDebut" => $devis->getDateDebut(),
-	// 							":dateFin" => $devis->getDateFin(),
-	// 							":duree" => $devis->getDuree(), 
-	// 							":typeGroupe" => $devis->getTypeGroupe(),
-	// 							":pension" => $devis->getTypePension(),
-	// 							":activiteSeances" => $devis->getActiviteSeances(),
-	// 							":activiteParticipants" => $devis->getActiviteParticipants(),
-	// 							":nbAdultes" => $devis->getNbAdultes(),
-	// 							":nbEnfants" => $devis->getNbEnfants(),
-	// 							":nbAdos" => $devis->getNbAdos(),
-	// 							":options" => $devis->getOptions(),
-	// 							":statut" => $devis->getStatut(),
-	// 							":tailleGroupe" => $devis->getTailleGroupe(),
-	// 							":idDevis" => $devis->getIdDevis() ));
-					
-	// 	return $stmt;
-	// }
-
 	public function validerDevis($idDevis) {
 		$req = "UPDATE LE_BOUCALAIS_DEVIS SET STATUT = :statut
 			WHERE ID_DEVIS = ?";
@@ -521,26 +551,6 @@ class DevisManager {
 		$stmt = $this->_db->prepare('SELECT COUNT(*) FROM LE_BOUCALAIS_DEVIS');
 		$stmt->execute();
 		return $stmt->fetchColumn();
-	}
-
-	public function toJson(Devis $devis) {
-		$devis->setActiviteSeances($devis->getActiviteSeances());
-		$devis->setActiviteParticipants($devis->getActiviteParticipants());
-		$devis->setOptions($devis->getOptions());
-		return $devis;
-	}
-
-	public function verifNbPersonnes(Devis $devis) {
-		if(!($devis->getNbAdultes() instanceof int)) {
-			$devis->setNbAdultes(0);
-		}
-		if(!($devis->getNbEnfants() instanceof int)) {
-			$devis->setNbEnfants(0);
-		}
-		if(!($devis->getNbAdos() instanceof int)) {
-			$devis->setNbAdos(0);
-		}
-		return $devis;
 	}
 }
 ?>

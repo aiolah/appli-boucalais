@@ -1,24 +1,62 @@
 {% extends "index.html.twig" %}
 {% block section %}
     <div>
-        <h3> Options </h3>
-        <table>
-            <thead class="border-bottom">
-                <th scope="col" class="pl-2 pr-2 border-right text-center"> Identifiant de l'option </th>
-                <th scope="col" class="pl-2 pr-2 border-right text-center"> Nom de l'option </th>
-                <th scope="col" class="pl-2 pr-2 border-right text-center"> Prix de l'option </th>
-                <th scope="col" class="pl-2 pr-2 border-right text-center"> Actions </th>
-            </thead>
-            <tbody>
-            {% for option in options %}
-                <tr>
-                    <th scope="row" class="pl-2 pr-2 border-right"> {{option.idOption}} </th>
-                    <td class="pl-2 pr-2 border-right"> {{option.nomOption}} </td>
-                    <td class="pl-2 pr-2 border-right"> {{option.prixOptionUnite}} </td>
-                    <td class="pl-2 pr-2 border-right"> <a href="?action=modifier-option&option={{option.idOption}}">Modifier</a> </td>
-                </tr>
-            {% endfor %}
-            <tbody>
-        <table>
+        <h3 class="mb-4">Options (frais optionnels)</h3>
+        <a class="btn button-action mb-5" href="?action=ajouter-option">Ajouter une option</a>
+
+        <ul>
+            <li class="mb-5">
+                <h4 class="mb-3">Options affichées</h4>
+                {% if optionsAffichees is not empty %}
+                    <table>
+                        <thead class="border-bottom">
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Identifiant de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Nom de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Prix de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Actions </th>
+                        </thead>
+                        <tbody>
+                        {% for option in optionsAffichees %}
+                            <tr>
+                                <th scope="row" class="pl-2 pr-2 border-right"> {{option.idOption}} </th>
+                                <td class="pl-2 pr-2 border-right"> {{option.nomOption}} </td>
+                                <td class="pl-2 pr-2 border-right"> {{option.prixOptionUnite}} </td>
+                                <td class="pl-2 pr-2 border-right"> <a href="?action=modifier-option&option={{option.idOption}}">Modifier</a> </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucune option n'est affichée, elles sont toutes cachées !</p>
+                {% endif %}
+            </li>
+        
+            <li class="mb-4">
+                <h4 class="mb-3">Options cachées</h4>
+                <p class="mb-4"><span style="text-decoration: underline;">Remarque :</span> L'option programmation activités est cachée mais apparaît toujours sur le formulaire de devis, au-dessus des activités. La modification de son prix sera effective.</p>
+                {% if optionsCachees is not empty %}
+                    <table>
+                        <thead class="border-bottom">
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Identifiant de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Nom de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Prix de l'option </th>
+                            <th scope="col" class="pl-2 pr-2 border-right text-center"> Actions </th>
+                        </thead>
+                        <tbody>
+                        {% for option in optionsCachees %}
+                            <tr>
+                                <th scope="row" class="pl-2 pr-2 border-right"> {{option.idOption}} </th>
+                                <td class="pl-2 pr-2 border-right"> {{option.nomOption}} </td>
+                                <td class="pl-2 pr-2 border-right"> {{option.prixOptionUnite}} </td>
+                                <td class="pl-2 pr-2 border-right"> <a href="?action=modifier-option&option={{option.idOption}}">Modifier</a> </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucune option n'est cachée, elles sont toutes affichées !</p>
+                {% endif %}
+            </li>
+        </ul>
     </div>
 {% endblock %}

@@ -64,8 +64,8 @@ class UtilisateurManager
         <body>
             Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
         
-            Vous avez récemment demandé un devis sur le site leboucalais.fr. Vous allez pouvoir le composer en ligne sur une plateforme dédiée. 
-            Celle-ci vous mettra ensuite en relation avec le gérant du centre pour continuer vos démarches de réservation.<br><br>
+            Vous avez récemment demandé un devis sur le site leboucalais.fr. Vous allez pouvoir le composer en ligne sur l'application du Boucalais. 
+            Celle-ci vous fera profiter de nombreuses fonctionnalités et vous mettra en relation avec le gérant du centre pour faciliter l'organisation de votre séjour.<br><br>
 
             Pour commencer, veuillez vous inscrire sur le lien suivant en utilisant l'adresse avec laquelle vous consultez cet email (rappel : ".$mail_prospect.") Dans le cas contraire, votre inscription sera refusée.<br><br>
 
@@ -234,6 +234,10 @@ class UtilisateurManager
         return $user;
     }
 
+    /**
+     * Récupère les informations de l'utilisateur depuis le nom du groupe
+     * @param nom nom du groupe
+     */
     public function getProfilFromGroupName($nom)
     {
         $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE nom_groupe = ?";
@@ -275,6 +279,22 @@ class UtilisateurManager
     }
 
     /**
+     * Récupère les informations de l'utilisateur depuis un de ses devis
+     * @param idDevis
+     */
+    public function getProfilFromDevis($idDevis)
+    {
+        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR
+        INNER JOIN LE_BOUCALAIS_EFFECTUE_DEVIS ON LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR = LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR
+        WHERE id_devis = ?";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute(array($idDevis));
+
+        $user = new Utilisateur($stmt->fetch());
+        return $user;
+    }
+
+    /**
      * Crée la ligne dans la table LE_BOUCALAIS_DOCUMENTS_CLIENT
      * @param idReservation
      */
@@ -308,8 +328,9 @@ class UtilisateurManager
      * @param id id de l'utilisateur
      * @param chemin chemin du fichier index.php
      * @param user instance de la classe Utilisateur, contient le profil du client
+     * @param mail booléen : définit si le mail de suppression du compte doit être envoyé ou non
      */
-    public function deleteProfile($id, $chemin, $user)
+    public function deleteProfile($id, $chemin, $user, $mail)
     {
         $req = "SELECT id_reservation FROM LE_BOUCALAIS_RESERVE WHERE id_utilisateur = ?";
         $stmt = $this->_db->prepare($req);
@@ -418,7 +439,7 @@ class UtilisateurManager
         // Envoi d'un mail de notification au client dont le compte va être supprimé
         date_default_timezone_set('Europe/Paris');
 
-        if($user->getRole() == "gerant")
+        if($mail == 1)
         {
             $objet = "Appli Boucalais : suppression de votre compte";
             $message = "
@@ -428,18 +449,16 @@ class UtilisateurManager
             
                 Votre compte sur l'Appli Boucalais a été supprimé par le gérant, car votre séjour est maintenant passé ou parce que vous n'avez pas donné suite au devis réalisé.<br><br>
     
-    
-                A bientôt au <a href='http://leboucalais.fr target='_blank'>Boucalais</a> !
+                A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
             </body>
             </html>";
-            $destinataire = $user->getMail(); /* 'yoyo31.music@gmail.com' */;
+            $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
             $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
             $headers .= "MIME-Version: 1.0\n";
             $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
             $headers .= "From: \"Le Boucalais\"<contact@leboucalais.fr>\n";
             $headers .= "Reply-To: contact@leboucalais.fr";
     
-            // mail($mail_prospect, $objet, $message, $headers)
             mail($destinataire, $objet, $message, $headers);
         }
 

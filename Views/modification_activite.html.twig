@@ -4,53 +4,38 @@
     <form method="POST" action="?action=modifier-activite">
         <fieldset>
             <legend> Modification d'activité </legend>
-            <div>
-                <label for="nomActivite" class="col-4">Nom de l'activité</label>
-                <input type="text" id="nomActivite" class="col-6" value="{{activite.NOM_ACTIVITE}}" size="192" name="NOM_ACTIVITE" required>
+            <div class="form-group row">
+                <label for="nomActivite" class="col-4 col-form-label">Nom de l'activité</label>
+                <input type="text" id="nomActivite" class="col-6 form-control" name="NOM_ACTIVITE" value="{{activite.nomActivite}}" required>
             </div>
-            <br/>
-            <div>
-                <label for="prixActivite" class="col-4">Prix à l'unité</label>
-                <input type="number" id="prixActivite" name="PRIX_ACTIVITE_UNITE" value="{{activite.PRIX_ACTIVITE_UNITE}}" required>
+            <div class="form-group row">
+                <label for="prixActivite" class="col-4 col-form-label">Prix à l'unité</label>
+                <input type="number" id="prixActivite" class="col-1 form-control" name="PRIX_ACTIVITE_UNITE" value="{{activite.prixActiviteUnite}}" required>
             </div>
-            <br/>
-            <div>
-                <label for="descriptionActivite" class="col-4">Description</label>
-                <textarea id="descriptionActivite" name="DESCRIPTION_ACTIVITE" width="512" class="col-6">{{activite.DESCRIPTION_ACTIVITE}}</textarea>
+            <div class="form-group row">
+                <label for="descriptionActivite" class="col-4 col-form-label">Description</label>
+                <textarea class="col-6 form-control" id="descriptionActivite" name="DESCRIPTION_ACTIVITE" width="512">{{activite.descriptionActivite}}</textarea>
             </div>
-            <br/>
-            <div>
-                <label for="nbParticipants" class="col-4">Séances par groupe de:</label>
-                <input type="number" id="nbParticipants" name="NB_PARTICIPANTS_GROUPE" value="{{activite.NB_PARTICIPANTS_GROUPE}}">
+            <div class="form-group row">
+                <label for="nbParticipants" class="col-4 col-form-label">Séances par groupe de :</label>
+                <input type="number" id="nbParticipants" class="col-1 form-control" name="NB_PARTICIPANTS_GROUPE" value="{{activite.nbParticipantsGroupe}}">
             </div>
-            <br/>
-            <div>
-                <label for="affichageActivite" class="col-4">Afficher lors de la composition des devis:</label>
-                <select id="affichageActivite" name="AFFICHAGE_ACTIVITE">
-                {% if activite.AFFICHAGE_ACTIVITE == "oui" %}
-                    <option value="oui" selected> Oui </option>
-                    <option value="non"> Non </option>
-                    <option value="cache"> Caché (sur demande)</option>
-                {% elseif activite.AFFICHAGE_ACTIVITE == "non" %}
-                    <option value="oui"> Oui </option>
-                    <option value="non" selected> Non </option>
-                    <option value="cache"> Caché (sur demande)</option>
-                {% elseif activite.AFFICHAGE_ACTIVITE == "cache" %}
-                    <option value="oui"> Oui </option>
-                    <option value="non"> Non </option>
-                    <option value="cache" selected> Caché (sur demande)</option>
-                {% else %}
-                    <option value="oui"> Oui </option>
-                    <option value="non"> Non </option>
-                    <option value="cache"> Caché (sur demande)</option>
+            <div class="form-group row">
+                <label for="afficher" class="col-4 col-form-label">Aficher lors de la composition d'un devis :</label>
+                <select name="AFFICHAGE_ACTIVITE" class="col-1 form-control">
+                {% if activite.affichageActivite == "1" %}
+                    <option value="1" selected>Oui</option>
+                    <option value="0">Non</option>
+                {% elseif activite.affichageActivite == "0" %}
+                    <option value="1">Oui</option>
+                    <option value="0" selected>Non</option>
                 {% endif %}
                 </select>
             </div>
-            <br/>
             <div>
-                <input type="hidden" id="idActivite" name="ID_ACTIVITE" value="{{activite.ID_ACTIVITE}}" required>
+                <input type="hidden" id="idActivite" name="ID_ACTIVITE" value="{{activite.idActivite}}" required>
             </div>
-        <input type="submit" name="modification-activite" value="Sauvegarder">
+            <input type="submit" name="modification-activite" value="Sauvegarder">
+        </fieldset>
     </form>
-    <script src='js/FormCheck.js'></script>
 {% endblock %}

@@ -11,7 +11,6 @@ require_once "Models/Utilisateur.php";
 require_once "Models/Reservation.php";
 require_once "Models/Devis.php";
 require_once "Models/Activite.php";
-require_once "Models/Sejour.php";
 require_once "Models/Fichier.php";
 require_once "Models/DocumentsClient.php";
 require_once "Models/Option.php";
@@ -20,7 +19,6 @@ require_once "Modules/UtilisateurManager.php";
 require_once "Modules/ReservationManager.php";
 require_once "Modules/DevisManager.php";
 require_once "Modules/ActiviteManager.php";
-require_once "Modules/TarifSejourManager.php";
 require_once "Modules/FichierManager.php";
 require_once "Modules/DocumentsClientManager.php";
 require_once "Modules/OptionManager.php";
@@ -30,7 +28,6 @@ require_once ("moteurtemplate.php");
 $UtilisateurManager = new UtilisateurManager($bdd);
 $reservationManager = new ReservationManager($bdd);
 $devisManager = new DevisManager($bdd);
-$sejourManager = new SejourManager($bdd);
 $activiteManager = new ActiviteManager($bdd);
 $FichierManager = new FichierManager($bdd);
 $DocumentsClientManager = new DocumentsClientManager($bdd);
@@ -211,7 +208,15 @@ if(isset($_GET['action']))
             }
             elseif($user->getRole() == "gerant")
             {
-                echo $twig->render('accueil_gerant.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user));
+                $clients1 = $UtilisateurManager->getUsersFromStatut("1");
+                $clients2 = $UtilisateurManager->getUsersFromStatut("2");
+                $clients3 = $UtilisateurManager->getUsersFromStatut("3");
+                $clients4 = $UtilisateurManager->getUsersFromStatut("4");
+                $clients5 = $UtilisateurManager->getUsersFromStatut("5");
+                $clients6 = $UtilisateurManager->getUsersFromStatut("6");
+                $clients7 = $UtilisateurManager->getUsersFromStatut("7");
+                $clients8 = $UtilisateurManager->getUsersFromStatut("8");
+                echo $twig->render('aperçu_clients.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'clients1'=>$clients1, 'clients2'=>$clients2, 'clients3'=>$clients3, 'clients4'=>$clients4, 'clients5'=>$clients5, 'clients6'=>$clients6, 'clients7'=>$clients7, 'clients8'=>$clients8, 'yes'=>'yes', 'user'=>$user));
             }
             
         break;
@@ -288,7 +293,7 @@ if(isset($_GET['action']))
 
             if(isset($_POST['supprimer-compte']))
             {
-                $ok = $UtilisateurManager->deleteProfile($_SESSION['id'], dirname(__FILE__), $user);
+                $ok = $UtilisateurManager->deleteProfile($_SESSION['id'], dirname(__FILE__), $user, 0);
                 if($ok)
                 {
                     $message = "Votre compte a bien été supprimé.";
@@ -357,8 +362,8 @@ if(isset($_GET['action']))
             {
                 connectYourself($twig);
                 $user = $UtilisateurManager->getProfil($_SESSION['id']);
-                $activites = $activiteManager->getActivites();
-                $options = $optionManager->getOptions();
+                $activites = $activiteManager->getActivites('form-devis');
+                $options = $optionManager->getOptions("form-devis");
                 $option3 = $optionManager->getOptionById(3);
                 echo $twig->render('formulaire_devis.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'activites'=>$activites, 'options'=>$options, 'option3'=>$option3, 'client'=>$user, 'form'=>'form', 'user'=>$user));
             }
@@ -417,7 +422,7 @@ if(isset($_GET['action']))
             {
                 if(!empty($_POST["confirmation"]))
                 {
-                    $devis = $devisManager->getDevisFromId($_SESSION['id'], $_POST['ID_DEVIS']);
+                    $devis = $devisManager->getDevisFromIdUser($_SESSION['id'], $_POST['ID_DEVIS']);
                     $valideDevis = $devisManager->toReservation($devis/* , $activiteManager, $optionManager */);
                     if($valideDevis)
                     {
@@ -438,10 +443,10 @@ if(isset($_GET['action']))
             }
             elseif($_SESSION['role'] == "gerant")
             {
-                $devis = $devisManager->getDevisFromId($_GET['id'], $_GET['devis']);
+                $devis = $devisManager->getDevisFromId($_GET['devis']);
                 $activites = $activiteManager->getActivitesFromDevis($_GET['devis']);
                 $options = $optionManager->getOptionsFromDevis($_GET['devis']);
-                $client = $UtilisateurManager->getProfil($_GET['id']);
+                $client = $UtilisateurManager->getProfilFromDevis($_GET['devis']);
                 
                 // var_dump($options);
                 if($devis != false)
@@ -452,7 +457,7 @@ if(isset($_GET['action']))
             else
             {
                 connectYourself($twig);
-                $devis = $devisManager->getDevisFromId($_SESSION['id'], $_GET['devis']);
+                $devis = $devisManager->getDevisFromIdUser($_SESSION['id'], $_GET['devis']);
                 $activites = $activiteManager->getActivitesFromDevis($_GET['devis']);
                 $options = $optionManager->getOptionsFromDevis($_GET['devis']);
                 $user = $UtilisateurManager->getProfil($_SESSION['id']);
@@ -470,14 +475,56 @@ if(isset($_GET['action']))
 
         break;
 
+        case "prix-devis":
+
+            if($_SESSION['role'] == "gerant")
+            {
+                echo $twig->render('prix_devis.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user));
+            }
+            connectYourself($twig);
+
+        break;
+
         case "liste-activite":
 
             if($_SESSION['role'] == "gerant")
             {
-                $activites = $activiteManager->getActivites();
-                echo $twig->render('liste_activite.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'activites'=>$activites, 'user'=>$user));
+                $activites = $activiteManager->getActivites('liste-activite');
+                echo $twig->render('liste_activite.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'activitesAffichees'=>$activites[0], 'activitesCachees'=>$activites[1], 'user'=>$user));
             }
             connectYourself($twig);
+
+        break;
+
+        case "ajouter-activite":
+
+            if(isset($_POST['ajout-activite']))
+            {
+                $activite = new Activite($_POST);
+                if($activite->getDescriptionActivite() == '')
+                {
+                    $activite->setDescriptionActivite(NULL);
+                }
+                $ok = $activiteManager->addActivite($activite);
+                if($ok)
+                {
+                    $message = "Activité ajoutée avec succès!";
+                    echo $twig->render('index.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'],'message'=>$message, 'user'=>$user));
+                }
+                else
+                {
+                    $message = "Erreur lors de l'ajout de l'activité";
+                    echo $twig->render('index.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'],'message'=>$message, 'user'=>$user));
+                }
+            }
+            else
+            {
+                connectYourself($twig);
+                if($_SESSION['role'] == "gerant")
+                {
+                    echo $twig->render('ajouter_activite.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user));
+                }
+            }
 
         break;
 
@@ -528,8 +575,8 @@ if(isset($_GET['action']))
 
             if($_SESSION['role'] == "gerant")
             {
-                $options = $optionManager->getOptions();
-                echo $twig->render('liste_option.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'options'=>$options, 'user'=>$user));
+                $options = $optionManager->getOptions("modifier-option");
+                echo $twig->render('liste_option.html.twig',array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'optionsAffichees'=>$options[0], 'optionsCachees'=>$options[1], 'user'=>$user));
             }
             connectYourself($twig);
 
@@ -592,13 +639,13 @@ if(isset($_GET['action']))
                 $devis = $devisManager->getDevisFromIdReservation($reservation->getIdReservation());
                 $nbreDevis = $devisManager->getCountDevis($client->getId());
                 $allDevis = $devisManager->getDevisFromUser($client->getId());
-                $documentClient = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
-                $documentssAnnexes = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                // $documentClient = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                // $documentssAnnexes = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
                 echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'documentClient'=>$documentClient, 'documentssAnnexes'=>$documentssAnnexes, 'confirmation'=>'oui', 'form'=>'form'));
             }
             elseif(isset($_GET['reservation']) && !isset($_POST['confirmer']))
             {
-                $reservation = $reservationManager->getReservationFromIdReserv($_GET['reservation']/* $_SESSION["'" . $_GET['groupe'] . "'"] */);
+                $reservation = $reservationManager->getReservationFromIdReserv($_GET['reservation']);
                 if(!$reservation)
                 {
                     echo "La réservation n'existe pas.";
@@ -617,9 +664,10 @@ if(isset($_GET['action']))
                     // Si la réservation a été confirmée
                     elseif($reservation->getStatut() == 1) 
                     {
+                        $hebergement = $reservationManager->getHebergement($reservation->getIdReservation());
                         $documentClient = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
                         $documentsAnnexes = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
-                        echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'documentClient'=>$documentClient, 'documentsAnnexes'=>$documentsAnnexes, 'confirmation'=>'non', 'form'=>'form'));
+                        echo $twig->render('infos_reservation.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'devis'=>$devis, 'reservation'=>$reservation, 'hebergement'=>$hebergement, 'documentClient'=>$documentClient, 'documentsAnnexes'=>$documentsAnnexes, 'confirmation'=>'non', 'form'=>'form'));
                     }    
                 }
             }
@@ -727,7 +775,7 @@ if(isset($_GET['action']))
                 $client = $UtilisateurManager->getProfil($_GET['id']);
                 if(isset($_POST['supprimer-compte-client']))
                 {
-                    $ok = $UtilisateurManager->deleteProfile($_GET['id'], dirname(__FILE__), $client);
+                    $ok = $UtilisateurManager->deleteProfile($_GET['id'], dirname(__FILE__), $client, 1);
                     if($ok)
                     {
                         $message = "Le compte client a bien été supprimé.";
@@ -814,11 +862,12 @@ if(isset($_GET['action']))
                     {
                         foreach($reservations as $reservation)
                         {
+                            $hebergement = $reservationManager->getHebergement($reservation->getIdReservation());
                             $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
                             // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
                             $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
                         }
-                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'form'=>'form'));
+                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'hebergement'=>$hebergement, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'form'=>'form'));
                     }
                     else
                     {
@@ -836,14 +885,14 @@ if(isset($_GET['action']))
             {
                 if($_FILES['file']['size'] != 0)
                 {
-                    televerserDocumentsParClient("convention_signee", $DocumentsClientManager, $reservationManager, $twig, $_POST['idReservation'], $user);
+                    televerserDocumentsParClient("convention_signee", $DocumentsClientManager, $reservationManager, $twig, $_POST['idReservation'], $user, $user);
                 }
             }
             elseif(isset($_POST['documents-annexes']))
             {
                 if(!empty($_POST['nom_fichier']) && $_FILES['file']['size'] != 0)
                 {
-                    televerserDocumentsParClient("documents-annexes", $DocumentsClientManager, $reservationManager, $twig, $_POST['idReservation'], $user);
+                    televerserDocumentsParClient("documents-annexes", $DocumentsClientManager, $reservationManager, $twig, $_POST['idReservation'], $user, $user);
                 }
             }
             else
@@ -1067,17 +1116,21 @@ function televerserDocuments($dossierCible, $FichierManager, $twig, $user)
     {    
         // On récupère le chemin du fichier php courant
         $repertoireDestination = dirname(__FILE__) . "/Documents/" . $dossierCible . "/";
-        $nomDestination = $nomOrigine;
+        $nomFichier = strtolower($infosChemin['filename']); // on passe la chaîne de caractère en minuscule
+        $table = array('à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u');
+        $nomFichier = strtr($nomFichier, $table); // on remplace les accents
+        $nomFichier = str_replace(' ', '-', $nomFichier); // on remplace les espaces par des tirets
+        $nomFichier = $nomFichier . "." . $extensionFichier;
         
         // Si le fichier de destination existe déjà, il sera écrasé ! YES, that's what we want
-        if(move_uploaded_file($_FILES["file"]["tmp_name"], $repertoireDestination.$nomDestination))
+        if(move_uploaded_file($_FILES["file"]["tmp_name"], $repertoireDestination.$nomFichier))
         {
             $message =  "Le fichier " . $_FILES['file']['name'] . " a bien été téléversé";
             $fichier = $FichierManager->fichierExiste($_POST['nom_fichier']);
             // Si le fichier n'existe pas déjà en base de données, alors on l'insère dedans, sinon on le téléverse juste
             if(!$fichier)
             {
-                $FichierManager->ajouterFichier($_POST['nom_fichier'], "http://leboucalais.fr/application/Documents/" . $dossierCible . "/" . $nomOrigine, $repertoireDestination.$nomDestination, $dossierCible);
+                $FichierManager->ajouterFichier($_POST['nom_fichier'], "http://leboucalais.fr/application/Documents/" . $dossierCible . "/" . $nomOrigine, $repertoireDestination.$nomFichier, $dossierCible);
             }
             $ressources_documentaires = $FichierManager->getListeFichiersGerant("ressources-documentaires");
             $documents_administratifs = $FichierManager->getListeFichiersGerant("documents-administratifs");
@@ -1153,12 +1206,12 @@ function televerserDocumentsClient($type, $DocumentsClientManager, $devisManager
                 $fichier = $DocumentsClientManager->fichierExiste($_POST['nom_fichier']);
                 if(!$fichier)
                 {
-                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client);
+                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
                 }
             }
             else
             {
-                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client);
+                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
             }
             $nbreDevis = $devisManager->getCountDevis($_GET['id']);
             $allDevis = $devisManager->getDevisFromUser($_GET['id']);
@@ -1201,15 +1254,16 @@ function televerserDocumentsClient($type, $DocumentsClientManager, $devisManager
 }
 
 /**
- * Téléverse des documents propres à un client : convention, facture d'acompte, document annexe, menus, planning des activités
+ * Téléverse des documents par un client : convention signée ou document annexe
  * @param type type du document téléversé
  * @param DocumentsClientManager
  * @param reservationManager
  * @param twig
  * @param idReservation
- * @param user instance de la classe Utilisateur, correspond à la personne connectée (ici le gérant)
+ * @param client instance de la classe Utilisateur, correspond au client connecté (ici, client = user)
+ * @param user instance de la classe Utilisateur, correspond à la personne connectée (ici le client)
  */
-function televerserDocumentsParClient($type, $DocumentsClientManager, $reservationManager, $twig, $idReservation, $user)
+function televerserDocumentsParClient($type, $DocumentsClientManager, $reservationManager, $twig, $idReservation, $client, $user)
 {
     $nomOrigine = $_FILES['file']['name'];
     $infosChemin = pathinfo($nomOrigine);
@@ -1254,12 +1308,12 @@ function televerserDocumentsParClient($type, $DocumentsClientManager, $reservati
                 $fichier = $DocumentsClientManager->fichierExiste($_POST['nom_fichier']);
                 if(!$fichier)
                 {
-                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $user);
+                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
                 }
             }
             else
             {
-                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $user);
+                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
             }
             $reservations = $reservationManager->getReservationsFromUser($_SESSION['id']);
             if($reservations != false && $user->getStatut() < 5)

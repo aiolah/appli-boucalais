@@ -38,9 +38,20 @@ class Month
         return new DateTime("{$this->_year}-{$this->_month}-01");
     }
 
+    /**
+     * Retourne le mois
+     */
     public function getMonth()
     {
         return $this->_month;
+    }
+
+    /**
+     * Retourne l'année
+     */
+    public function getYear()
+    {
+        return $this->_year;
     }
 
     /**
@@ -116,6 +127,7 @@ class Month
         }
         return new Month($month, $year);
     }
+    
     public function getCountDays()
     {
         $start = $this->getFirstDay();

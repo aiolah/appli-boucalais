@@ -119,7 +119,7 @@
             </div>
             <div>
             {% for activite in activites %}
-                {% if activite.affichageActivite == "oui" %}
+                {% if activite.affichageActivite == 1 %}
                     <div class="col-lg-5 mb-4 mr-4 d-inline-block activite" id="div-{{activite.idActivite}}">
                         <div class="custom-control custom-checkbox d-flex flex-column align-items-center div-checkbox">
                             <input type="checkbox" name="ACTIVITES[]" value="{{activite.idActivite}}" class="custom-control-input" id="input{{activite.idActivite}}">
@@ -143,7 +143,10 @@
                                 <input type="number" id="participants{{activite.idActivite}}" placeholder="0" min="0" name="ACTIVITE_PARTICIPANTS[]" class="form-control" disabled>
                             </div>
                         </div>
-                        <div class="prix-activite"><span id="estimation-{{activite.idActivite}}"></span><span id="euro-{{activite.idActivite}}" class="invisible">€</span></div>
+                        <div class="prix-activite">
+                            <span id="estimation-{{activite.idActivite}}"></span>
+                            <span id="euro-{{activite.idActivite}}" class="invisible">€</span>
+                        </div>
                         <input type="number" step="any" id="prixActivite-{{activite.idActivite}}" name="PRIX_ACTIVITE[]" hidden disabled>
                     </div>
                 {% endif %}
@@ -160,7 +163,7 @@
         <fieldset class="form-group">
             <legend class="mb-4"><span id="options"> Frais optionnels </span>(Ne modifiez pas la partie Séjour après avoir complété cette partie) </legend>
             {% for option in options %}
-                {% if option.idOption != 5 and option.idOption != 3 %}
+                {% if option.affichageOption == 1 %}
                     <div class="custom-control custom-checkbox mt-2 mb-2">
                         <input type="checkbox" id="option{{option.idOption}}" value="{{option.idOption}}" class="col-6 ml-1 mb-1 custom-control-input" name="OPTIONS[]">
                         <label for="option{{option.idOption}}" class="col-10 custom-control-label"> {{option.nomOption}} : <span id="descriptionOption">{{option.descriptionOption}}</span></label>
@@ -183,8 +186,8 @@
         <span id="prix_estimation"></span>
         <br/>
         <div id="block-confirmation"></div>
-        <input type="submit" name="commande" id="enregistrer" {# name="demande"#} value="Enregistrer">
+        <input type="submit" name="commande" id="enregistrer" value="Enregistrer">
     </form>
     <script src='Js/ScolaireFormV2.js'></script>
-    <script src='Js/AffichagePrixV2.js'></script>
+    <script src='Js/AffichagePrixV2-APIV2.js'></script>
 {% endblock %}

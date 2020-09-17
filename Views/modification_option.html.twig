@@ -4,25 +4,34 @@
     <form method="POST" action="?action=modifier-option">
         <fieldset>
             <legend> Modification d'option </legend>
-            <div>
-                <label for="nomOption" class="col-4">Nom de l'option</label>
-                <input type="text" id="nomOption" class="col-6" value="{{option.NOM_OPTION}}" size="192" name="NOM_OPTION" required>
+            <div class="form-group row">
+                <label for="nomOption" class="col-4 col-form-label">Nom de l'option</label>
+                <input type="text" id="nomOption" class="col-6 form-control" value="{{option.nomOption}}" size="192" name="NOM_OPTION" required>
             </div>
-            <br/>
-            <div>
-                <label for="prixOption" class="col-4">Prix à l'unité</label>
-                <input type="number" id="prixOption" name="PRIX_OPTION_UNITE" value="{{option.PRIX_OPTION_UNITE}}">
+            <div class="form-group row">
+                <label for="prixOption" class="col-4 col-form-label">Prix à l'unité</label>
+                <input type="number" id="prixOption" name="PRIX_OPTION_UNITE" class="col-1 form-control" value="{{option.prixOptionUnite}}">
             </div>
-            <br/>
-            <div>
-                <label for="descriptionOption" class="col-4">Description</label>
-                <textarea id="descriptionOption" name="DESCRIPTION_OPTION" width="512" class="col-6">{{option.DESCRIPTION_OPTION}}</textarea>
+            <div class="form-group row">
+                <label for="descriptionOption" class="col-4 col-form-label">Description</label>
+                <textarea id="descriptionOption" name="DESCRIPTION_OPTION" width="512" class="col-6 form-control">{{option.descriptionOption}}</textarea>
             </div>
-            <br/>
-            <div>
-                <input type="hidden" id="idOption" name="ID_OPTION" value="{{option.ID_OPTION}}" required>
+            <div class="form-group row">
+                <label for="afficher" class="col-4 col-form-label">Aficher lors de la composition d'un devis :</label>
+                <select name="AFFICHAGE_OPTION" class="col-1 form-control">
+                {% if option.affichageOption == "1" %}
+                    <option value="1" selected>Oui</option>
+                    <option value="0">Non</option>
+                {% elseif option.affichageOption == "0" %}
+                    <option value="1">Oui</option>
+                    <option value="0" selected>Non</option>
+                {% endif %}
+                </select>
             </div>
-        <input type="submit" name="modification-option" value="Sauvegarder">
+            <div>
+                <input type="hidden" id="idOption" name="ID_OPTION" value="{{option.idOption}}" required>
+            </div>
+            <input type="submit" name="modification-option" value="Sauvegarder">
+        </fieldset>
     </form>
-    <script src='js/FormCheck.js'></script>
 {% endblock %}
