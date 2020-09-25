@@ -7,7 +7,11 @@
   Popover on top
 </button> #}
     <h1 class="mb-5">Formulaire de devis</h1>
-    <form method="POST" action="?action=form-devis" id="form">
+    {% if client.role == "gerant" %}
+        <form method="POST" action="?action=attribuer-devis" id="form">
+    {% else %}
+        <form method="POST" action="?action=form-devis" id="form">
+    {% endif %}
         <div id="prix-total" class="div-prix">
             <span id="label-prix-total" class="label-div-prix">Prix total : </span>
             <span id="prixTotal">0</span>
@@ -22,7 +26,9 @@
                     <div class="col-lg-4 col-sm-8">
                         <span id="valueTypeGroupe" style="display: none;">{{client.typeGroupe}}</span>
                         <select id="typeGroupe" name="TYPE_GROUPE" class="form-control" required>
-                            {# <option disabled selected value> -- Sélectionnez votre type de groupe -- </option> #}
+                            {% if client.typeGroupe == NULL %}
+                                <option disabled selected value> -- Sélectionnez un type de groupe -- </option>
+                            {% endif %}
                             <option value="scolaire"> Scolaire </option>
                             <option value="association"> Association </option>
                             <option value="établissement médico-social"> Etablissement médico-social</option>
@@ -186,7 +192,11 @@
         <span id="prix_estimation"></span>
         <br/>
         <div id="block-confirmation"></div>
-        <input type="submit" name="commande" id="enregistrer" value="Enregistrer">
+        {% if client.role == "gerant" %}
+            <input type="submit" name="commande" id="enregistrer" value="Suivant">
+        {% else %}
+            <input type="submit" name="commande" id="enregistrer" value="Enregistrer">
+        {% endif %}
     </form>
     <script src='Js/ScolaireFormV2.js'></script>
     <script src='Js/AffichagePrixV2-APIV2.js'></script>

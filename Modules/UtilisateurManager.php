@@ -62,7 +62,7 @@ class UtilisateurManager
         $message = "
         <html>
         <body>
-            Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+            Bonjour,<br><br>    
         
             Vous avez récemment demandé un devis sur le site leboucalais.fr. Vous allez pouvoir le composer en ligne sur l'application du Boucalais. 
             Celle-ci vous fera profiter de nombreuses fonctionnalités et vous mettra en relation avec le gérant du centre pour faciliter l'organisation de votre séjour.<br><br>
@@ -74,7 +74,7 @@ class UtilisateurManager
             A bientôt au <a href='http://leboucalais.fr target='_blank'>Boucalais</a> !
         </body>
         </html>";
-        $destinataire = $mail_prospect /* 'yoyo31.music@gmail.com' */;
+        $destinataire = $mail_prospect;
         $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
         $headers .= "MIME-Version: 1.0\n";
         $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -445,14 +445,14 @@ class UtilisateurManager
             $message = "
             <html>
             <body>
-                Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                Bonjour,<br><br>
             
                 Votre compte sur l'Appli Boucalais a été supprimé par le gérant, car votre séjour est maintenant passé ou parce que vous n'avez pas donné suite au devis réalisé.<br><br>
     
                 A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
             </body>
             </html>";
-            $destinataire = $user->getMail() /* 'yoyo31.music@gmail.com' */;
+            $destinataire = $user->getMail();
             $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
             $headers .= "MIME-Version: 1.0\n";
             $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -477,6 +477,25 @@ class UtilisateurManager
         $clients = array();
 
         $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE role = 'prospect'";
+        $stmt = $this->_db->prepare($req);
+        $stmt->execute();
+
+        while($donnees = $stmt->fetch())
+        {
+            $clients[] = new Utilisateur($donnees);
+        }
+        return $clients;
+    }
+
+    /**
+     * Récupère la liste des clients présents en bdd selon le choix de tri passé en paramètre
+     * @param orderBy
+     */
+    public function getListeClientsOrderBy($orderBy)
+    {
+        $clients = array();
+
+        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE role = 'prospect' ORDER BY " . $orderBy;
         $stmt = $this->_db->prepare($req);
         $stmt->execute();
 
@@ -564,23 +583,20 @@ class UtilisateurManager
             $message = "
             <html>
             <body>
-                Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                Bonjour,<br><br>    
             
                 Pour définir un nouveau mot de passe, veuillez <a href='http://leboucalais.fr/application/?action=recuperer-mdp&token=" . $token . "' target='_blank'>cliquer sur ce lien</a>.<br><br>" .
-
-                /* Pour composer votre devis ou consulter l'état de votre réservation, rendez-vous sur <a>leboucalais.fr/application/</a>. */
 
                 "A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
             </body>
             </html>";
-            $destinataire = $mail /* 'yoyo31.music@gmail.com' */;
+            $destinataire = $mail;
             $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
             $headers .= "MIME-Version: 1.0\n";
             $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
             $headers .= "From: \"Le Boucalais\"<contact@leboucalais.fr>\n";
             $headers .= "Reply-To: contact@leboucalais.fr";
 
-            // mail($mail, $objet, $message, $headers)
             mail($destinataire, $objet, $message, $headers);
 
             return true;

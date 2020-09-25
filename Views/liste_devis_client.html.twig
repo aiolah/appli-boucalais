@@ -1,20 +1,20 @@
 {% extends 'index.html.twig' %}
 {% block section %}
-    <h1 class="mb-5">Mes devis</h1>
     {% if succes == 'oui' %}
-        {% if nbreDevis == 2 %}
-            <p class="message green">Les devis ont bien été supprimés.</p>
+        {% if nbreDevis > 1 %}
+            <div class="alert alert-success" role="alert">Les devis ont bien été supprimés.</div>
         {% else %}
-            <p class="message green">Le devis a bien été supprimé.</p>
+            <div class="alert alert-success" role="alert">Le devis a bien été supprimé.</div>
         {% endif %}
     {% elseif succes == "non" %}
-        {% if nbreDevis == 2 %}
-            <p class="message red">Les devis n'ont pu être supprimés.</p>
+        {% if nbreDevis > 1 %}
+            <div class="alert alert-danger" role="alert">Les devis n'ont pu être supprimés.</div>
         {% else %}
-            <p class="message red">Le devis n'a pu être supprimé.</p>
+            <div class="alert alert-danger" role="alert">Le devis n'a pu être supprimé.</div>
         {% endif %}
     {% endif %}
 
+    <h1 class="mb-5">Mes devis</h1>
     {% if devis is not empty %}
         <form method="post" action="?action=liste-devis-client" id="div-dvi">
             <table class="table">

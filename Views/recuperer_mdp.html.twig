@@ -3,9 +3,9 @@
 {% block recupererMdp %}
 
 {% if message is defined and succesMail == "non" %}
-    <p class="message red">{{ message }}</p>
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
 {% elseif message is defined and (succesMail == 'oui' or succesNouveauMdp == 'oui') %}
-    <p class="message green">{{ message }}</p>
+    <div class="alert alert-success" role="alert">{{ message }}</div>
 {% endif %}
 
 {% if token == 'non' %}
@@ -38,13 +38,13 @@
 {% endif %}
 
 {% if token == 'oui' and validité == 'non' %}
-  <p class="message red">Vous avez déjà réinitialisé votre mot de passe, le lien a expiré.<br/>
-  Si vous souhaitez modifier de nouveau votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</p>
+  <div class="alert alert-danger" role="alert">Vous avez déjà réinitialisé votre mot de passe, le lien a expiré.<br/>
+  Si vous souhaitez modifier de nouveau votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</div>
 {% endif %}
 
 {% if token == 'oui' and succesLien == 'non' %}
-  <p class="message red">Votre lien de réinitilisation a expiré.<br/>
-  Si vous souhaitez en générer un nouveau pour modifier votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</p>
+  <div class="alert alert-danger" role="alert">Votre lien de réinitilisation a expiré.<br/>
+  Si vous souhaitez en générer un nouveau pour modifier votre mot de passe, rendez-vous sur la page <a href='http://leboucalais.fr/application/?action=recuperer-mdp'>Mot de passe oublié</a>.</div>
 {% endif %}
 
 <script>

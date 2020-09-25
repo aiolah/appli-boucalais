@@ -31,6 +31,7 @@ class FichierManager
     /**
      * Récupère tous les fichiers affichés pour les clients selon une catégorie donnée
      * @param categorie ressources documentaires, documents administratifs ou pack séjour
+     * @return fichiers tableau d'instances Fichier = fichiers récupérés selon la catégorie donnée
      */
     public function getListeFichiersClient($categorie)
     {
@@ -50,6 +51,7 @@ class FichierManager
     /**
      * Récupère tous les fichiers téléversés par le gérant selon une catégorie donnée
      * @param categorie ressources documentaires, documents administratifs ou pack séjour
+     * @return fichiers tableau d'instances Fichier = fichiers récupérés selon la catégorie donnée
      */
     public function getListeFichiersGerant($categorie)
     {

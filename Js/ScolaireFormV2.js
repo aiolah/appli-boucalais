@@ -1,13 +1,8 @@
 let formScolaire = document.getElementById("scolaire");
 let autreClient = document.getElementById("compoClient");
-let selectScolaire = document.getElementById("typeGroupe");
+let selectGroupe = document.getElementById("typeGroupe");
 
-let urlPage = window.location.href;
-let url = new URL(urlPage);
-let action = url.searchParams.get("action");
-
-//console.log(action);
-selectScolaire.addEventListener("input",changingForm);
+selectGroupe.addEventListener("input", changingForm);
 // On compare le type de groupe du client aux valeur des options. Si ils correspondent, on définit le champ correspondant comme étant le champ sélectionné.
 // Puis on appelle changingForm() pour afficher les champs number.
 let typeGroupes = document.querySelectorAll('#typeGroupe > option');
@@ -23,7 +18,7 @@ for(option of typeGroupes)
 function changingForm() {
     formScolaire.innerHTML = "";
     autreClient.innerHTML = "";
-    if(selectScolaire.value == "scolaire") {
+    if(selectGroupe.value == "scolaire") {
         let htmlForm = '<div class="form-group row">';
         htmlForm += '<label for="nivScolaire" class="col-lg-2 col-sm-4 col-form-label">Niveau</label>';
         htmlForm += '<div class="col-lg-4 col-sm-8">';
@@ -85,29 +80,5 @@ function changingForm() {
         compoClient.innerHTML = htmlForm;
 
         //console.log("autre");
-    }
-    controleur();
-}
-
-function controleur() {
-    let count = document.getElementsByTagName("input");
-    for(let i=0;i<=count.length;i++) {
-        let field = count.item(i);
-        if(field != null && field.getAttribute("type") == "number") { 
-            if(isNaN(field.value) || field.value == null) {
-                field.value = 0;
-            }
-            field.addEventListener('input', function () {
-                if(field.value < 0) {   
-                    field.value = 0;
-                    //console.log("a");
-                }
-                if((field.value)%1 != 0) {
-                    let valeur = Number.parseInt(field.value);
-                    field.value = valeur;
-                    console.log(valeur);
-                }
-            });
-        }
     }
 }

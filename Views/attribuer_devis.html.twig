@@ -1,0 +1,21 @@
+{% extends "index.html.twig" %}
+{% block section %}
+
+<p>{{message}}</p>
+
+<p>Attribuer le devis à un client :</p>
+
+<form method="post" action"attribuer-devis">
+    <fieldset class="mb-4">
+        {% for client in clients %}
+            <div class="custom-control custom-radio mb-2">
+                <input type="radio" class="custom-control-input" id="{{client.mail}}" name="client" value="{{client.id}}">
+                <label for="{{client.mail}}" class="custom-control-label"><strong>{{client.nomGroupe}}</strong> - {{client.prenom}} {{client.nom}}</label>
+            </div>
+        {% endfor %}
+    </fieldset>
+
+    <input name="attribuer-devis" value="Enregistrer et attribuer le devis" type="submit">
+
+</form>
+{% endblock %}

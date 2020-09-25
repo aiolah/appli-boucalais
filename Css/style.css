@@ -1,14 +1,15 @@
 nav {
-    margin-bottom: 5vh;
+	margin-bottom: 5vh;
+	background-color: #cbe5fe;
 }
 
 /* Couleur de clic sur les items dropdown du menu */
 .dropdown-item:active {
-	background-color: #78c4fa;
+	background-color: #3eaeff;
 }
 
 .button-action {
-	background-color: #78c4fa;
+	background-color: #3eaeff;
 }
 
 .button-suppression {
@@ -49,21 +50,6 @@ nav {
 
 .message {
 	padding: 25px 10px;
-}
-
-.message.blue {
-    border: 1px solid #240fe6;
-    background-color: #b2a9ff;
-}
-
-.message.red {
-    border: 1px solid #e60f21;
-    background-color: #eb7e99;
-}
-
-.message.green {
-	border: 1px solid #186916;
-    background-color: #63d368;
 }
 
 .message.orange {

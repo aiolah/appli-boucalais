@@ -10,9 +10,10 @@ class DevisManager {
     }
 
     /**
+     * Ajout des informations d'un devis passé avec le formulaire dans la base de données
      * @param Devis
 	 * @param POST tableau $_POST
-     * Ajout des informations d'un devis passé avec le formulaire dans la base de données
+	 * @param user objet Utilisateur du client qui a composé le devis ou pour lequel le gérant a attribué un devis
      */
     public function add(Devis $devis, $POST, $user) {
 
@@ -41,7 +42,7 @@ class DevisManager {
 		// Requête de liaison du devis à son client
 		$reqDevis = "INSERT INTO LE_BOUCALAIS_EFFECTUE_DEVIS (ID_UTILISATEUR,ID_DEVIS) VALUES (?,?)";
 		$stmtDevis = $this->_db->prepare($reqDevis);
-		$stmtDevis->execute(array($_SESSION['id'],$devis->getIdDevis()));
+		$stmtDevis->execute(array($user->getId(),$devis->getIdDevis()));
 
 		if($user->getStatut() == 2)
 		{
@@ -58,9 +59,12 @@ class DevisManager {
 		}
 
 		// On ajoute les options en transmettant l'id du devis si le prix des options n'est pas égal à 0 ou si la programmation activités est sélectionnée
-		if($devis->getPrixOptions() != 0 || in_array(3, $POST['OPTIONS']))
+		if(!empty($POST['OPTIONS']))
 		{
-			$this->addOptions($POST, $devis->getIdDevis());
+			if($devis->getPrixOptions() != 0 || in_array(3, $POST['OPTIONS']))
+			{
+				$this->addOptions($POST, $devis->getIdDevis());
+			}
 		}
 		
         // pour debuguer les requêtes SQL
@@ -112,7 +116,6 @@ class DevisManager {
 			$reqOptionDevis = "INSERT INTO LE_BOUCALAIS_CHOIX_OPTION(ID_DEVIS, ID_OPTION, PRIX_OPTION) VALUES(?, ?, ?)";
 			$stmtOptionDevis = $this->_db->prepare($reqOptionDevis);
 			$stmtOptionDevis->execute(array($idDevis, $POST['OPTIONS'][$i], $POST['PRIX_OPTION'][$i]));
-			return $stmtOptionDevis;
 			$i++;
 		}
 	}
@@ -138,7 +141,6 @@ class DevisManager {
 				$req = "DELETE FROM LE_BOUCALAIS_DEVIS WHERE ID_DEVIS = ?";
 				$stmt = $this->_db->prepare($req);
 				$stmt->execute(array($devis));
-				//print_r($req);
 			}
 			else return false;
 		}
@@ -242,7 +244,6 @@ class DevisManager {
 			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
 			WHERE LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = ? AND DATE_DEBUT = ?";
 		$stmt = $this->_db->prepare($req);
-		//print_r($idUser.", ".$dateDebut);
 		$stmt->execute(array($idUser,strval($dateDebut)));
 		// pour debuguer les requêtes SQL
 		$errorInfo = $stmt->errorInfo();
@@ -253,7 +254,6 @@ class DevisManager {
 		while ($donnees = $stmt->fetch()) {
 			$devis[] = new Devis($donnees);
 		}
-		//print_r($devis);
 		return $devis;
 	}
 
@@ -274,7 +274,6 @@ class DevisManager {
 
 		$devis = $stmtDevis->fetch();
 
-		//print_r($devis);
 		return $devis;
 	}
 
@@ -305,7 +304,6 @@ class DevisManager {
 		{
 			array_push($devis,$donnees);
 		}
-		//print_r($devis);	
 		return $devis;
 	}
 
@@ -370,7 +368,6 @@ class DevisManager {
 	 * @return Devis
 	 */
 	public function getDevisFromIdUser($id, $idDevis) {
-		//print_r($idDevis);
 		$req = "SELECT LE_BOUCALAIS_DEVIS.ID_DEVIS, DATE_DEVIS, DATE_DEBUT, DATE_FIN, DUREE, LE_BOUCALAIS_DEVIS.TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ADULTES, NB_ENFANTS, NB_ADOS, LE_BOUCALAIS_DEVIS.TAILLE_GROUPE, LE_BOUCALAIS_DEVIS.STATUT FROM LE_BOUCALAIS_EFFECTUE_DEVIS
 			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
 			INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
@@ -388,7 +385,6 @@ class DevisManager {
 		{
 			$devis = new Devis($donnees);
 		}
-		//print_r($devis);
 		if($devis != null)
 		{
 			return $devis;
@@ -401,7 +397,6 @@ class DevisManager {
 	 * @return Devis
 	 */
 	public function getDevisFromId($idDevis) {
-		//print_r($idDevis);
 		$req = "SELECT LE_BOUCALAIS_DEVIS.ID_DEVIS, DATE_DEVIS, DATE_DEBUT, DATE_FIN, DUREE, LE_BOUCALAIS_DEVIS.TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ADULTES, NB_ENFANTS, NB_ADOS, LE_BOUCALAIS_DEVIS.TAILLE_GROUPE, LE_BOUCALAIS_DEVIS.STATUT FROM LE_BOUCALAIS_EFFECTUE_DEVIS
 			INNER JOIN LE_BOUCALAIS_DEVIS ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_DEVIS = LE_BOUCALAIS_DEVIS.ID_DEVIS
 			INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_EFFECTUE_DEVIS.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
@@ -419,7 +414,6 @@ class DevisManager {
 		{
 			$devis = new Devis($donnees);
 		}
-		//print_r($devis);
 		if($devis != null)
 		{
 			return $devis;
@@ -504,45 +498,6 @@ class DevisManager {
 		}
 	} */
 	
-	/**
-     * Récupère les activités d'un devis et les lie dans la table LE_BOUCALAIS_CHOIX_ACTIVITE
-     * @param Devis
-     */
-    public function setActiviteFromChoice(Devis $devis) {
-		$req = "SELECT ACTIVITE_SEANCES,ACTIVITE_PARTICIPANTS FROM LE_BOUCALAIS_DEVIS WHERE ID_DEVIS = ?";
-		$stmt = $this->_db->prepare($req);
-        $stmt->execute(array($devis->getIdDevis()));
-        
-        $activiteDevis[] = json_decode($stmt->fetch(), true);
-        
-        $activiteSeance = json_decode($activiteDevis['ACTIVITE_SEANCES'], true);
-        $activiteParticipant = json_decode($activiteDevis['ACTIVITE_PARTICIPANTS'], true);
-        //print_r($activiteDevis);
-        //print_r($activiteSeance);
-        //print_r($activiteParticipant);
-
-        foreach($activiteSeance as $key => $value) {
-            $reqSendActivite = "INSERT INTO LE_BOUCALAIS_CHOIX_ACTIVITE (ID_DEVIS,ID_ACTIVITE,NB_SEANCES,NB_PARTICIPANTS) VALUES (?,?,?,?)";
-            $stmtSendActivite = $this->_db->prepare($reqSendActivite);
-            $stmtSendActivite->execute(array($devis->getIdDevis(), $activite['ID_ACTIVITE'], $activiteSeance[$key], $activiteParticipant[$key]));
-
-            $errorInfo = $stmtSendActivite->errorInfo();
-            if ($errorInfo[0] != 0) {
-                print_r($errorInfo);
-            }
-        }
-    }
-
-	public function validerDevis($idDevis) {
-		$req = "UPDATE LE_BOUCALAIS_DEVIS SET STATUT = :statut
-			WHERE ID_DEVIS = ?";
-		$stmt = $this->_db->prepare($req);
-		$stmt->execute(array(":statut" => $devis->getStatut(), $idDevis));
-		
-		return $stmt;
-	}
-
-
     /**
 	* nombre de devis dans la base de données
 	* @return int le nombre de devis

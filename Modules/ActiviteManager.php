@@ -12,7 +12,8 @@ class ActiviteManager {
 
 
     /**
-     * Récupération des prix
+     * Récupération de toutes les activités
+     * @param page nom de la page sur laquelle on va afficher les activités
      */
     public function getActivites($page) {
         
@@ -58,6 +59,10 @@ class ActiviteManager {
         }
     }
 
+    /**
+     * Récupération des activités d'un devis
+     * @param idDevis
+     */
     public function getActivitesFromDevis($idDevis)
     {
         $activites = array();
@@ -86,6 +91,7 @@ class ActiviteManager {
 
     /**
      * Récupère une activité selon l'ID passé en paramètre
+     * @param id
      */
     public function getActiviteById($id) {
         $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_ACTIVITES WHERE ID_ACTIVITE = ?';
@@ -97,8 +103,11 @@ class ActiviteManager {
 			print_r($errorInfo);
         }
         
-        $activite = new Activite($stmt->fetch());
-        return $activite;
+        while($donnees = $stmt->fetch())
+        {
+            $activite = new Activite($donnees);
+            return $activite;
+        }
     }
 
     /**
@@ -125,7 +134,7 @@ class ActiviteManager {
 
     /**
      * Supprime une activité de la base de données
-     * @param Number $idActivite
+     * @param idActivite
      */
     public function deleteActivite($idActivite) {
         $req = "DELETE FROM LE_BOUCALAIS_TARIF_ACTIVITES WHERE ID_ACTIVITE = ?";

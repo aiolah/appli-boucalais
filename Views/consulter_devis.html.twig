@@ -2,7 +2,7 @@
 {% block section %}
 
     {% if confirmation == 'non'%}
-        <p class="message red">{{message}}</p>
+        <div class="alert alert-danger" role="alert">{{message}}</div>
     {% endif %}
     <a href="?action=liste-devis-client">← Retour à la liste de vos devis</a>
 
@@ -53,10 +53,11 @@
             <br>
 
             <div id="sejour-consulter" class="col-5 carte">
-                <p class="titre-devis" id="sejour"> Frais d'hébergement : {{devis.prixHebergement}}€ </p>
+                {# Le filtre round arrondit les nombres, ici à 2 chiffres après la virgule. C'est utile pour les prix de ce genre : 55,00€ du coup ils sont arrondis à 55€.. YOUPI #}
+                <p class="titre-devis" id="sejour"> Frais d'hébergement : {{devis.prixHebergement|round(2, 'common')}}€ </p>
                 <hr class="hr-devis sejour">
                 <div class="contenu">
-                    <p>Commence le {{devis.dateDebut|date('d/m/Y')}} et finit le {{devis.dateFin|date('d/m/y')}}.</p>
+                    <p>Commence le {{devis.dateDebut|date('d/m/Y')}} et finit le {{devis.dateFin|date('d/m/Y')}}.</p>
                     {% if devis.duree > 1 %}
                         <p>Dure {{devis.duree}} nuits.</p>
                     {% else %}
@@ -84,7 +85,7 @@
 
         <div id="activites-consulter" class="col-5 carte">
             {% if activites != false %}
-                <p class="titre-devis" id="activites"> Frais d'activités : {{devis.prixActivites}}€ </p>
+                <p class="titre-devis" id="activites"> Frais d'activités : {{devis.prixActivites|round(2, 'common')}}€ </p>
                 <hr class="hr-devis activites">
                 <div>
                     <ul>
@@ -97,13 +98,13 @@
                                 séance
                             {% endif %}
                             pour {{activite.nbParticipants}} participants.<br>
-                            Coût total de l'activité : {{activite.prixActivite}}€, prix à l'unité : {{ activite.prixActiviteUnite }}€</p>
+                            Coût total de l'activité : {{activite.prixActivite|round(2, 'common')}}€, prix à l'unité : {{ activite.prixActiviteUnite|round(2, 'common') }}€</p>
                         </li>
                     {% endfor %}
                     {% for option in options %}
                         {% if option.idOption == 3 %}
                             <li>
-                                <p>{{option.nomOption}} ({{option.prixOption}}€)</p>
+                                <p>{{option.nomOption}} ({{option.prixOption|round(2, 'common')}}€)</p>
                             </li>
                         {% endif %}
                     {% endfor %}
@@ -119,7 +120,7 @@
 
         <div id="options-consulter" class="col-5 carte">
             {% if options != false %}
-                <p class="titre-devis" id="options"> Frais optionnels : {{devis.prixOptions}}€ </p>
+                <p class="titre-devis" id="options"> Frais optionnels : {{devis.prixOptions|round(2, 'common')}}€ </p>
                 <hr class="hr-devis options">
                 <div>
                     <ul>
@@ -137,13 +138,12 @@
                                 {% set assuranceGroupe = 1 %}
                             {% endif %}
                             <li>
-                                <p>{{option.nomOption}} ({{option.prixOption}}€)</p>
+                                <p>{{option.nomOption}} ({{option.prixOption|round(2, 'common')}}€)</p>
                             </li>
                         {% endif %}
                     {% endfor %}
                     </ul>
                     <div class="contenu">
-                    {{assuranceGroup}}
                         {% if assuranceIndividuelle == 0 %}
                             <p>Assurance annulation individuelle non sélectionnée</p>
                         {% endif %}
@@ -164,13 +164,13 @@
         <br/>
 
         <div id="total-consulter" class="col-5 carte">
-            <p class="titre-devis" id="prix-total-consulter"> Prix total du devis : {{devis.prixTotal}}€ </p>
+            <p class="titre-devis" id="prix-total-consulter"> Prix total du devis : {{devis.prixTotal|round(2, 'common')}}€ </p>
         </div>
         <br/>
     {% endblock %}
 
     {% if devis.statut == 0 and date("now"|date("Y-m-d"), "Europe/Paris") > date(devis.dateDebut|date("Y-m-d")) %}
-        <p class="message red">Le devis ne peut pas être validé car la date de début du séjour est passée.</p>
+        <div class="alert alert-danger" role="alert">Le devis ne peut pas être validé car la date de début du séjour est passée.</div>
     {% elseif devis.statut == 0 %}
         <form method="post" action="?action=consulter-devis">
             <div id="block-confirmation">
@@ -179,7 +179,7 @@
             <input type="submit" id="valider" name="valider-devis" value="Valider le devis">
         </form>
     {% else %}
-        <p class="message blue">Le devis a été validé.</p>
+        <div class="alert alert-primary" role="alert">Le devis a été validé.</div>
     {% endif %}
 
 

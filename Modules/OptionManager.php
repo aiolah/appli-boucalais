@@ -12,7 +12,8 @@ class OptionManager {
 
 
     /**
-     * Récupération de toutes les données des options
+     * Récupération de toutes les options
+     * @param page nom de la page sur laquelle on va afficher les options
      */
     public function getOptions($page)
     {
@@ -63,6 +64,10 @@ class OptionManager {
         }
     }
 
+    /**
+     * Récupération des options d'un devis
+     * @param idDevis
+     */
     public function getOptionsFromDevis($idDevis)
     {
         $options = array();
@@ -91,7 +96,7 @@ class OptionManager {
 
     /**
      * Récupère une option par son ID
-     * @param int $id
+     * @param id
      */
     public function getOptionById($id) {
         $req = 'SELECT * FROM LE_BOUCALAIS_TARIF_OPTIONS WHERE ID_OPTION = ?';
@@ -103,32 +108,39 @@ class OptionManager {
 			print_r($errorInfo);
         }
         
-        $option = new Option($stmt->fetch());
-        return $option;
+        while($donnees = $stmt->fetch())
+        {
+            $option = new Option($donnees);
+            return $option;
+        }
     }
 
 
     /**
-     * Ajouter une option
+     * Ajoute une option
+     * @param Option
      */
     public function addOption(Option $option) {
         $stmt = $this->_db->prepare("SELECT MAX(ID_OPTION) AS MAXIMUM FROM LE_BOUCALAIS_TARIF_OPTIONS");
         $stmt->execute();
-        $option->setIdDevis($stmt->fetchColumn()+1);
+        $option->setIdOption($stmt->fetchColumn()+1);
         
-        $req = 'INSERT INTO LE_BOUCALAIS_TARIF_OPTIONS (NOM_OPTION,PRIX_OPTION_UNITE,DESCRIPTION_OPTION) VALUES (?,?,?)';
+        $req = 'INSERT INTO LE_BOUCALAIS_TARIF_OPTIONS(ID_OPTION, NOM_OPTION, PRIX_OPTION_UNITE, DESCRIPTION_OPTION, AFFICHAGE_OPTION) VALUES (?, ?, ?, ?, ?)';
         $stmtOption = $this->_db->prepare($req);
-        $resOption = $stmtOption->execute(array($option->getNomOption(),$option->getPrixOptionUnite(),$option->getDescriptionOption()));
+        $resOption = $stmtOption->execute(array($option->getIdOption(), $option->getNomOption(), $option->getPrixOptionUnite(), $option->getDescriptionOption(), $option->getAffichageOption()));
 
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();
         if ($errorInfo[0] != 0) {
             print_r($errorInfo);
         }
+
+        return $resOption;
     }
 
     /**
-     * Mise à jour des options
+     * Mise à jour d'une option
+     * @param Option
      */
     public function updateOption(Option $option) {
 

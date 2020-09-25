@@ -25,9 +25,9 @@
 </form>
 
 {% if succes == "oui" %}
-    <p class="message green">{{ message }}</p>
+    <div class="alert alert-success" role="alert">{{ message }}</div>
 {% elseif succes == "non" %}
-    <p class="message red">{{ message }}</p>
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
 {% endif %}
 
 <script>

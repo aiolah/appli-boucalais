@@ -42,14 +42,14 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le gérant vient de vous envoyer un document annexe. Vous le trouverez dans votre espace \"Ma convention et facture d'acompte\" sur <a href='http://leboucalais.fr/application/?action=connexion' target='_blank'>l'application</a>.<br>
         
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail();
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -64,14 +64,14 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le responsable du groupe " . $client->getNomGroupe() . " vient de vous envoyer un document annexe. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $client->getId() . "' target='_blank'>\"Fiche client\"</a>.<br>
         
                     <a href='http://leboucalais.fr/application' target='_blank'>Se connecter sur l'application</a>
                 </body>
                 </html>";
-                $destinataire = "contact@leboucalais.fr" /* 'yoyo31.music@gmail.com' */;
+                $destinataire = "contact@leboucalais.fr";
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -112,7 +112,7 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le gérant vient de vous envoyer votre convention. Vous la trouverez dans votre espace \"Ma convention et facture d'acompte\" sur <a href='http://leboucalais.fr/application/?action=connexion' target='_blank'>l'application</a>.<br>
                     Pour continuer votre réservation, veuillez la signer et la renvoyer sur l'espace de dépôt de l'application, dans votre espace \"Ma convention et facture d'acompte\".<br><br>
@@ -120,7 +120,7 @@ class DocumentsClientManager
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail();
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -135,14 +135,14 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le gérant vient de vous envoyer votre facture d'acompte. Vous la trouverez dans votre espace \"Ma convention et facture d'acompte\" sur <a href='http://leboucalais.fr/application/?action=connexion' target='_blank'>l'application</a>.<br><br>
         
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail();
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -161,14 +161,14 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le responsable du groupe ". $client->getNomGroupe() . " vient de déposer la convention signée. Vous la trouverez sur sa <a href='http://leboucalais.fr/application/?action=fiche-client&id=" . $client->getId() . "' target='_blank'>\"Fiche client\"</a>.<br><br>
         
                     <a href='http://leboucalais.fr/application' target='_blank'>Se connecter sur l'application</a>
                 </body>
                 </html>";
-                $destinataire = "contact@leboucalais.fr"; /* 'yoyo31.music@gmail.com' */
+                $destinataire = "contact@leboucalais.fr";
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
@@ -199,14 +199,14 @@ class DocumentsClientManager
                 $message = "
                 <html>
                 <body>
-                    Bonjour" /*. Prénom de la personne hehe */ . ",<br><br>    
+                    Bonjour,<br><br>    
                 
                     Le gérant vient de vous envoyer " . $doc . ". Vous trouverez ce document dans votre espace \"Mon pack séjour\" sur <a href='http://leboucalais.fr/application/?action=connexion' target='_blank'>l'application</a>.<br><br>
         
                     A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                 </body>
                 </html>";
-                $destinataire = $client->getMail() /* 'yoyo31.music@gmail.com' */;
+                $destinataire = $client->getMail();
                 $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
                 $headers .= "MIME-Version: 1.0\n";
                 $headers .= "Date: " . date(DateTime::RFC2822) . "\n";

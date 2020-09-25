@@ -8,7 +8,7 @@ fetch('http://leboucalais.fr/application-dev/API/prixSejours.php', fetchOptions)
     dataJSON.forEach( (prixSejour) => {
         prixSejours.push({
             id: prixSejour['ID_SEJOUR'],
-            prix: parseInt(prixSejour['PRIX_SEJOUR_UNITE'], 10)
+            prix: parseFloat(prixSejour['PRIX_SEJOUR_UNITE'], 10)
         });
     });
 });
@@ -20,7 +20,7 @@ fetch('http://leboucalais.fr/application-dev/API/prixOptions.php', fetchOptions)
     dataJSON.forEach( (prixOption) => {
         prixOptions.push({
             id: prixOption['ID_OPTION'],
-            prix: parseInt(prixOption['PRIX_OPTION_UNITE'], 10)
+            prix: parseFloat(prixOption['PRIX_OPTION_UNITE'], 10)
         });
     });
 });
@@ -924,6 +924,7 @@ function getSeancesParticipantsPrix(estimation, champPrixActivite, seancesField,
 
 /**
  * Calcule le prix total des activités
+ * @param {int} prixProgrammationActivites
  */
 function calculPrixActivites(prixProgrammationActivites)
 {
@@ -952,11 +953,6 @@ function calculPrixActivites(prixProgrammationActivites)
     prixFraisActivites = prixActivites + prixProgrammationActivites;
     prixFraisActivites = Math.round(prixFraisActivites*100)/100;
     divPrixActivites.innerText = prixFraisActivites;
-    // else if(prixActivites == 0 && document.getElementById('option3').disabled == true)
-    // {
-    //     document.getElementById('option3').checked = false;
-    //     document.getElementById('option3').removeAttribute("disabled");
-    // }
     calculPrixTotal(prixHebergement, prixFraisActivites, prixFraisOptionnels);
 }
 
@@ -1017,7 +1013,7 @@ function take(e)
         }
     }
     // Assurance annulation groupe : prixTotal (sans frais optionnel = prixHebergement + prixFraisActivites) * 6%
-    if(e.target.id == "option2")
+    else if(e.target.id == "option2")
     {
         prixOptionTotal = Math.round((parseInt(prixHebergement, 10) + parseFloat(prixFraisActivites, 10)) * (6 / 100) * 100)/100;
         if(prix.innerText == "" && label.innerText == "")
@@ -1030,13 +1026,12 @@ function take(e)
         else
         {
             prix.innerText = "";
-            label.innerText = "";
             champPrixOption.setAttribute("disabled", "");
             prixFraisOptionnels -= prixOptionTotal;
         }
     }
     // Programmation des activités : 2€/jour/participant
-    if(e.target.id == "option3")
+    else if(e.target.id == "option3")
     {
         prixOptionPersonne = prixOptions[3].prix * parseInt(document.getElementById('dureeReserv').value, 10);
         prixOptionTotal = prixOptionPersonne * nbreParticipants;
@@ -1057,7 +1052,7 @@ function take(e)
         }   
     }
     // Mise à disposition de draps : 5€ par paire
-    if(e.target.id == "option4")
+    else if(e.target.id == "option4")
     {
         prixOptionTotal = prixOptions[4].prix * parseInt(document.getElementById('nbTotal').value, 10);
         if(prix.innerText == "" && label.innerText == "")
@@ -1072,6 +1067,26 @@ function take(e)
         {
             prix.innerText = "";
             label.innerText = "";
+            champPrixOption.setAttribute("disabled", "");
+            prixFraisOptionnels -= prixOptionTotal;
+        }
+    }
+    // Pour toutes les autres options rajoutées par le gérant
+    else
+    {
+        // champPrixOption.id.substr(11) = id de l'option (prixOption-id)
+        console.log(champPrixOption.id.substr(11));
+        prixOptionTotal = prixOptions[champPrixOption.id.substr(11)].prix;
+        if(prix.innerText == "" && label.innerText == "")
+        {
+            prix.innerText = `${prixOptions[champPrixOption.id.substr(11)].prix}€`;
+            champPrixOption.removeAttribute("disabled");
+            champPrixOption.value = prixOptionTotal;
+            prixFraisOptionnels += prixOptionTotal;
+        }
+        else
+        {
+            prix.innerText = "";
             champPrixOption.setAttribute("disabled", "");
             prixFraisOptionnels -= prixOptionTotal;
         }
@@ -1120,7 +1135,6 @@ function calculPrixTotal(prixHebergement, prixFraisActivites, prixFraisOptionnel
 
 /* ---------------------------------------------- VÉRIFICATION PROGRAMMATION ACTIVITÉS AVANT VALIDATION DU FORMULAIRE ---------------------------------------*/
 
-let confirme = false;
 // Marche aussi avec addEventListener('click'), preventDefault au début du script puis document.getElementById('form').submit()
 document.getElementById('form').addEventListener('submit', verifyActivites);
 function verifyActivites(e)

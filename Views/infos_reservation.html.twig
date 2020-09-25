@@ -3,7 +3,7 @@
 {% block section %}
 
 {% if confirmation == 'oui' %}
-    <p class="message green">La réservation a bien été confirmée.</p>
+    <div class="alert alert-success" role="alert">La réservation a bien été confirmée.</div>
 {% endif %}
 
 <h3>{{client.nomGroupe}}</h3>
@@ -11,32 +11,45 @@
 {% if reservation.statut == 0 %}
     <p class="mb-4">Statut réservation : en attente de confirmation</p>
 {% elseif reservation.statut == 1 %}
-    <p class="mb-4">Statut réservation : confirmée</p>
+    <p class="mb-4">Statut réservation : confirmée
+        {# AFFICHE LE TYPE D'HÉBERGEMENT
+             <br>
+        Type d'hébergement :
+        <ul>
+            {% for type, nbrePersonnes in hebergement %}
+                {% if nbrePersonnes != NULL %}
+                    <li><strong>{{ type }} :</strong> {{ nbrePersonnes }} personnes</li>
+                {% endif %}
+            {% endfor %}
+        </ul> #}
+    </p>
 {% endif %}
 
 {{ block("composition_groupe", "consulter_devis.html.twig") }}
 
-{# <section class="">
-    <h3 class="mb-4">Réservation pour {{ reservation.organisme }}</h3>
-    <p>
-        Du {{ reservation.dateDebut|date("j/m/Y") }} au {{ reservation.dateFin|date("j/m/Y") }}<br>
-        Jour de départ : {{ reservation.dateFin|date_modify("+1 day")|date("j/m/Y") }}
-    </p>
-    <ul>
-        <li>Durée du séjour : {{ reservation.duree }} nuits.</li>
-        <li>{{ reservation.tailleGroupe }} personnes au total dont {{ reservation.nbEnfants is defined ? reservation.nbEnfants : "" }} enfants, {{ reservation.nbAdos }} adolescents et {{ reservation.nbAdultes }} adultes.</li>
+{% if devis.dateDebut != reservation.dateDebut or devis.dateFin != reservation.dateFin %}
+    <p class="mt-4"><strong>⚠ Attention ⚠</strong> Les dates de la réservation sont différentes de celles du devis<br>
+    → Commence le <strong>{{reservation.dateDebut|date("d/m/Y")}}</strong> et finit le <strong>{{reservation.dateFin|date("d/m/Y")}}</strong>.</p>
+{% endif %}
 
-        <li>Type de pension souhaité : {{ reservation.pension }}</li>
-    </ul>
-</section> #}
+{# Si la date de début est supérieure à aujourd'hui (= si la réservation n'est pas passée) #}
+{% if reservation.dateDebut > "now"|date("Y-m-d") %}
+    <a class="btn button-action mt-4" href="?action=modifier-dates&reservation={{reservation.idReservation}}">Modifier les dates de la réservation</a>
+{% endif %}
 
 {% if reservation.statut == 0 %}
 <section class="mb-4 mt-4">
     <h4 class="mb-4">Gestion de la réservation</h4>
+    <form method="post" action={{ "?action=infos-reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
+        <input type="submit" value="Confirmer la réservation" class="bouton mr-4" name="confirmer">
+    </form>
+</section>
+{# CHAMPS POUR SÉLECTIONNER L'HÉBERGEMENT ET CONFIRMER LA RÉSERVATION : 1 input est généré pour chaque hébergement sélectionné afin de spécifier le nombre de personnes correspondant à celui-ci (Décommentez le code javascript en bas du fichier pour que ça marche + décommentez la ligne dans index.php pour utiliser la méthode confirmerReservation() de ReservationManager)
+
     <p>Choix de l'hébergement</p>
     <div class="container">
         <div class="row">
-            <form method="post" action={{ "?action=infos_reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
+            <form method="post" action={{ "?action=infos-reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
                 <div id="hebergement">
                     <!-- Pas de name pour le select car on quels secteurs sont sélectionnés grâce aux inputs -->
                     <select class="custom-select col-lg-2 mr-5" size="11" multiple>
@@ -56,23 +69,14 @@
                     <div id="inputs" class="row"></div>
                 </div>
 
-                <input value={{ reservation.idReservation }} type="text" hidden>
-
                 <div class="boutons mt-4">
                     <input type="submit" value="Confirmer la réservation" class="bouton mr-4" name="confirmer">
                     <!--<input type="submit" value="Annuler la réservation" class="bouton" name="annuler">-->
                 </div>
             </form>
         </div>
-    </div>
-</section>
+    </div> #}
 {% endif %}
-
-{# {% if reservation.statut == 0 %}
-    <p class="message orange mb-5">Statut réservation : en attente de confirmation</p>
-{% elseif reservation.statut == 1 %}
-    <p class="message blue mb-5">Statut réservation : confirmée</p>
-{% endif %} #}
 
 <br><br>
 
@@ -240,7 +244,9 @@
 
 <script>
 
-    let allOptions = document.getElementById('hebergement').getElementsByTagName('option');
+    /* ----------------------------------------------------------- CHOIX DE L'HÉBERGEMENT ---------------------------------------------------- */
+
+    {# let allOptions = document.getElementById('hebergement').getElementsByTagName('option');
     for(let option of allOptions)
     {
         document.addEventListener('click', selectedOrNot);
@@ -296,7 +302,7 @@
     function supprimerInput(div)
     {
         div.remove();
-    }
+    } #}
 
 </script>
 

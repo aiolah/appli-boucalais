@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-	{% if form is defined %}
-		<meta http-equiv="refresh" content="">
-	{% elseif yes is defined %}
+	{% if yes is defined %}
 		<meta http-equiv="refresh" content="15">
 	{% endif %}
     <title> Appli Boucalais </title>
@@ -17,7 +15,7 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbar" style="background-color: #e3f2fd;">
+	<nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbar">
 		{% if acces == "oui" %}
 			<a class="navbar-brand" href="?action=accueil">
 				Appli Boucalais
@@ -55,6 +53,7 @@
 							<a class="dropdown-item" href="?action=clients">Tous</a>
 							<div class="dropdown-divider"></div>
 							<a class="dropdown-item" href="?action=ajouter-client">Ajouter</a>
+							<a class="dropdown-item" href="?action=attribuer-devis">Attribuer un devis</a>
 						</div>
 					</li>
 					<li class="nav-item dropdown">
@@ -62,9 +61,9 @@
 							Plannings
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="Calendriers/calendrier-devis.php">Planning des devis</a>
-							<a class="dropdown-item" href="Calendriers/calendrier-reservations-non-confirmees.php">Planning des demandes de réservation</a>
-							<a class="dropdown-item" href="#">Planning</a>
+							<a class="dropdown-item" href="Plannings/planning-devis.php">Planning des devis</a>
+							<a class="dropdown-item" href="Plannings/planning-demandes-reservation.php">Planning des demandes de réservation</a>
+							<a class="dropdown-item" href="Plannings/planning.php">Planning</a>
 						</div>
 					</li>
 					<li class="nav-item dropdown">
@@ -72,7 +71,7 @@
 							Paramétrage
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="?action=documents_gerant">Documents</a>
+							<a class="dropdown-item" href="?action=documents-gerant">Documents</a>
 							<div class="dropdown-divider"></div>
 							<a class="dropdown-item" href="?action=prix-devis">Prix devis</a>
 							<a class="dropdown-item" href="?action=liste-activite">Activités devis</a>
@@ -117,7 +116,14 @@
 	{% if acces == 'oui' %}
 		<div class="container">
 			{% block section %}
-				{{message}}	
+				{% if alert is defined and alert == "success" %}
+					<!-- Le filtre raw ne va pas échapper la variable message, ce qui fait que les balises seront interprétées :D !! De base, toutes les variables twig sont échappées (Échappement HTML = le fait que les textes écrits avec des balises HTML soient échappés, ou encodés de telle manière que les balises ne seront pas interprétées dans le code : avoir une balise </body> (dans le pseudo de quelqu'un par exemple) interprétée sur la page casserait tout l'affichage de la page, perturbant le code d'origine) -->
+					<div class="alert alert-success" role="alert">{{message | raw}}</div>
+				{% elseif alert is defined and alert == "danger" %}
+					<div class="alert alert-danger" role="alert">{{message | raw}}</div>
+				{% elseif alert is defined and alert == "warning" %}
+					<div class="alert alert-warning" role="alert">{{message | raw}}</div>
+				{% endif %}
 			{% endblock %}
 		</div>
 	{% elseif acces == 'non' %}
@@ -125,16 +131,16 @@
 			{% block recupererMdp %}
 			{% endblock %}
 			{% if pageRecupererMdp is not defined and logout is not defined and supprimerCompte is not defined %}
-				<p><a href="?action=connexion">Connectez-vous</a> pour pouvoir accéder à l'application</p>
+				<div class="alert alert-secondary" role="alert"><a href="?action=connexion" class="alert-link">Connectez-vous</a> pour pouvoir accéder à l'application</div>
 			{% endif %}
-			{% if logout is defined or supprimerCompte is defined %}
-				<p>{{ message }}</p>
+			{% if alert is defined and alert == "primary" %}
+				<div class="alert alert-primary" role="alert">{{message | raw}}</div>
 			{% endif %}
 		</div>
 	{% endif %}
 
 	<footer class="mt-5">
-		{% if role == "client" or role == "prospect" or role == "gerant" %}
+		{% if role is defined %}
 			<div class="text-center"> Copyright &copy; <a href="?action=accueil">Appli Boucalais</a> - Tous droits réservés </div>
 		{% else %}
 			<div class="text-center"> Copyright &copy; <a href="?action=connexion">Appli Boucalais</a> - Tous droits réservés </div>

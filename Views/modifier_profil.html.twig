@@ -2,7 +2,7 @@
 {% block section %}
 
 {% if message is defined and succes == "non" %}
-    <p class="message red">{{message}}</p>
+    <div class="alert alert-danger" role="alert">{{message}}</div>
 {% endif %}
 
 <div class="mb-3">
