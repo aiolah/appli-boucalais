@@ -1,16 +1,16 @@
-<div style="display: flex; justify-content: center; margin-top: 25px; margin-bottom: 6px">
+<p align="center">
     <a href="http://leboucalais.fr/application" target="_blank">
         <img src="http://leboucalais.fr/application/logo-appli-boucalais.PNG" alt="Logo Appli Boucalais"></img>
     </a>
-</div>
+</p>
 <br>
-<p style="text-align: center;">
+<p align="center">
     <a href="http://leboucalais.fr/application" target="_blank">http://leboucalais.fr/application</a>
 </p>
-<p style="text-align: center;">
+<p align="center">
     <strong>L'application de gestion du Boucalais</strong>
 </p>
-<p style="text-align: center;">
+<p align="center">
     Dernière mise à jour : 27/09/2020
 </p>
 
@@ -26,7 +26,7 @@ L'Appli Boucalais a été créée pour le centre de vacances le Boucalais, dans 
 ## Technologies web utilisées
 <br>
 
-<table style="border: 1px solid black;">
+<table>
     <thead>
         <tr>
             <th style="border: 1px solid black; width: 50%;">Côté front-end</th>
@@ -35,11 +35,11 @@ L'Appli Boucalais a été créée pour le centre de vacances le Boucalais, dans 
     </thead>
     <tbody>
         <tr>
-            <td style="border: 1px solid black;">
+            <td>
                 <li> HTML, CSS, Javascript</li>
                 <li> Bootstrap <em>(version 4.5.0)</em></li>
             </td>
-            <td style="border: 1px solid black;">
+            <td>
                 <li>PHP <em>(version 7.2)</em></li>
                 <li>Base de données MySQL, SGBD phpmyadmin</li>
                 <li>Twig (moteur de template du frameworkd Symphony, <em>version 1.42.3</em>)</li>
