@@ -1,11 +1,11 @@
 <p align="center">
-    <a href="http://leboucalais.fr/application" target="_blank">
+    <a href="http://leboucalais.fr/application">
         <img src="http://leboucalais.fr/application/logo-appli-boucalais.PNG" alt="Logo Appli Boucalais"></img>
     </a>
 </p>
 <br>
 <p align="center">
-    <a href="http://leboucalais.fr/application" target="_blank">http://leboucalais.fr/application</a>
+    <a href="http://leboucalais.fr/application">http://leboucalais.fr/application</a>
 </p>
 <p align="center">
     <strong>L'application de gestion du Boucalais</strong>
