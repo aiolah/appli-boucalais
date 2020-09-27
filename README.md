@@ -42,8 +42,8 @@ L'Appli Boucalais a été créée pour le centre de vacances le Boucalais, dans 
             <td>
                 <li>PHP <em>(version 7.2)</em></li>
                 <li>Base de données MySQL, SGBD phpmyadmin</li>
-                <li>Twig (moteur de template du frameworkd Symphony, <em>version 1.42.3</em>)</li>
-                <li>POO (Programmation Orientée Objet</li>
+                <li>Twig (moteur de template du framework Symphony, <em>version 1.42.3</em>)</li>
+                <li>POO (Programmation Orientée Objet)</li>
                 <li>AJAX et API</li>
             </td>
         </tr>
