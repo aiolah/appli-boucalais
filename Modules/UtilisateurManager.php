@@ -35,12 +35,34 @@ class UtilisateurManager
         $stmt = $this->_db->prepare($req);
         $ok = $stmt->execute(array($prenom, $nom, $nom_groupe, $type_groupe, $mail, $telephone, $taille_groupe, $nombre_nuits, date('Y-m-j'), $moyen, $statut, 'prospect'));
 
-        // if($_POST['statut'] == 5)
-        // {
-        //     $this->creerDossierClient("blaaa");
-        // }
+        $user = $this->getProfilFromEmail($mail);
 
-        return $ok;
+        if(($statut == 4 || $statut == 5 || $statut == 6 || $statut == 7 || $statut == 8) && $ok)
+        {
+            $stmt = $this->_db->prepare("SELECT MAX(ID_RESERVATION) AS MAXIMUM FROM LE_BOUCALAIS_RESERVATION");
+            $stmt->execute();
+            $idReservation = $stmt->fetchColumn()+1;
+
+            if($statut == 4)
+            {
+                $statutReservation = 0;
+            }
+            else
+            {
+                $statutReservation = 1;
+            }
+                
+            $req = "INSERT INTO LE_BOUCALAIS_RESERVATION(id_reservation, statut) values(?, ?)";
+            $stmt = $this->_db->prepare($req);
+            $ok = $stmt->execute(array($idReservation, $statutReservation));
+
+            $req = "INSERT INTO LE_BOUCALAIS_RESERVE(id_reservation, id_utilisateur) values(?, ?)";
+            $stmt = $this->_db->prepare($req);
+            $ok = $stmt->execute(array($idReservation, $user->getId()));
+
+            return $ok;
+        }
+        else return false;
 
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();
@@ -50,19 +72,18 @@ class UtilisateurManager
     }
 
     /**
-     * Ouvre le compte de l'utilisateur et on lui envoie un mail
+     * Envoie un mail de notification au client pour qu'il puisse ouvrir son compte
      * @param mail_prospect mail du futur utilisateur
      */
     public function ouvrirCompte($mail_prospect)
     {
-        // Envoi mail de notification au client
         date_default_timezone_set('Europe/Paris');
 
         $objet = "Demande de devis : ouverture de votre compte";
         $message = "
         <html>
         <body>
-            Bonjour,<br><br>    
+            Bonjour,<br><br>
         
             Vous avez récemment demandé un devis sur le site leboucalais.fr. Vous allez pouvoir le composer en ligne sur l'application du Boucalais. 
             Celle-ci vous fera profiter de nombreuses fonctionnalités et vous mettra en relation avec le gérant du centre pour faciliter l'organisation de votre séjour.<br><br>
@@ -81,7 +102,6 @@ class UtilisateurManager
         $headers .= "From: \"Le Boucalais\"<contact@leboucalais.fr>\n";
         $headers .= "Reply-To: contact@leboucalais.fr";
 
-        // mail($mail_prospect, $objet, $message, $headers)
         mail($destinataire, $objet, $message, $headers);
     }
 
@@ -230,8 +250,15 @@ class UtilisateurManager
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($id));
         
-        $user = new Utilisateur($stmt->fetch());
-        return $user;
+        while($donnees = $stmt->fetch())
+        {
+            $user = new Utilisateur($donnees);
+        }
+        if(isset($user))
+        {
+            return $user;
+        }
+        else return false;
     }
 
     /**
@@ -332,13 +359,16 @@ class UtilisateurManager
      */
     public function deleteProfile($id, $chemin, $user, $mail)
     {
-        $req = "SELECT id_reservation FROM LE_BOUCALAIS_RESERVE WHERE id_utilisateur = ?";
+        $req = "SELECT * FROM LE_BOUCALAIS_RESERVE 
+        INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_RESERVE.ID_UTILISATEUR = LE_BOUCALAIS_UTILISATEUR.ID_UTILISATEUR
+        INNER JOIN LE_BOUCALAIS_RESERVATION ON LE_BOUCALAIS_RESERVE.ID_RESERVATION = LE_BOUCALAIS_RESERVATION.ID_RESERVATION
+        WHERE LE_BOUCALAIS_RESERVE.ID_UTILISATEUR = ?";
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($id));
 
         while($donnees = $stmt->fetch())
         {
-			$reservations[] = $donnees;
+			$reservations[] = new Reservation($donnees);
 		}
 
         // On fait ça pour éviter que le foreach ne s'exécute sur une variable qui n'est pas un tableau. Même si le tableau est vide ce n'est pas grave, ce qui compte c'est que la variable transmise ne soit pas autre chose qu'un tableau (boolean → false)
@@ -347,61 +377,64 @@ class UtilisateurManager
             // Ne pas faire de fetch() avant le foreach : sinon il lit la première ligne et se positionne à la deuxième
             foreach($reservations as $reservation)
             {
-                $dossierReservation = $chemin . "/Documents/documents-clients/" . $reservation['id_reservation'];
-                // On ouvre le dossier de la réservation
-                $repertoire = opendir($dossierReservation);
-                if(!$repertoire)
+                // Et oui, il n'y a que les réservations confirmées qui ont un dossier associé à leur id sur le serveur !!
+                if($reservation->getStatut() == 1)
                 {
-                    return false;
-                }
-
-                // Tant que l'on peut lire des fichiers dans le répertoire
-                while(false !== ($fichier = readdir($repertoire)))
-                {
-                    $chemin = $dossierReservation . "/" . $fichier;
-                    // Si le fichier n'est pas le dossier supérieur, le dossier courant ou un dossier, on le supprime
-                    if($fichier != ".." && $fichier != "." && !is_dir($fichier))
+                    $dossierReservation = $chemin . "/Documents/documents-clients/" . $reservation->getIdReservation();
+                    // On ouvre le dossier de la réservation
+                    $repertoire = opendir($dossierReservation);
+                    if(!$repertoire)
                     {
-                        if(!unlink($chemin))
+                        return false;
+                    }
+    
+                    // Tant que l'on peut lire des fichiers dans le répertoire
+                    while(false !== ($fichier = readdir($repertoire)))
+                    {
+                        $chemin = $dossierReservation . "/" . $fichier;
+                        // Si le fichier n'est pas le dossier supérieur, le dossier courant ou un dossier, on le supprime
+                        if($fichier != ".." && $fichier != "." && !is_dir($fichier))
                         {
-                            return false;
+                            if(!unlink($chemin))
+                            {
+                                return false;
+                            }
                         }
                     }
+    
+                    // On ferme le répertoire
+                    closedir($repertoire);
+                    // On va dans le dossier parent
+                    if(!chdir("../"))
+                    {
+                        return false;
+                    }
+                    // Et on supprime le dossier de la réservation
+                    if(!rmdir($dossierReservation))
+                    {
+                        return false;
+                    }
                 }
-
-                // On ferme le répertoire
-                closedir($repertoire);
-                // On va dans le dossier parent
-                if(!chdir("../"))
-                {
-                    return false;
-                }
-                // Et on supprime le dossier de la réservation
-                if(!rmdir($dossierReservation))
-                {
-                    return false;
-                }
-
+                
                 $req = "DELETE FROM LE_BOUCALAIS_RESERVE WHERE id_reservation = ?";
                 $stmt2 = $this->_db->prepare($req);
-                // Mettre le nom de la case du tableau, sinon ça marche pas
-                $stmt2->execute(array($reservation['id_reservation']));
+                $stmt2->execute(array($reservation->getIdReservation()));
 
                 $req = "DELETE FROM LE_BOUCALAIS_HEBERGEMENT WHERE id_reservation = ?";
                 $stmt2 = $this->_db->prepare($req);
-                $stmt2->execute(array($reservation['id_reservation']));
+                $stmt2->execute(array($reservation->getIdReservation()));
 
                 $req = "DELETE FROM LE_BOUCALAIS_DOCUMENTS_CLIENT WHERE id_reservation = ?";
                 $stmt = $this->_db->prepare($req);
-                $stmt->execute(array($reservation['id_reservation']));
+                $stmt->execute(array($reservation->getIdReservation()));
 
                 $req = "DELETE FROM LE_BOUCALAIS_DOCUMENTS_ANNEXES WHERE id_reservation = ?";
                 $stmt = $this->_db->prepare($req);
-                $stmt->execute(array($reservation['id_reservation']));
+                $stmt->execute(array($reservation->getIdReservation()));
         
                 $req = "DELETE FROM LE_BOUCALAIS_RESERVATION WHERE id_reservation = ?";
                 $stmt2 = $this->_db->prepare($req);
-                $stmt2->execute(array($reservation['id_reservation']));
+                $stmt2->execute(array($reservation->getIdReservation()));
             }
         }
 
@@ -476,7 +509,7 @@ class UtilisateurManager
     {
         $clients = array();
 
-        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE role = 'prospect'";
+        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE role = 'prospect' ORDER BY DATE DESC";
         $stmt = $this->_db->prepare($req);
         $stmt->execute();
 
@@ -514,7 +547,7 @@ class UtilisateurManager
     {
         $clients = array();
 
-        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE statut = ? and role != 'gerant' ORDER BY date DESC";
+        $req = "SELECT * FROM LE_BOUCALAIS_UTILISATEUR WHERE statut = ? AND role != 'gerant' AND id_utilisateur != 21 AND id_utilisateur != 23 ORDER BY date DESC";
         $stmt = $this->_db->prepare($req);
         $stmt->execute(array($statut));
 

@@ -65,13 +65,14 @@ nav {
 
 #bouton {
 	cursor: pointer;
-	width: 27px;
-	height: 27px;
+	width: 31px;
+	height: 31px;
 	/* Pour que le bouton soit collé au champs*/ 
-	margin-left: -1.2vw;
+	margin-left: -2vw;
 	border: 1px solid gray;
 	background-size: cover;
 	background-color: white;
+	border-radius: .2rem;
 }
 
 .open {

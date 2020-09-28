@@ -169,7 +169,7 @@ catch (Exception $e)
                                 <td>
                                     <div class="calendar__reservation__weeks not-confirmed <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                         <span><?= $count . "/" . $duration; ?></span>
-                                        <span class="name_group"><a href="http://leboucalais.fr/application-dev/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
+                                        <span class="name_group"><a href="http://leboucalais.fr/application/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
                                         <span class="size_group"><?= $reservation->getTailleGroupe(); ?></span>
                                     </div>
                                 </td>
@@ -183,7 +183,7 @@ catch (Exception $e)
                             <td colspan="<?= $colspan; ?>">
                                 <div class="calendar__reservation__weeks not-confirmed <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                     <span><?= $duration; ?></span>
-                                    <span class="name_group"><a href="http://leboucalais.fr/application-dev/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
+                                    <span class="name_group"><a href="http://leboucalais.fr/application/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
                                     <span class="size_group"><?= $reservation->getTailleGroupe(); ?></span>
                                 </div>
                             </td>
@@ -196,7 +196,7 @@ catch (Exception $e)
                             <td>
                                 <div class="calendar__reservation__weeks not-confirmed depart <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                     <span><?= $count . "/" . $duration; ?></span>
-                                    <span class="name_group" <?= $colspan > 1 ? "style= 'display: none;'" : '' ?>><a href="http://leboucalais.fr/application-dev/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
+                                    <span class="name_group" <?= $colspan > 1 ? "style= 'display: none;'" : '' ?>><a href="http://leboucalais.fr/application/?action=infos-reservation&reservation=<?= $reservation->getIdReservation(); ?>"><?= $reservation->getOrganisme(); ?></a></span>
                                     <span class="size_group"><?= $reservation->getTailleGroupe(); ?></span>
                                 </div>
                             </td>

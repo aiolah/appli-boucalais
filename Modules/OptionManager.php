@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Permet de gérer les options stockées en base de données
+ */
 class OptionManager {
 
     private $db; // Objet de connexion à la base de données
@@ -82,7 +86,6 @@ class OptionManager {
 			print_r($errorInfo);
         }
         
-        // var_dump($stmt->fetch());
         while($donnees = $stmt->fetch())
         {
             $options[] = new Option($donnees);
@@ -143,8 +146,6 @@ class OptionManager {
      * @param Option
      */
     public function updateOption(Option $option) {
-
-        // var_dump($option);
         
         $req = "UPDATE LE_BOUCALAIS_TARIF_OPTIONS SET NOM_OPTION = :nomOption, 
                     PRIX_OPTION_UNITE = :prixOptionUnite, 
@@ -159,7 +160,6 @@ class OptionManager {
                                 ":affichageOption" => $option->getAffichageOption(),
                                 ":idOption" => intval($option->getIdOption())
                             ));
-        //var_dump($stmt);
 					
 		return $stmt;
     }

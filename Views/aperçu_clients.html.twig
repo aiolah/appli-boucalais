@@ -12,7 +12,7 @@
         </thead>
         <tbody>
         {% for client in clients1 %}
-            {% if client.date == "now" %}
+            {% if client.date|date('d/m/Y') == "now"|date('d/m/Y') %}
                 <tr class="today">
                     <td><a href={{"?action=fiche-client&id=" ~ client.id|url_encode}}>{{client.nomGroupe}}</a></td>
                 </tr>
@@ -154,7 +154,7 @@
     <table class="table table-bordered col-lg-2">
         <thead class="thead-dark text-center">
             <tr class="oneline">
-                <th class="table-danger">Statut 8</th>
+                <th class="table-danger">Pack séjour envoyé</th>
             </tr>
         </thead>
         <tbody>

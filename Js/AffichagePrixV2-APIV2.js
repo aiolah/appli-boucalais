@@ -2,7 +2,7 @@
 
 let prixSejours = ['1er item du tableau créé dans le but que les id des prix soient égaux à leur key (du tableau). Les tableaux en javascript commencent en effet par la key 0..'];
 let fetchOptions = { method: 'GET' };
-fetch('http://leboucalais.fr/application-dev/API/prixSejours.php', fetchOptions)
+fetch('http://leboucalais.fr/application/API/prixSejours.php', fetchOptions)
 .then( (response) => { return response.json() } )
 .then( (dataJSON) => {
     dataJSON.forEach( (prixSejour) => {
@@ -14,7 +14,7 @@ fetch('http://leboucalais.fr/application-dev/API/prixSejours.php', fetchOptions)
 });
 
 let prixOptions = [0];
-fetch('http://leboucalais.fr/application-dev/API/prixOptions.php', fetchOptions)
+fetch('http://leboucalais.fr/application/API/prixOptions.php', fetchOptions)
 .then( (response) => { return response.json() } )
 .then( (dataJSON) => {
     dataJSON.forEach( (prixOption) => {
@@ -1125,7 +1125,7 @@ function take(e)
  */
 function calculPrixTotal(prixHebergement, prixFraisActivites, prixFraisOptionnels)
 {
-    prixTotal = prixHebergement + prixFraisActivites + prixFraisOptionnels;
+    prixTotal = Math.round((prixHebergement + prixFraisActivites + prixFraisOptionnels)*100)/100;
     champPrixHebergement.setAttribute('value', prixHebergement);
     champPrixActivites.setAttribute('value', prixFraisActivites);
     champPrixFraisOptionnels.setAttribute('value', prixFraisOptionnels);

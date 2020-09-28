@@ -6,61 +6,52 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title> Appli Boucalais </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="./Css/style.css">
 </head>
 
 <body>
-  <nav class="navbar navbar-toggleable-sm navbar-light sticky-top bg-faded">
-		<div class="navbar-header">
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="">
-        Appli Boucalais
-      </a>
-		</div>
+	<nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbar">
+    <a class="navbar-brand" href="">
+      Appli Boucalais
+    </a>
 	</nav>
+
   <div class="container">
+    {% if acces == "non" %}
+      <form method="post" action="?action=inscription" class="well">
+            <fieldset>
+            <legend>Commençons par vous inscrire ! Vous aurez ensuite accès à toutes les fonctionnalités de l'application.</legend><br/>
+                <div class="form-group row">
+                  <label for="email" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
+                  <div class="col-sm-4">
+                      <input  type="email" id="email" class="form-control form-control-sm" name="email" required placeholder="" />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="mdp" class="col-sm-2 col-form-label col-form-label-sm">Mot de passe</label>
+                  <div class="col-sm-4 block">
+                      <input  type="password" id="mdp" class="form-control form-control-sm" name="mdp" required placeholder="" />
+                      <button id="bouton" type="button" class="open" title="Afficher le mot de passe"></button>
+                  </div>
+                </div><br/>
+              <input type="submit" name="inscription" class="bouton" value="S'inscrire"/>
+            </fieldset>
+        </form>
+    {% endif %}
 
-{% if acces == "non" %}
-	<form method="post" action="?action=inscription" class="well">
-        <fieldset>
-        <legend>Commençons par vous inscrire ! Vous aurez ensuite accès à toutes les fonctionnalités de l'application.</legend><br/>
-            <div class="form-group row">
-              <label for="email" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
-              <div class="col-sm-4">
-                  <input  type="email" id="email" class="form-control form-control-sm" name="email" required placeholder="" />
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="mdp" class="col-sm-2 col-form-label col-form-label-sm">Mot de passe</label>
-              <div class="col-sm-4 block">
-                  <input  type="password" id="mdp" class="form-control form-control-sm" name="mdp" required placeholder="" />
-                  <button id="bouton" type="button" class="open" title="Afficher le mot de passe"></button>
-              </div>
-            </div><br/>
-          <input type="submit" name="inscription" class="bouton" value="S'inscrire"/>
-        </fieldset>
-    </form>
-{% endif %}
-
-{% if message is defined and acces == "non" %}
-    <div class="alert alert-danger" role="alert">{{ message }}</div>
-{% elseif message is defined and acces == "oui" %}
-    <div class="alert alert-success" role="alert">{{ message }}</div>
-{% endif %}
-
+    {% if message is defined and acces == "non" %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% elseif message is defined and acces == "oui" %}
+        <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endif %}
   </div>	
   <footer>
-    <div class="text-center"> Copyright &copy; <a href="">Appli Boucalais</a> - <a href="https://icons8.com/icon/16100/visible">Visible icon by Icons8</a> - Tous droits réservés </div>
+    <div class="text-center"> Copyright &copy; <a href="">Appli Boucalais</a> - <a href="https://icons8.com/icon/16100/visible" target="_blank">Visible icon by Icons8</a> - Tous droits réservés </div>
   </footer>
   <script>
 
-    // PreventDefault pour éviter un bug : quand on appuie sur la touche entrée, le bouton du mot de passe s'active.. Problème !
-    let input1 = document.getElementsByTagName("input")[0];
-    let input2 = document.getElementsByTagName("input")[1];
-
+	{% if acces == "non" %}
     // Bouton mot de passe
     let champ = document.getElementById("mdp");
     let bouton = document.getElementById("bouton");
@@ -81,26 +72,23 @@
       bouton.classList.toggle("open");
       bouton.classList.toggle("closed");
     }
-  
-  
-  </script>
+  {% endif %}
 
   {# Si la connexion est réussie, on redirige vers la page accueil au bout de 5 secondes #}
   {% if acces == "oui" %}
-
-    <script>
 
       if(document.location.href == "http://leboucalais.fr/application/?action=inscription")
       {
           setTimeout("window.location='http://leboucalais.fr/application/?action=accueil'", 5000);
       }
 
-    </script>
-
   {% endif %}
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>

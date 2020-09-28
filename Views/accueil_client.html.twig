@@ -46,14 +46,8 @@
 
 <div class="row">
     <div class="col-lg-4 menu d-flex align-items-center menu">
-        {% if client.statut >= 1 and client.statut <= 3  %}
-            <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=liste-devis-client">
-                <span class="item-text">1 - Mes devis</span>
-        {% endif %}
-        {% if client.statut >= 4 and client.statut <= 8  %}
-            <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=liste-devis-client">
-                <span class="item-text">1 - Ma réservation</span>
-        {% endif %}
+        <a class="btn button-action mr-3 w-100 d-flex menu-item" href="?action=liste-devis-client">
+            <span class="item-text">1 - Mes devis</span>
         </a>
     </div>
     <div class="col-lg-4 menu d-flex align-items-center menu">

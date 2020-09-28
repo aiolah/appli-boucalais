@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Permet de gérer les activités stockées en base de données
+ */
 class ActiviteManager {
 
     private $db; // Objet de connexion à la base de données

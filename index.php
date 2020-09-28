@@ -38,6 +38,11 @@ if(!isset($_SESSION['acces']))
     $_SESSION['acces'] = "non";
 }
 
+if(!isset($_SESSION['role']))
+{
+    $_SESSION['role'] = "";
+}
+
 if(isset($_SESSION['id']) && $_SESSION['acces'] == "oui")
 {
     $user = $UtilisateurManager->getProfil($_SESSION['id']);
@@ -83,8 +88,13 @@ if(isset($_GET['action']))
                     $nomGroupe = $prospect->getNomGroupe();
 
                     // On renvoie sur la page d'inscription qui affiche un message de confirmation mais qui redirige ensuite vers la page d'accueil
-                    echo $twig->render('inscription.html.twig', array('acces'=>$_SESSION['acces'],'role'=>$_SESSION['role'], 'message'=>$message, 'client'=>$prospect));
+                    echo $twig->render('inscription.html.twig', array('acces'=>$_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'client'=>$prospect));
                 }
+            }
+            elseif($_SESSION['acces'] == "oui")
+            {
+                $message = "Vous vous êtes déjà inscrit, vous n'avez plus accès à cette page.";
+                echo $twig->render('index.html.twig', array('acces'=>$_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'message'=>$message, 'alert'=>"danger"));
             }
             else
             {
@@ -106,16 +116,8 @@ if(isset($_GET['action']))
                     $_SESSION['id'] = $user->getId();
                     $message = "Connexion réussie !";
 
-                    if($user->getPrenom() == 'Correcteur')
-                    {
-                        echo "Pour voir le planning, cliquez <a href='http://leboucalais.fr/application/planning-correcteur.php'>ici</a> !";
-                    }
-
-                    else
-                    {
-                        // On renvoie sur la page de connexion qui affiche un message mais qui redirige ensuite vers la page d'accueil
-                        echo $twig->render('connexion.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'user'=>$user));
-                    }
+                    // On renvoie sur la page de connexion qui affiche un message mais qui redirige ensuite vers la page d'accueil
+                    echo $twig->render('connexion.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'user'=>$user));
                 }
                 if($user == "mdp_error")
                 {
@@ -295,7 +297,7 @@ if(isset($_GET['action']))
                     $_SESSION['acces'] = "non";
                     unset($_SESSION['id']);
                     $_SESSION['role'] = "";        
-                    echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'supprimerCompte'=>"yes", 'message'=>$message, 'alert'=>"primary"));
+                    echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'supprimerCompte'=>"yes", 'message'=>$message, 'alert'=>"success"));
                 }
                 else
                 {
@@ -303,7 +305,6 @@ if(isset($_GET['action']))
                     echo $twig->render('profil.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'user'=>$user, 'succes'=>'non'));
                 }
             }
-            connectYourself($twig);
 
         break;
 
@@ -414,7 +415,8 @@ if(isset($_GET['action']))
                 if(!empty($_POST["confirmation"]))
                 {
                     $devis = $devisManager->getDevisFromIdUser($_SESSION['id'], $_POST['ID_DEVIS']);
-                    $valideDevis = $devisManager->toReservation($devis/* , $activiteManager, $optionManager */);
+                    $client = $UtilisateurManager->getProfil($_SESSION['id']);
+                    $valideDevis = $devisManager->toReservation($devis, $client);
                     if($valideDevis)
                     {
                         $message = "Le devis a bien été validé, félicitations, vous venez d'effectuer votre réservation ! Le gérant va maintenant consulter votre demande. Vous recevrez un mail une fois qu'il l'aura confirmée.";
@@ -658,9 +660,9 @@ if(isset($_GET['action']))
             {
                 if(isset($_POST['confirmer']))
                 {
-                    // $reservationManager->confirmerReservation($_GET['reservation'], $_POST);
-                    $reservationManager->confirmerReservationSansHebergement($_GET['reservation']);
                     $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
+                    // $reservationManager->confirmerReservation($_GET['reservation'], $_POST, $client);
+                    $reservationManager->confirmerReservationSansHebergement($_GET['reservation'], $client);
                     $reservationManager->envoiMailConfirmation($client->getMail());
                     // Création du dossier client
                     $idReservation = $_GET['reservation'];
@@ -668,6 +670,8 @@ if(isset($_GET['action']))
                     // Création de la ligne en bdd
                     $UtilisateurManager->dossierClientBdd($idReservation);
     
+                    // On "re-récupère" le client pour avoir son statut actualisé !!
+                    $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
                     $reservation = $reservationManager->getReservationFromIdReserv($_GET['reservation']);
                     $devis = $devisManager->getDevisFromIdReservation($reservation->getIdReservation());
                     $nbreDevis = $devisManager->getCountDevis($client->getId());
@@ -730,6 +734,7 @@ if(isset($_GET['action']))
                 $reservation = $reservationManager->getReservationFromIdReserv($_GET['reservation']);
                 echo $twig->render("modifier_dates.html.twig", array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservation'=>$reservation));
             }
+            connectYourself($twig);
 
         break;
 
@@ -748,7 +753,7 @@ if(isset($_GET['action']))
                 echo $twig->render('aperçu_clients.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'clients1'=>$clients1, 'clients2'=>$clients2, 'clients3'=>$clients3, 'clients4'=>$clients4, 'clients5'=>$clients5, 'clients6'=>$clients6, 'clients7'=>$clients7, 'clients8'=>$clients8, 'yes'=>'yes', 'user'=>$user));
             }
             connectYourself($twig);
-
+            
         break;
 
         case "ajouter-client" :
@@ -783,7 +788,7 @@ if(isset($_GET['action']))
                                 Le gérant du centre vient de commencer votre inscription sur l'application du Boucalais. Pour la finaliser, veuillez vous inscrire sur le lien suivant en utilisant l'adresse avec laquelle vous consultez cet email (rappel : ".$client->getMail().") : <a href='http://leboucalais.fr/application/?action=inscription'>http://leboucalais.fr/application/?action=inscription</a>. Dans le cas contraire, votre inscription sera refusée.<br>
                                 L'application vous mettra ensuite en relation avec le gérant du centre pour continuer vos démarches de réservation.<br><br>
     
-                                A bientôt au <a href='http://leboucalais.fr target='_blank'>Boucalais</a> !
+                                A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
                             </body>
                             </html>";
                             $destinataire = $client->getMail();
@@ -796,13 +801,44 @@ if(isset($_GET['action']))
                             mail($destinataire, $objet, $mail, $headers);
     
                             $nbreDevis = $devisManager->getCountDevis($client->getId());
-                            $message = "Le client a bien été ajouté.";
-                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user));
+                            if($client->getStatut() == 4)
+                            {
+                                $message = "Le client <strong>" . $client->getNomGroupe() . "</strong> et sa demande de réservation ont bien été ajoutés.";
+                                $nbreDevis = $devisManager->getCountDevis($client->getId());
+                                $reservations = $reservationManager->getReservationsFromUser($client->getId());
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'reservations'=>$reservations, 'message'=>$message, 'succes'=>"oui",));
+                            }
+                            elseif($client->getStatut() == 5 || $client->getStatut() == 6 || $client->getStatut() == 7 || $client->getStatut() == 8)
+                            {
+                                $reservations = $reservationManager->getReservationsFromUser($client->getId());
+
+                                // Création du dossier client
+                                $idReservation = $reservations[0]->getIdReservation();
+                                creerDossierClient($idReservation);
+                                // Création de la ligne en bdd
+                                $UtilisateurManager->dossierClientBdd($idReservation);
+
+                                foreach($reservations as $reservation)
+                                {
+                                    $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                                    // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
+                                    $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                                }
+
+                                $message = "Le client <strong>" . $client->getNomGroupe() . "</strong> et sa réservation ont bien été ajoutés.";
+                                $nbreDevis = $devisManager->getCountDevis($client->getId());
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'message'=>$message, 'succes'=>"oui",));
+                            }
+                            else
+                            {
+                                $message = "Le client <strong>" . $client->getNomGroupe() . "</strong> a bien été ajouté.";
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'message'=>$message, 'succes'=>"oui", 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user));
+                            }
                         }
                         else
                         {
                             $message = "Le client n'a pu être ajouté.";
-                            echo $twig->render('ajouter_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'prenom'=>$gerant->getPrenom(), 'message'=>$message, 'user'=>$user));
+                            echo $twig->render('ajouter_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'prenom'=>$gerant->getPrenom(), 'message'=>$message, 'succes'=>"non", 'user'=>$user));
                         }
                     }
                 }
@@ -878,93 +914,60 @@ if(isset($_GET['action']))
             if($_SESSION['role'] == "gerant")
             {
                 $client = $UtilisateurManager->getProfil($_GET['id']);
-                if(isset($_POST['supprimer-compte-client']))
+                if($client != false)
                 {
-                    $ok = $UtilisateurManager->deleteProfile($_GET['id'], dirname(__FILE__), $client, 1);
-                    if($ok)
+                    if(isset($_POST['supprimer-compte-client']))
                     {
-                        $message = "Le compte client a bien été supprimé.";
-                        echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'message'=>$message, 'alert'=>"success"));
-                    }
-                    else
-                    {
-                        $message = "Le compte client n'a pu être supprimé.";
-                        $nbreDevis = $devisManager->getCountDevis($_GET['id']);
-                        $allDevis = $devisManager->getDevisFromUser($_GET['id']);
-                        $reservations = $reservationManager->getReservationsFromUser($_GET['id']);
-                        if($reservations != false && $client->getStatut() < 5)
+                        $ok = $UtilisateurManager->deleteProfile($_GET['id'], dirname(__FILE__), $client, 1);
+                        if($ok)
                         {
-                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'message'=>$message, "succes"=>"non"));
-                        }
-                        elseif($reservations != false && $client->getStatut() >= 5)
-                        {
-                            foreach($reservations as $reservation)
-                            {
-                                $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
-                                // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
-                                $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
-                            }
-                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'message'=>$message, "succes"=>"non"));
+                            $message = "Le compte client <strong>" . $client->getNomGroupe() ."</strong> a bien été supprimé.";
+                            echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'message'=>$message, 'alert'=>"success"));
                         }
                         else
                         {
-                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'message'=>$message, "succes"=>"non"));
-                        }    
+                            $message = "Le compte client n'a pu être supprimé.";
+                            $nbreDevis = $devisManager->getCountDevis($_GET['id']);
+                            $allDevis = $devisManager->getDevisFromUser($_GET['id']);
+                            $reservations = $reservationManager->getReservationsFromUser($_GET['id']);
+                            if($reservations != false && $client->getStatut() < 5)
+                            {
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'message'=>$message, "succes"=>"non"));
+                            }
+                            elseif($reservations != false && $client->getStatut() >= 5)
+                            {
+                                foreach($reservations as $reservation)
+                                {
+                                    $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                                    // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
+                                    $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                                }
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'message'=>$message, "succes"=>"non"));
+                            }
+                            else
+                            {
+                                echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'message'=>$message, "succes"=>"non"));
+                            }    
+                        }
                     }
-                }    
-                elseif(isset($_POST['convention']))
-                {
-                    if(!empty($_FILES['file']['size'] != 0))
+                    // Confirmation de la réservation d'un utilisateur rajouté par le gérant avec le statut 4
+                    elseif(isset($_POST['confirmer']))
                     {
-                        televerserDocumentsClient("convention", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_POST['facture-acompte']))
-                {
-                    if(!empty($_FILES['file']['size'] != 0))
-                    {
-                        televerserDocumentsClient("facture_acompte", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_POST['documents-annexes']))
-                {
-                    if(!empty($_POST['nom_fichier']) && $_FILES['file']['size'] != 0)
-                    {
-                        televerserDocumentsClient("documents-annexes", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_POST['plan-chambres']))
-                {
-                    if(!empty($_FILES['file']['size'] != 0))
-                    {
-                        televerserDocumentsClient("plan_chambres", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_POST['planning-activites']))
-                {
-                    if(!empty($_FILES['file']['size'] != 0))
-                    {
-                        televerserDocumentsClient("planning_activites", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_POST['menus']))
-                {
-                    if(!empty($_FILES['file']['size'] != 0))
-                    {
-                        televerserDocumentsClient("menus", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
-                    }
-                }
-                elseif(isset($_GET['id']))
-                {
-                    $nbreDevis = $devisManager->getCountDevis($_GET['id']);
-                    $allDevis = $devisManager->getDevisFromUser($_GET['id']);
-                    $reservations = $reservationManager->getReservationsFromUser($_GET['id']);
-                    if($reservations != false && $client->getStatut() < 5)
-                    {
-                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations));
-                    }
-                    elseif($reservations != false && $client->getStatut() >= 5)
-                    {
+                        $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
+                        // $reservationManager->confirmerReservation($_GET['reservation'], $_POST, $client);
+                        $reservationManager->confirmerReservationSansHebergement($_GET['reservation'], $client);
+                        $reservationManager->envoiMailConfirmation($client->getMail());
+                        // Création du dossier client
+                        $idReservation = $_GET['reservation'];
+                        creerDossierClient($idReservation);
+                        // Création de la ligne en bdd
+                        $UtilisateurManager->dossierClientBdd($idReservation);
+        
+                        // On "re-récupère" le client pour avoir son statut actualisé !!
+                        $client = $UtilisateurManager->getProfilFromReservation($_GET['reservation']);
+                        $nbreDevis = $devisManager->getCountDevis($_GET['id']);
+                        $reservations = $reservationManager->getReservationsFromUser($_GET['id']);
+                        $message = "La réservation a bien été confirmée.";
                         $reservationsConfirmed = $reservationManager->getReservationsConfirmedFromUser($_GET['id']);
                         foreach($reservationsConfirmed as $reservation)
                         {
@@ -973,12 +976,81 @@ if(isset($_GET['action']))
                             // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
                             $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
                         }
-                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, /* 'hebergement'=>$hebergement, */ 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes));
+                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'reservations'=>$reservations, /* 'hebergement'=>$hebergement, */ 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes, 'message'=>$message, 'succes'=>'oui'));
                     }
-                    else
+                    elseif(isset($_POST['convention']))
                     {
-                        echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis));
+                        if(!empty($_FILES['file']['size'] != 0))
+                        {
+                            televerserDocumentsClient("convention", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
                     }
+                    elseif(isset($_POST['facture-acompte']))
+                    {
+                        if(!empty($_FILES['file']['size'] != 0))
+                        {
+                            televerserDocumentsClient("facture_acompte", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
+                    }
+                    elseif(isset($_POST['documents-annexes']))
+                    {
+                        if(!empty($_POST['nom_fichier']) && $_FILES['file']['size'] != 0)
+                        {
+                            televerserDocumentsClient("documents-annexes", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
+                    }
+                    elseif(isset($_POST['plan-chambres']))
+                    {
+                        if(!empty($_FILES['file']['size'] != 0))
+                        {
+                            televerserDocumentsClient("plan_chambres", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
+                    }
+                    elseif(isset($_POST['planning-activites']))
+                    {
+                        if(!empty($_FILES['file']['size'] != 0))
+                        {
+                            televerserDocumentsClient("planning_activites", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
+                    }
+                    elseif(isset($_POST['menus']))
+                    {
+                        if(!empty($_FILES['file']['size'] != 0))
+                        {
+                            televerserDocumentsClient("menus", $DocumentsClientManager, $devisManager, $reservationManager, $twig, $_POST['idReservation'], $client, $user);
+                        }
+                    }
+                    elseif(isset($_GET['id']))
+                    {
+                        $nbreDevis = $devisManager->getCountDevis($_GET['id']);
+                        $allDevis = $devisManager->getDevisFromUser($_GET['id']);
+                        $reservations = $reservationManager->getReservationsFromUser($_GET['id']);
+                        if($reservations != false && $client->getStatut() < 5)
+                        {
+                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations));
+                        }
+                        elseif($reservations != false && $client->getStatut() >= 5)
+                        {
+                            $reservationsConfirmed = $reservationManager->getReservationsConfirmedFromUser($_GET['id']);
+                            foreach($reservationsConfirmed as $reservation)
+                            {
+                                // $hebergement = $reservationManager->getHebergement($reservation->getIdReservation());
+                                $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                                // $documentsAnnexes = tableau qui contient un tableau de documents annexes pour chaque réservation (= tableau dans un tableau)
+                                $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                            }
+                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis, 'reservations'=>$reservations, /* 'hebergement'=>$hebergement, */ 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes));
+                        }
+                        else
+                        {
+                            echo $twig->render('fiche_client.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'client'=>$client, 'nbreDevis'=>$nbreDevis, 'user'=>$user, 'allDevis'=>$allDevis));
+                        }
+                    }
+                }
+                else
+                {
+                    $message = "Cet utilisateur n'existe pas.";
+                    echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'message'=>$message, 'alert'=>"warning"));
                 }
             }
             connectYourself($twig);
@@ -1005,18 +1077,29 @@ if(isset($_GET['action']))
             {
                 connectYourself($twig);
                 $reservations = $reservationManager->getReservationsFromUser($_SESSION['id']);
-                if($reservations != false && $user->getStatut() >= 5)
+                if($reservations != false)
                 {
                     foreach($reservations as $reservation)
                     {
-                        $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
-                        $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                        if($reservation->getStatut() == 1)
+                        {
+                            $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                            $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                        }
                     }
-                    echo $twig->render('convention_facture_acompte.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes));
+                    if(isset($documentsClient))
+                    {
+                        echo $twig->render('convention_facture_acompte.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'documentssAnnexes'=>$documentssAnnexes));
+                    }
+                    // Si la réservation n'a pas encore été confirmée
+                    else
+                    {
+                        echo $twig->render('convention_facture_acompte.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations,));
+                    }
                 }
                 else
                 {
-                    echo $twig->render('convention_facture_acompte.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user));
+                    echo $twig->render('convention_facture_acompte.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations,));
                 }
             }
 
@@ -1040,18 +1123,29 @@ if(isset($_GET['action']))
             {
                 $fichiers = $FichierManager->getListeFichiersClient("pack-sejour");
                 $reservations = $reservationManager->getReservationsFromUser($_SESSION['id']);
-                if($reservations != false && $user->getStatut() >= 5)
+                if($reservations != false)
                 {
                     foreach($reservations as $reservation)
                     {
-                        $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
-                        $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                        if($reservation->getStatut() == 1)
+                        {
+                            $documentsClient[] = $DocumentsClientManager->getDocumentsClient($reservation->getIdReservation());
+                            $documentssAnnexes[] = $DocumentsClientManager->getDocumentsAnnexes($reservation->getIdReservation());
+                        }
                     }
-                    echo $twig->render('pack_sejour.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'fichiers'=>$fichiers, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'user'=>$user));
+                    if(isset($documentsClient))
+                    {
+                        echo $twig->render('pack_sejour.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'fichiers'=>$fichiers, 'reservations'=>$reservations, 'documentsClient'=>$documentsClient, 'user'=>$user));
+                    }
+                        // Si la réservation n'a pas encore été confirmée
+                    else
+                    {
+                        echo $twig->render('pack_sejour.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations, 'fichiers'=>$fichiers));
+                    }    
                 }
                 else
                 {
-                    echo $twig->render('pack_sejour.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'fichiers'=>$fichiers));
+                    echo $twig->render('pack_sejour.html.twig', array('acces'=> $_SESSION['acces'], 'role'=>$_SESSION['role'], 'user'=>$user, 'reservations'=>$reservations, 'fichiers'=>$fichiers));
                 }
             }
             connectYourself($twig);
@@ -1107,7 +1201,7 @@ if(isset($_GET['action']))
                 }
             }
             connectYourself($twig);
-
+            
         break;
 
         // Déconnexion
@@ -1117,7 +1211,7 @@ if(isset($_GET['action']))
             unset($_SESSION['id']);
             $_SESSION['role'] = "";
             $message = "Vous vous êtes déconnecté";
-            echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'message'=>$message, 'logout'=>"yes", 'alert'=>"primary")); 
+            echo $twig->render('index.html.twig', array('acces'=> $_SESSION['acces'], 'message'=>$message, 'logout'=>"yes", 'alert'=>"info")); 
 
         break;
 

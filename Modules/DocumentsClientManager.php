@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Permet de gérer les documents propres à chaque utilisateur
+ * Permet de gérer les documents propres à une réservation
  */
 class DocumentsClientManager
 {
@@ -88,23 +88,28 @@ class DocumentsClientManager
             $stmt = $this->_db->prepare($req);
             $stmt->execute(array($lien, $chemin, $idReservation));
 
-            if($type == "convention" || $type == "facture_acompte")
+            if(($type == "convention" || $type == "facture_acompte") && $client->getStatut() == 5)
             {
                 $statut = 6;
+                $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = ? WHERE id_utilisateur = ?";
+                $stmt = $this->_db->prepare($req);
+                $stmt->execute(array($statut, $client->getId()));    
             }
-            if($type == "convention_signee")
+            if(($type == "convention_signee") && $client->getStatut() == 6)
             {
                 $statut = 7;
+                $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = ? WHERE id_utilisateur = ?";
+                $stmt = $this->_db->prepare($req);
+                $stmt->execute(array($statut, $client->getId()));
             }
-            if($type == "plan_chambres" || $type == "planning_activites" || $type == "menus")
+            if(($type == "plan_chambres" || $type == "planning_activites" || $type == "menus") && $client->getStatut() == 7)
             {
                 $statut = 8;
+                $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = ? WHERE id_utilisateur = ?";
+                $stmt = $this->_db->prepare($req);
+                $stmt->execute(array($statut, $client->getId()));
             }
-    
-            $req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = ? WHERE id_utilisateur = ?";
-            $stmt = $this->_db->prepare($req);
-            $stmt->execute(array($statut, $client->getId()));
-    
+        
             // Envoi mail de notification au client ou au gérant en fonction du fichier transféré
             if($type == "convention")
             {

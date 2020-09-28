@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Permet de gérer les devis stockés en base de données
+ */
 class DevisManager {
     private $db; // Objet de connexion à la base de données
 
@@ -44,7 +48,8 @@ class DevisManager {
 		$stmtDevis = $this->_db->prepare($reqDevis);
 		$stmtDevis->execute(array($user->getId(),$devis->getIdDevis()));
 
-		if($user->getStatut() == 2)
+		// Si un client au statut 8 (ou 2) compose un devis, il repasse au statut 3 !
+		if($user->getStatut() == 2 || $user->getStatut() == 8)
 		{
 			// Change le statut de l'utilisateur au moment de la sauvegarde du devis
 			$reqStatut = "UPDATE LE_BOUCALAIS_UTILISATEUR SET STATUT = 3 WHERE ID_UTILISATEUR = ?";
@@ -424,8 +429,9 @@ class DevisManager {
 	/**
 	 * Insère les données du devis dans la table Réservation
 	 * @param Devis
+	 * @param client instance de la classe Utilisateur, contient les informations du client qui a validé son devis
 	 */
-	public function toReservation(Devis $devis/* , $activiteManager, $optionManager */) {
+	public function toReservation(Devis $devis, $client) {
 
 		$req = "INSERT INTO LE_BOUCALAIS_RESERVATION (DATE_RESERVATION, DATE_DEBUT, DATE_FIN, DUREE, TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ENFANTS, NB_ADOS, NB_ADULTES, TAILLE_GROUPE) 
 			SELECT ?, DATE_DEBUT, DATE_FIN, DUREE, TYPE_GROUPE, TYPE_PENSION, TYPE_HEBERGEMENT, PRIX_HEBERGEMENT, PRIX_ACTIVITES, PRIX_FRAIS_OPTIONNELS, PRIX_TOTAL, NB_ENFANTS, NB_ADOS, NB_ADULTES, TAILLE_GROUPE
@@ -437,26 +443,19 @@ class DevisManager {
 		$stmtStatutDevis = $this->_db->prepare($reqStatutDevis);
 		$stmtStatutDevis->execute(array($devis->getIdDevis()));
 
-		$reqStatut = "UPDATE LE_BOUCALAIS_UTILISATEUR SET STATUT = 4 WHERE ID_UTILISATEUR = ?";
-		$stmtStatut = $this->_db->prepare($reqStatut);
-		$stmtStatut->execute(array($_SESSION['id']));
+		if($client->getStatut() == 3)
+		{
+			$reqStatut = "UPDATE LE_BOUCALAIS_UTILISATEUR SET STATUT = 4 WHERE ID_UTILISATEUR = ?";
+			$stmtStatut = $this->_db->prepare($reqStatut);
+			$stmtStatut->execute(array($_SESSION['id']));
+		}
 
 		$reqReservation = "SELECT MAX(ID_RESERVATION) AS MAX_ID FROM LE_BOUCALAIS_RESERVATION";
 		$stmtReservation = $this->_db->prepare($reqReservation);
 		$stmtReservation->execute();
 		$idReservation = $stmtReservation->fetch();
 
-		/* if($devis->getPrixActivites() != 0)
-		{
-			$this->addActivitesReservation($devis->getIdDevis(), $activiteManager, $idReservation['MAX_ID']);
-		}
-
-		if($devis->getPrixOptions() != 0)
-		{
-			$this->addOptionsReservation($devis->getIdDevis(), $optionManager, $idReservation['MAX_ID']);
-		} */
-
-		$reqReserve = "INSERT INTO LE_BOUCALAIS_RESERVE (ID_UTILISATEUR, ID_RESERVATION, ID_DEVIS) VALUES (?, ?, ?)";
+		$reqReserve = "INSERT INTO LE_BOUCALAIS_RESERVE(ID_UTILISATEUR, ID_RESERVATION, ID_DEVIS) VALUES (?, ?, ?)";
 		$stmtReserve = $this->_db->prepare($reqReserve);
 		$stmtReserve->execute(array($_SESSION['id'], $idReservation['MAX_ID'], $devis->getIdDevis()));
 
@@ -467,36 +466,6 @@ class DevisManager {
 
 		return $stmtReserve;
 	}
-
-	/* public function addActivitesReservation($idDevis, $activiteManager, $idReservation)
-	{
-		$activites = $activiteManager->getActivitesFromDevis($idDevis);
-		if($activites != false)
-		{
-			foreach($activites as $activite)
-			{
-				$req = "INSERT INTO LE_BOUCALAIS_RESERVATION_ACTIVITE(ID_RESERVATION, ID_DEVIS, NB_SEANCES, NB_PARTICIPANTS, PRIX_ACTIVITE)
-				SELECT ?, ID_DEVIS, NB_SEANCES, NB_PARTICIPANTS, PRIX_ACTIVITE FROM LE_BOUCALAIS_CHOIX_ACTIVITE WHERE ID_DEVIS = ? AND ID_ACTIVITE = ?";
-				$stmt = $this->_db->prepare($req);
-				$stmt->execute(array($idReservation, $idDevis, $activite->getIdActivite()));	
-			}
-		}
-	}
-
-	public function addOptionsReservation($idDevis, $optionManager, $idReservation)
-	{
-		$options = $optionManager->getOptionsFromDevis($idDevis);
-		if($options != false)
-		{
-			foreach($options as $option)
-			{
-				$req = "INSERT INTO LE_BOUCALAIS_RESERVATION_OPTION(ID_RESERVATION, ID_DEVIS, NB_SEANCES, NB_PARTICIPANTS, PRIX_ACTIVITE)
-				SELECT ?, ID_DEVIS, NB_SEANCES, NB_PARTICIPANTS, PRIX_ACTIVITE FROM LE_BOUCALAIS_CHOIX_ACTIVITE WHERE ID_DEVIS = ? AND ID_ACTIVITE = ?";
-				$stmt = $this->_db->prepare($req);
-				$stmt->execute(array($idReservation, $idDevis, $option->getIdOption()));	
-			}
-		}
-	} */
 	
     /**
 	* nombre de devis dans la base de données

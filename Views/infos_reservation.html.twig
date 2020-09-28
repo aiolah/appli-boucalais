@@ -27,23 +27,18 @@
 
 {{ block("composition_groupe", "consulter_devis.html.twig") }}
 
-{% if devis.dateDebut != reservation.dateDebut or devis.dateFin != reservation.dateFin %}
-    <p class="mt-4"><strong>⚠ Attention ⚠</strong> Les dates de la réservation sont différentes de celles du devis<br>
-    → Commence le <strong>{{reservation.dateDebut|date("d/m/Y")}}</strong> et finit le <strong>{{reservation.dateFin|date("d/m/Y")}}</strong>.</p>
-{% endif %}
-
 {# Si la date de début est supérieure à aujourd'hui (= si la réservation n'est pas passée) #}
 {% if reservation.dateDebut > "now"|date("Y-m-d") %}
     <a class="btn button-action mt-4" href="?action=modifier-dates&reservation={{reservation.idReservation}}">Modifier les dates de la réservation</a>
 {% endif %}
 
 {% if reservation.statut == 0 %}
-<section class="mb-4 mt-4">
-    <h4 class="mb-4">Gestion de la réservation</h4>
-    <form method="post" action={{ "?action=infos-reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
-        <input type="submit" value="Confirmer la réservation" class="bouton mr-4" name="confirmer">
-    </form>
-</section>
+    <section class="mb-4 mt-4">
+        <h4 class="mb-4">Gestion de la réservation</h4>
+        <form method="post" action={{ "?action=infos-reservation&reservation=" ~ reservation.idReservation|url_encode }} class="col-lg-12">
+            <input type="submit" value="Confirmer la réservation" class="bouton mr-4" name="confirmer">
+        </form>
+    </section>
 {# CHAMPS POUR SÉLECTIONNER L'HÉBERGEMENT ET CONFIRMER LA RÉSERVATION : 1 input est généré pour chaque hébergement sélectionné afin de spécifier le nombre de personnes correspondant à celui-ci (Décommentez le code javascript en bas du fichier pour que ça marche + décommentez la ligne dans index.php pour utiliser la méthode confirmerReservation() de ReservationManager)
 
     <p>Choix de l'hébergement</p>

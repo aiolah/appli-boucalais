@@ -25,14 +25,12 @@
                 </select>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-4 col-form-label" for="nom-organisme">Nom de l'organisme</label>
             <div class="col-lg-4 col-sm-8">
                 <input type="text" name="nom_organisme" id="nom-organisme" class="form-control" placeholder="Mon Association" required>
             </div>
         </div>
-
         <div class="form-group row">
             <h6 class="col-lg-12 mt-4 mb-4"><strong>Coordonnées du responsable</strong></h6>
             <label class="col-lg-2 col-sm-4 col-form-label" for="prenom">Prénom </label>
@@ -40,42 +38,36 @@
                 <input type="text" name="prenom" id="prenom" class="form-control" placeholder="Jean" required>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-4 col-form-label" for="nom">Nom</label>
             <div class="col-lg-4 col-sm-8">
                 <input type="text" name="nom" id="nom" class="form-control" placeholder="Dupont" required>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-4 col-form-label" for="email">E-mail</label>
             <div class="col-lg-4 col-sm-8">
                 <input type="email" name="email" id="email" class="form-control" placeholder="jeandupont@gmail.com" required>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-4 col-form-label" for="telephone">Téléphone</label>
             <div class="col-lg-4 col-sm-8">
-                <input type="tel" name="telephone" id="telephone" class="form-control" placeholder="06 59 41 35 78" required>
+                <input type="tel" name="telephone" id="telephone" class="form-control" minlength="10" maxlength="10" pattern="[0-9]{10}" title="Le numéro de téléphone doit comporter 10 chiffres sans espaces." placeholder="0659413578" required>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-6 col-form-label" for="personnes">Taille du groupe<br>(nombre de personnes)</label>
             <div class="col-lg-4 col-sm-8">
                 <input type="number" min="1" name="nombre_personnes" id="personnes" class="form-control" placeholder="1" required>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-lg-2 col-sm-6 col-form-label" for="nuits">Nombre de nuits</label>
             <div class="col-lg-4 col-sm-8">
                 <input type="number" min="1" name="nombre_nuits" id="nuits" class="form-control" placeholder="1" required>
             </div>
         </div>
-
         <div class="form-group row mt-5">
             <label class="col-lg-2 col-sm-6 col-form-label" for="nuits"><strong>Statut</strong> </label>
             <div class="col-lg-4 col-sm-8">
@@ -88,14 +80,14 @@
                     <option value="5">5 - Réservation confirmée</option>
                     <option value="6">6 - Convention envoyée</option>
                     <option value="7">7 - Convention retournée</option>
-                    <option value="8">8</option>
+                    <option value="8">8 - Pack séjour envoyé</option>
                 </select>
             </div>
         </div>
 
-    <input type="hidden" name="moyen" value="Ajouté par {{prenom}}">
+        <input type="hidden" name="moyen" value="Ajouté par {{prenom}}">
 
-    <input class="mt-3" type="submit" name="ajouter-client" value="Ajouter">
+        <input class="mt-3" type="submit" name="ajouter-client" value="Ajouter">
 
     </fieldset>
 </form>

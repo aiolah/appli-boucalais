@@ -78,8 +78,14 @@
                     {% endif %}
                 </div>
             </div>
+            
+            {% if (devis.dateDebut != reservation.dateDebut or devis.dateFin != reservation.dateFin) and reservation != false %}
+                <p class="mt-4"><strong>⚠ Attention ⚠</strong> Les dates de la réservation sont différentes de celles du devis<br>
+                → Commence le <strong>{{reservation.dateDebut|date("d/m/Y")}}</strong> et finit le <strong>{{reservation.dateFin|date("d/m/Y")}}</strong>.</p>
+            {% endif %}
 
         {% endblock %}
+
 
         <br/>
 

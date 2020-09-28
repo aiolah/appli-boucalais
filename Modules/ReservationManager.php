@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Permet de gérer les réservations stockées en base de données
+ */
 class ReservationManager {
     private $db; // Objet de connexion à la base de données
 
@@ -8,33 +12,6 @@ class ReservationManager {
     public function __construct($db) {
         $this->_db = $db;
     }
-
-    /**
-     * Ajout des informations d'une réservation passée avec le formulaire dans la base de données
-     * @param Reservation
-     */
-    public function add(Reservation $reservation) {
-
-        $stmt = $this->_db->prepare("SELECT MAX(ID_RESERVATION) AS MAXIMUM FROM LE_BOUCALAIS_RESERVATION");
-        $stmt->execute();
-		$reservation->setIdReservation($stmt->fetchColumn()+1);
-        
-		// requete d'ajout de la réservation dans la BD
-		$req = "INSERT INTO LE_BOUCALAIS_RESERVATION (DATE_DEBUT,DATE_FIN,DUREE,TYPE_GROUPE,TYPE_PENSION,ACTIVITE,NB_ENFANTS,NB_ADOS,TAILLE_GROUPE,OPTIONS) VALUES (?,?,?,?,?,?,?,?,?,?);";
-		$stmt = $this->_db->prepare($req);
-		$res = $stmt->execute(array($reservation->getDateDebut(), $reservation->getDateFin(), $reservation->getDuree(), $reservation->getTypeGroupe(), $reservation->getPension(), $reservation->getActivites(), $reservation->getNbEnfants(), $reservation->getNbAdos(), $reservation->getTailleGroupe(), $reservation->getOptions()));
-
-		$reqReserve = "INSERT INTO LE_BOUCALAIS_RESERVE (ID_UTILISATEUR,ID_RESERVATION) VALUES (?,?);";
-		$stmtReserve = $this->_db->prepare($reqReserve);
-		$resReserve = $stmtReserve->execute(array($_SESSION['id'],$reservation->getIdReservation()));
-		
-        // pour debuguer les requêtes SQL
-        $errorInfo = $stmt->errorInfo();
-        if ($errorInfo[0] != 0) {
-            print_r($errorInfo);
-        }
-		return $res;
-	}
 	
 	/**
 	* Suppression d'une réservation dans la base de données
@@ -400,8 +377,9 @@ class ReservationManager {
 	 * Enregistre le nombre de personnes dans chaque secteur spécifié (HEBERGEMENT) et renseigne ledit secteur dans RESERVATION
 	 * @param id_reservation
 	 * @param POST : tableau $_POST contenant le(s) secteur(s) et le nombre de personnes pour chacun d'entre eux
+	 * @param client instance de la classe Utilisateur, contient les informations du client pour lequel on confirme la réservation
 	 */
-	public function confirmerReservation($id_reservation, $POST)
+	public function confirmerReservation($id_reservation, $POST, $client)
 	{
 		// Si un seul secteur est sélectionné | 2 pour le nom du secteur et la valeur du submit : 'confirmer'
 		if(count($POST) == 2)
@@ -428,9 +406,12 @@ class ReservationManager {
 			$id_utilisateur = $resultat['id_utilisateur'];
 			
 			// Pour actualiser le statut utilisateur à 5
-			$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
-			$stmt = $this->_db->prepare($req);
-			$stmt->execute(array($id_utilisateur));
+			if($client->getStatut() == 4)
+			{
+				$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
+				$stmt = $this->_db->prepare($req);
+				$stmt->execute(array($id_utilisateur));
+			}
 
 			// pour debuguer les requêtes SQL
 			$errorInfo = $stmt->errorInfo();
@@ -462,9 +443,12 @@ class ReservationManager {
 			$id_utilisateur = $resultat['id_utilisateur'];
 			
 			// Pour actualiser le statut utilisateur à 5
-			$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
-			$stmt = $this->_db->prepare($req);
-			$stmt->execute(array($id_utilisateur));	
+			if($client->getStatut() == 4)
+			{
+				$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
+				$stmt = $this->_db->prepare($req);
+				$stmt->execute(array($id_utilisateur));
+			}
 
 			// pour debuguer les requêtes SQL
 			$errorInfo = $stmt->errorInfo();
@@ -494,27 +478,21 @@ class ReservationManager {
 	/**
 	 * Confirme la réservation en passant son statut à 1. Pas de gestion de l'hébergement
 	 * @param id_reservation
+	 * @param client instance de la classe Utilisateur, contient les informations du client pour lequel on confirme la réservation
 	 */
-	public function confirmerReservationSansHebergement($id_reservation)
+	public function confirmerReservationSansHebergement($id_reservation, $client)
 	{
 		$req = "UPDATE LE_BOUCALAIS_RESERVATION SET statut = 1 WHERE id_reservation = ?";
 		$stmt = $this->_db->prepare($req);
 		$stmt->execute(array($id_reservation));
-
-		// On récupère l'id_utilisateur à partir de l'id_reservation
-		$req = "SELECT LE_BOUCALAIS_RESERVE.id_utilisateur FROM LE_BOUCALAIS_RESERVE
-		INNER JOIN LE_BOUCALAIS_RESERVATION ON LE_BOUCALAIS_RESERVATION.id_reservation = LE_BOUCALAIS_RESERVE.id_reservation
-		INNER JOIN LE_BOUCALAIS_UTILISATEUR ON LE_BOUCALAIS_UTILISATEUR.id_utilisateur = LE_BOUCALAIS_RESERVE.id_utilisateur
-		WHERE LE_BOUCALAIS_RESERVE.id_reservation = ?";
-		$stmt = $this->_db->prepare($req);
-		$stmt->execute(array($id_reservation));
-		$resultat = $stmt->fetch();
-		$id_utilisateur = $resultat['id_utilisateur'];
 		
 		// Pour actualiser le statut utilisateur à 5
-		$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
-		$stmt = $this->_db->prepare($req);
-		$stmt->execute(array($id_utilisateur));
+		if($client->getStatut() == 4)
+		{
+			$req = "UPDATE LE_BOUCALAIS_UTILISATEUR SET statut = 5 WHERE id_utilisateur = ?";
+			$stmt = $this->_db->prepare($req);
+			$stmt->execute(array($client->getId()));
+		}
 
 		// pour debuguer les requêtes SQL
 		$errorInfo = $stmt->errorInfo();

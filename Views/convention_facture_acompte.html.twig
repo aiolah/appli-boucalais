@@ -8,11 +8,10 @@
     <div class="alert alert-danger" role="alert">{{message}}</div>
 {% endif %}
 
-{# POUR 1 RÉSERVATION #}
 <main>
     <h2 class="mb-5">Ma convention & ma facture d'acompte</h2>
 
-    {% if user.statut < 6 %}
+    {% if not reservations %}
         <ul>
             <li class="mb-5">
                 <h4 class="mb-4">Convention</h4>
@@ -28,99 +27,132 @@
             </li>
         </ul>
     {% else %}
+        <ul>
+        {# i = compteur pour les id des champs input file #}
+        {% set i = 0 %}
         {% for reservation in reservations %}
-            <ul>
-            {% for documentClient in documentsClient %}
-                {% if documentClient.idReservation == reservation.idReservation %}
-                    <li class="mb-5">
-                        <h4 class="mb-4">Convention</h4>
-                        {% if documentClient.convention == NULL or user.statut <= 4 %}
-                            <p>Pas de convention disponible pour le moment.</p>
-                        {% elseif documentClient.convention != NULL %}
-                            <ul>
-                                <li>
-                                    <a href="{{documentClient.convention}}" target="_blank">Convention</a>
-                                    {% if documentClient.conventionSignee == NULL %}
-                                        <p class="mt-3">Vous pouvez maintenant télécharger la convention, la signer et la retourner par l'intermédiaire de ce dépôt de fichiers :</p>
-                                        <form method="post" action="?action=convention_facture_acompte" enctype="multipart/form-data">
-                                            <div class="custom-file col-lg-5">
-                                                <input type="file" class="custom-file-input" id="customFile1" name="file" required>
-                                                <label class="custom-file-label" for="customFile1" id="file-name1">Choisissez un fichier</label>
-                                            </div>
-                                            <br>
-                                            <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
-                                            <input class="mt-3" type="submit" value="Téléverser" name="convention-signee">
-                                        </form>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        {% endif %}
-                    </li>
-
-                    <li class="mb-5">
-                        <h4 class="mb-4">Facture d'acompte</h4>
-                        {% if documentClient.factureAcompte == NULL or user.statut <= 4 %}
-                            <p>Pas de facture d'acompte disponible pour le moment.</p>
-                        {% elseif documentClient.factureAcompte != NULL %}
-                            <ul>
-                                <li><a href="{{documentClient.factureAcompte}}" target="_blank">Facture d'acompte</a></li>
-                            </ul>
-                        {% endif %}
-                    </li>
-
-                    {% if documentClient.conventionSignee != NULL %}
-                        <li class="mb-5">
-                            <h4 class="mb-4">Convention signée</h4>
-                            <ul>
-                                <li><a href="{{documentClient.conventionSignee}}" target="_blank">Convention signée</a></li>
-                            </ul>
-                        </li>
-                    {% endif %}
-
-                    <li class="mb-5">
-                        <h4 class="mb-4">Documents annexes</h4>
-                        {% if documentssAnnexes|length > 0 %}
-                            {% for documentsAnnexes in documentssAnnexes %}
-                                <ul>
-                                {% for documentAnnexe in documentsAnnexes %}
-                                    <li><a href="{{documentAnnexe.lien}}" target="_blank">{{documentAnnexe.nom}}</a></li>
-                                {% endfor %}
-                                </ul>
-                            {% endfor %}
-                            <h5 class="mt-5 mb-4">Téléverser un document annexe au gérant</h5>
-                            <form method="post" action="?action=convention_facture_acompte" enctype="multipart/form-data">
-                                <div class="form-group row mb-4">
-                                    <label class="col-sm-3 col-form-label" for="nomFichier">Donnez un nom au fichier :</label>
-                                    <div class="col-sm-4">
-                                        <input type="text" name="nom_fichier" id="nomFichier" class="form-control" required>
-                                    </div>
-                                </div>
-                                <div class="custom-file col-lg-5">
-                                    <input type="file" class="custom-file-input" id="customFile2" name="file" required>
-                                    <label class="custom-file-label" for="customFile2" id="file-name2">Choisissez un fichier</label>
-                                </div>
-                                <br>
-                                <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
-                                <input class="mt-3" type="submit" value="Téléverser" name="documents-annexes">
-                            </form>
-                        {% else %}
-                            <p>Pas de document annexe disponible pour le moment.</p>
-                        {% endif %}
-                    </li>
+            <li>
+                {% if reservation.dateDebut == NULL %}
+                    <h3 class="mb-4">Réservation n°{{reservation.idReservation}}</h3>
+                {% else %}
+                    <h3 class="mb-4">Réservation n°{{reservation.idReservation}}, <a href="?action=consulter-devis&devis={{reservation.idDevis}}">devis n°{{reservation.idDevis}}</a></h3>
                 {% endif %}
-            {% endfor %}
-            </ul>
+                
+                {% if reservation.statut == 0 %}
+                    <ul>
+                        <li class="mb-5">
+                            <h4 class="mb-4">Convention</h4>
+                            <p>Pas de convention disponible pour le moment.</p>
+                        </li>
+                        <li class="mb-5">
+                            <h4 class="mb-4">Facture d'acompte</h4>
+                            <p>Pas de facture d'acompte disponible pour le moment.</p>
+                        </li>
+                        <li class="mb-5">
+                            <h4 class="mb-4">Documents annexes</h4>
+                            <p>Pas de document annexe disponible pour le moment.</p>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul>
+                    {% for documentClient in documentsClient %}
+                        {% if documentClient.idReservation == reservation.idReservation %}
+                            <li class="mb-5">
+                                <h4 class="mb-4">Convention</h4>
+                                {% if documentClient.convention == NULL %}
+                                    <p>Pas de convention disponible pour le moment.</p>
+                                {% elseif documentClient.convention != NULL %}
+                                    <ul>
+                                        <li>
+                                            <a href="{{documentClient.convention}}" target="_blank">Convention</a>
+                                            {% if documentClient.conventionSignee == NULL %}
+                                                <p class="mt-3">Vous pouvez maintenant télécharger la convention, la signer et la retourner par l'intermédiaire de ce dépôt de fichiers :</p>
+                                                <form method="post" action="?action=convention-facture-acompte" enctype="multipart/form-data">
+                                                    <div class="custom-file col-lg-5">
+                                                        <input type="file" class="custom-file-input" id="customFile{{i}}" name="file" required>
+                                                        <label class="custom-file-label" for="customFile{{i}}" id="file-name{{i}}">Choisissez un fichier</label>
+                                                    </div>
+                                                    <br>
+                                                    <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                                                    <input class="mt-3" type="submit" value="Téléverser" name="convention-signee">
+                                                </form>
+                                                {% set i = i + 1 %}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            </li>
+
+                            <li class="mb-5">
+                                <h4 class="mb-4">Facture d'acompte</h4>
+                                {% if documentClient.factureAcompte == NULL %}
+                                    <p>Pas de facture d'acompte disponible pour le moment.</p>
+                                {% elseif documentClient.factureAcompte != NULL %}
+                                    <ul>
+                                        <li><a href="{{documentClient.factureAcompte}}" target="_blank">Facture d'acompte</a></li>
+                                    </ul>
+                                {% endif %}
+                            </li>
+
+                            {% if documentClient.conventionSignee != NULL %}
+                                <li class="mb-5">
+                                    <h4 class="mb-4">Convention signée</h4>
+                                    <ul>
+                                        <li><a href="{{documentClient.conventionSignee}}" target="_blank">Convention signée</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                            <li class="mb-5">
+                                <h4 class="mb-4">Documents annexes</h4>
+                                {% if documentssAnnexes|length > 0 %}
+                                    {% for documentsAnnexes in documentssAnnexes %}
+                                        <ul>
+                                        {% for documentAnnexe in documentsAnnexes %}
+                                            {% if documentAnnexe.idReservation == reservation.idReservation %}
+                                                <li><a href="{{documentAnnexe.lien}}" target="_blank">{{documentAnnexe.nom}}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                    <h5 class="mt-5 mb-4">Téléverser un document annexe au gérant</h5>
+                                    <form method="post" action="?action=convention-facture-acompte" enctype="multipart/form-data">
+                                        <div class="form-group row mb-4">
+                                            <label class="col-sm-3 col-form-label" for="nomFichier">Donnez un nom au fichier :</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" name="nom_fichier" id="nomFichier" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="custom-file col-lg-5">
+                                            <input type="file" class="custom-file-input" id="customFile{{i}}" name="file" required>
+                                            <label class="custom-file-label" for="customFile{{i}}" id="file-name{{i}}">Choisissez un fichier</label>
+                                        </div>
+                                        <br>
+                                        <input type="text" value="{{reservation.idReservation}}" name="idReservation" hidden>
+                                        <input class="mt-3" type="submit" value="Téléverser" name="documents-annexes">
+                                    </form>
+                                    {% set i = i + 1 %}
+                                {% else %}
+                                    <p>Pas de document annexe disponible pour le moment.</p>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
         {% endfor %}
+        </ul>
     {% endif %}
 </main>
 
 <script>
 
-if(document.getElementById('customFile1'))
-{
-    document.getElementById('customFile1').addEventListener('change', updateFileName);
-}
-document.getElementById('customFile2').addEventListener('change', updateFileName);
+// Ecouteurs sur les champs input file pour détecter quand un fichier est déposé
+let inputs = document.querySelectorAll('.custom-file-input');
+inputs.forEach( (input) => {
+    input.addEventListener('change', updateFileName);
+})
 
 // Récupère et affiche le nom du fichier
 function updateFileName(e)

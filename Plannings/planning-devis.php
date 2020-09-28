@@ -156,7 +156,7 @@ for($i = 0; $i < $weeks; $i++): ?>
                                 <td>
                                     <div class="calendar__devis__weeks devis <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                         <span><?= $count . "/" . $nbreDevis; ?></span>
-                                        <span class="name_group"><a href="http://leboucalais.fr/application-dev/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
+                                        <span class="name_group"><a href="http://leboucalais.fr/application/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
                                         <span class="size_group"><?= $devis->getTailleGroupe(); ?></span>
                                     </div>
                                 </td>
@@ -170,7 +170,7 @@ for($i = 0; $i < $weeks; $i++): ?>
                             <td colspan="<?= $colspan; ?>">
                                 <div class="calendar__devis__weeks devis <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                     <span><?= $count . "/" . $nbreDevis; ?></span>
-                                    <span class="name_group"><a href="http://leboucalais.fr/application-dev/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
+                                    <span class="name_group"><a href="http://leboucalais.fr/application/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
                                     <span class="size_group"><?= $devis->getTailleGroupe(); ?></span>
                                 </div>
                             </td>
@@ -183,7 +183,7 @@ for($i = 0; $i < $weeks; $i++): ?>
                             <td>
                                 <div class="calendar__devis__weeks devis depart <?= $month->withinMonth($date) ? '' : 'opacity' ; ?> <?= $_COOKIE['compress']; ?>">
                                     <span><?= $count . "/" . $nbreDevis; ?></span>
-                                    <span class="name_group" <?= $colspan > 1 ? "style= 'display: none;'" : '' ?>><a href="http://leboucalais.fr/application-dev/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
+                                    <span class="name_group" <?= $colspan > 1 ? "style= 'display: none;'" : '' ?>><a href="http://leboucalais.fr/application/?action=consulter-devis&devis=<?= $devis->getIdDevis(); ?>"><?= $devis->getOrganisme(); ?></a></span>
                                     <span class="size_group"><?= $devis->getTailleGroupe(); ?></span>
                                 </div>
                             </td>

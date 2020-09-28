@@ -18,9 +18,6 @@ class Reservation
     private $_statut;
     private $_secteur;
     private $_n;
-    private $_index;
-    private $_position;
-    private $_prevOffset;
     
     public function __construct(array $donnees) {
         if(isset($donnees['ID_RESERVATION'])) { $this->_idReservation = $donnees['ID_RESERVATION'];}
@@ -38,12 +35,6 @@ class Reservation
         if(isset($donnees['STATUT'])) { $this->_statut = $donnees['STATUT']; }
         if(isset($donnees['SECTEUR'])) { $this->_secteur = $donnees['SECTEUR']; }
         $this->_n = 0;
-        // index = indice de la réservation dans le tableau réservations
-        $this->_index = null;
-        // position = numéro de la réservation dans sa première journée (ou date de début)
-        $this->_position = -1;
-        // prevOffset = nombre d'espaces au-dessus de la div réservation
-        $this->_prevOffset = 0;
     }
 
     // GETTERS
@@ -64,9 +55,6 @@ class Reservation
     public function getStatut() { return $this->_statut; }
     public function getSecteur() { return $this->_secteur; }
     public function getN() { return $this->_n; }
-    public function getIndex() { return $this->_index; }
-    public function getPosition() { return $this->_position; }
-    public function getPrevOffset() { return $this->_prevOffset; }
 
     // SETTERS
     public function setIdReservation($idReservation) { $this->_id = $idReservation; }
@@ -86,9 +74,6 @@ class Reservation
     public function setStatut($statut) { $this->_statut = $statut; }
     public function setSecteur($secteur) { $this->_secteur = $secteur; }
     public function setN($n) { $this->_n = $n; }
-    public function setIndex($index) { $this->_index = $index; }
-    public function setPosition($position) { $this->_position = $position; }
-    public function setPrevOffset($offset) { $this->_prevOffset = $offset; }
 
     /**
      * Incrémente l'attribut n de la classe Réservation et le retourne

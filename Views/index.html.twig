@@ -117,12 +117,12 @@
 		<div class="container">
 			{% block section %}
 				{% if alert is defined and alert == "success" %}
-					<!-- Le filtre raw ne va pas échapper la variable message, ce qui fait que les balises seront interprétées :D !! De base, toutes les variables twig sont échappées (Échappement HTML = le fait que les textes écrits avec des balises HTML soient échappés, ou encodés de telle manière que les balises ne seront pas interprétées dans le code : avoir une balise </body> (dans le pseudo de quelqu'un par exemple) interprétée sur la page casserait tout l'affichage de la page, perturbant le code d'origine) -->
-					<div class="alert alert-success" role="alert">{{message | raw}}</div>
+					<!-- Le filtre raw ne va pas échapper la variable message, ce qui fait que les balises seront interprétées :D !! De base, toutes les variables twig sont échappées (Échappement HTML = le fait que les textes écrits avec des balises HTML soient échappés, ou encodés de telle manière que les balises ne seront pas interprétées dans le code : avoir une balise </body> (dans le pseudo de quelqu'un par exemple) interprétée sur la page casserait tout l'affichage de la page, perturbant le code d'origine. En fait, échapper est le raccourci de "échapper au formatage/encodage") -->
+					<div class="alert alert-success" role="alert">{{message|raw}}</div>
 				{% elseif alert is defined and alert == "danger" %}
-					<div class="alert alert-danger" role="alert">{{message | raw}}</div>
+					<div class="alert alert-danger" role="alert">{{message|raw}}</div>
 				{% elseif alert is defined and alert == "warning" %}
-					<div class="alert alert-warning" role="alert">{{message | raw}}</div>
+					<div class="alert alert-warning" role="alert">{{message|raw}}</div>
 				{% endif %}
 			{% endblock %}
 		</div>
@@ -133,8 +133,11 @@
 			{% if pageRecupererMdp is not defined and logout is not defined and supprimerCompte is not defined %}
 				<div class="alert alert-secondary" role="alert"><a href="?action=connexion" class="alert-link">Connectez-vous</a> pour pouvoir accéder à l'application</div>
 			{% endif %}
-			{% if alert is defined and alert == "primary" %}
-				<div class="alert alert-primary" role="alert">{{message | raw}}</div>
+			{% if alert is defined and alert == "success" %}
+				<div class="alert alert-success" role="alert">{{message|raw}}</div>
+			{% endif %}
+			{% if alert is defined and alert == "info" %}
+				<div class="alert alert-info" role="alert">{{message|raw}}</div>
 			{% endif %}
 		</div>
 	{% endif %}

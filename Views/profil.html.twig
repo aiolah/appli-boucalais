@@ -10,7 +10,12 @@
 <h2 class="mb-4">Mon profil</h2>
 
 {% if user.dateInscription != "" %}
-    <p><em>Inscription sur l'application le {{user.dateInscription|date('d/m/Y')}}</em></p>
+    {% if user.moyen == "Formulaire de demande de devis" %}
+        <p><em>Demande de devis effectuée le {{ user.date|date('d/m/Y') }}
+    {% elseif user.moyen != "Formulaire de demande de devis" %}
+        <p><em>{{user.moyen}} le {{ user.date|date('d/m/Y') }}
+    {% endif %}
+    <br>Inscription sur l'application le {{user.dateInscription|date('d/m/Y')}}</em></p>
 {% endif %}
 
 {% if role == "prospect" %}
