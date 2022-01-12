@@ -1,10 +1,10 @@
 <p align="center">
-    <a href="http://leboucalais.fr/application" target="_blank">
-        <img src="http://leboucalais.fr/application/logo-appli-boucalais.PNG" alt="Logo Appli Boucalais"></img>
+    <a href="http://aiolah-vaiti.fr/appli-boucalais" target="_blank">
+        <img src="http://aiolah-vaiti.fr/appli-boucalais/logo-appli-boucalais.PNG" alt="Logo Appli Boucalais"></img>
     </a>
 </p>
 <p align="center">
-    <a href="http://leboucalais.fr/application" target="_blank">http://leboucalais.fr/application</a>
+    <a href="https://aiolah-vaiti.fr/appli-boucalais" target="_blank">https://aiolah-vaiti.fr/appli-boucalais</a>
 </p>
 <p align="center">
     <strong>L'application de gestion du Boucalais</strong>
