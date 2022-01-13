@@ -46,6 +46,45 @@ nav {
 			box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
 }
 
+/* Alert bleue */
+
+#a-inscription {
+	display: block;
+}
+
+#alert-bleue {
+	color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+#heading {
+	margin-bottom: 25px;
+}
+
+#comptes {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.compte {
+	padding: 20px;
+	margin-right: 20px;
+	background-color: white;
+	border: 2px dashed #004085;
+	border-radius: 15px;
+}
+
+.souligne {
+	text-decoration: underline;
+}
+
 /* --- MESSAGES D'INFORMATION --- */
 
 .message {
