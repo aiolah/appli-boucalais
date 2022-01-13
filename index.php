@@ -103,6 +103,65 @@ if(isset($_GET['action']))
 
         break;
 
+        // Formulaire d'inscription pour les utilisateurs qui ne passent pas par le formulaire de demande de devis
+        case "inscription-formulaire" :
+
+            if(isset($_POST['inscription-formulaire']) && !empty($_POST['prenom']) && !empty($_POST['nom']) && !empty($_POST['nom_organisme']) && !empty($_POST['type_groupe']) && !empty($_POST['email']) && !empty($_POST['telephone']) && !empty($_POST['nombre_personnes']) && !empty($_POST['nombre_nuits'] && !empty($_POST['moyen'])))
+            {
+                $prospect = $UtilisateurManager->verificationEmail($_POST['email']);
+                if($prospect != false)
+                {
+                    $message = "Un utilisateur avec cette adresse email existe déjà.";
+                    echo $twig->render('inscription_formulaire.html.twig', array('acces'=> $_SESSION['acces'], 'message'=>$message, 'succes'=>'non'));
+                }
+                else
+                {
+                    $ok = $UtilisateurManager->inscriptionFormulaire($_POST['prenom'], $_POST['nom'], $_POST['nom_organisme'], $_POST['type_groupe'], $_POST['email'], $_POST['telephone'], $_POST['nombre_personnes'], $_POST['nombre_nuits'], $_POST['moyen']);
+                    if($ok)
+                    {
+                        $client = $UtilisateurManager->getProfilFromEmail($_POST['email']);
+
+                        // Envoi mail de notification au client
+                        date_default_timezone_set('Europe/Paris');
+
+                        $objet = "Application du Boucalais : ouverture de votre compte";
+                        $mail = "
+                        <html>
+                        <body>
+                            Bonjour,<br><br>
+                        
+                            Vous venez de vous inscrire sur l'application du Boucalais. Pour la finaliser, veuillez vous rendre sur le lien suivant et remplir le formulaire en utilisant l'adresse avec laquelle vous consultez cet email (rappel : ".$client->getMail().") : <a href='https://aiolah-vaiti.fr/appli-boucalais/?action=inscription'>https://aiolah-vaiti.fr/appli-boucalais/?action=inscription</a>. Dans le cas contraire, votre inscription sera refusée.<br>
+                            L'application vous mettra ensuite en relation avec le gérant du centre pour continuer vos démarches de réservation.<br><br>
+
+                            A bientôt au <a href='https://aiolah-vaiti.fr/appli-boucalais' target='_blank'>Boucalais</a> !
+                        </body>
+                        </html>";
+                        $destinataire = $client->getMail();
+                        $headers = "Content-Type: text/html; charset=\"utf-8\"\n";
+                        $headers .= "MIME-Version: 1.0\n";
+                        $headers .= "Date: " . date(DateTime::RFC2822) . "\n";
+                        $headers .= "From: \"Le Boucalais\"<contact@leboucalais.fr>\n";
+                        $headers .= "Reply-To: contact@leboucalais.fr";
+
+                        mail($destinataire, $objet, $mail, $headers);
+
+                        $message = "L'inscription est réussie ! Vous allez recevoir un mail pour finaliser votre inscription.";
+                        echo $twig->render('inscription_formulaire.html.twig', array('acces'=> $_SESSION['acces'], 'message'=>$message, 'succes'=>"oui"));
+                    }
+                    else
+                    {
+                        $message = "L'inscription n'a pu être effectuée'.";
+                        echo $twig->render('inscription_formulaire.html.twig', array('acces'=> $_SESSION['acces'], 'message'=>$message, 'succes'=>"non"));
+                    }
+                }
+            }
+            else
+            {
+                echo $twig->render('inscription_formulaire.html.twig', array('acces'=> $_SESSION['acces']));
+            }
+            
+        break;
+
         // Formulaire de connexion, pour tous les utilisateurs de l'application
         case "connexion" :
 
@@ -785,10 +844,10 @@ if(isset($_GET['action']))
                             <body>
                                 Bonjour,<br><br>
                             
-                                Le gérant du centre vient de commencer votre inscription sur l'application du Boucalais. Pour la finaliser, veuillez vous inscrire sur le lien suivant en utilisant l'adresse avec laquelle vous consultez cet email (rappel : ".$client->getMail().") : <a href='http://leboucalais.fr/application/?action=inscription'>http://leboucalais.fr/application/?action=inscription</a>. Dans le cas contraire, votre inscription sera refusée.<br>
+                                Le gérant du centre vient de commencer votre inscription sur l'application du Boucalais. Pour la finaliser, veuillez vous inscrire sur le lien suivant en utilisant l'adresse avec laquelle vous consultez cet email (rappel : ".$client->getMail().") : <a href='https://aiolah-vaiti.fr/appli-boucalais/?action=inscription'>https://aiolah-vaiti.fr/appli-boucalais/?action=inscription</a>. Dans le cas contraire, votre inscription sera refusée.<br>
                                 L'application vous mettra ensuite en relation avec le gérant du centre pour continuer vos démarches de réservation.<br><br>
     
-                                A bientôt au <a href='http://leboucalais.fr' target='_blank'>Boucalais</a> !
+                                A bientôt au <a href='https://aiolah-vaiti.fr/appli-boucalais' target='_blank'>Boucalais</a> !
                             </body>
                             </html>";
                             $destinataire = $client->getMail();
@@ -1328,7 +1387,7 @@ function televerserDocuments($dossierCible, $FichierManager, $twig, $user)
             // Si le fichier n'existe pas déjà en base de données, alors on l'insère dedans, sinon on le téléverse juste
             if(!$fichier)
             {
-                $FichierManager->ajouterFichier($_POST['nom_fichier'], "http://leboucalais.fr/application/Documents/" . $dossierCible . "/" . $nomOrigine, $repertoireDestination.$nomFichier, $dossierCible);
+                $FichierManager->ajouterFichier($_POST['nom_fichier'], "https://aiolah-vaiti.fr/appli-boucalais/Documents/" . $dossierCible . "/" . $nomOrigine, $repertoireDestination.$nomFichier, $dossierCible);
             }
             $ressources_documentaires = $FichierManager->getListeFichiersGerant("ressources-documentaires");
             $documents_administratifs = $FichierManager->getListeFichiersGerant("documents-administratifs");
@@ -1404,12 +1463,12 @@ function televerserDocumentsClient($type, $DocumentsClientManager, $devisManager
                 $fichier = $DocumentsClientManager->fichierExiste($_POST['nom_fichier']);
                 if(!$fichier)
                 {
-                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
+                    $DocumentsClientManager->ajouterDocument($type, "https://aiolah-vaiti.fr/appli-boucalais/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
                 }
             }
             else
             {
-                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
+                $DocumentsClientManager->ajouterDocument($type, "https://aiolah-vaiti.fr/appli-boucalais/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
             }
             $nbreDevis = $devisManager->getCountDevis($_GET['id']);
             $allDevis = $devisManager->getDevisFromUser($_GET['id']);
@@ -1506,12 +1565,12 @@ function televerserDocumentsParClient($type, $DocumentsClientManager, $reservati
                 $fichier = $DocumentsClientManager->fichierExiste($_POST['nom_fichier']);
                 if(!$fichier)
                 {
-                    $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
+                    $DocumentsClientManager->ajouterDocument($type, "https://aiolah-vaiti.fr/appli-boucalais/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
                 }
             }
             else
             {
-                $DocumentsClientManager->ajouterDocument($type, "http://leboucalais.fr/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
+                $DocumentsClientManager->ajouterDocument($type, "https://aiolah-vaiti.fr/appli-boucalais/application/Documents/documents-clients/" . $idReservation . "/" . $nomFichier, $colonne, $repertoireDestination . $nomFichier, $idReservation, $client, $user);
             }
             $reservations = $reservationManager->getReservationsFromUser($_SESSION['id']);
             if($reservations != false && $user->getStatut() < 5)
