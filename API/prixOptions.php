@@ -2,7 +2,7 @@
 
 /* ---------------------------------------------- AFFICHAGE DES PRIX DE TOUTES LES OPTIONS DE LA BASE DE DONNÉES --------------------------------------------*/
 
-// Url = http://leboucalais.fr/application-dev/API/prixOptions.php
+// Url = https://http://aiolah-vaiti.fr/appli-boucalais/API/prixOptions.php
 
 include "../connect.php";
 

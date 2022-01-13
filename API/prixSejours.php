@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------ AFFICHAGE DES PRIX DE TOUS LES SÉJOURS DE LA BASE DE DONNÉES --------------------------------------------*/
 
-// Url = http://leboucalais.fr/application-dev/API/prixSejours.php
+// Url = https://aiolah-vaiti.fr/appli-boucalais/API/prixSejours.php
 
 include "../connect.php";
 
