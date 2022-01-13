@@ -78,7 +78,7 @@
 				{% endif %}
 
 				{% if acces == "non" %}
-					<li class="nav-item"><a class="nav-link" href="?action=inscription-formulaire">Inscription</a></li>       
+                    <li class="nav-item"><a class="nav-link" href="?action=inscription-formulaire">Inscription</a></li>       
 					<li class="nav-item"><a class="nav-link" href="?action=connexion">Connexion</a></li>       
 				{% endif %}
 			</ul>
@@ -111,115 +111,93 @@
 		</div>
 	</nav>
 
-  <div class="container">
-    {% if message is defined and acces == "non" %}
-        <div class="alert alert-danger" role="alert">{{ message }}</div>
-    {% elseif message is defined and acces == "oui" %}
-        <div class="alert alert-success" role="alert">{{ message }}</div>
-    {% endif %}
+    <div class="container">
+        {% if message is defined and succes == "non" %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% elseif message is defined and succes == "oui" %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+        {% endif %}
 
+        <h2>S'inscrire sur l'application</h2>
 
-    {% if acces == "non" %}
-	<a href="?action=inscription-formulaire" class="mb-3" id="a-inscription">→ S'inscrire</a>
+        <form method="post" action="?action=inscription-formulaire" class="mt-5">
+            <fieldset class="form-group">
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-4 col-form-label">Type de groupe</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <select class="form-control" name="type_groupe" required>
+                            <option value="" disabled="" selected="">-- Sélectionner un type de groupe --</option>
+                            <option value="établissement médico-social">un établissement médico-social</option>
+                            <option value="scolaire">un groupe scolaire</option>
+                            <option value="colonie/mini-camps">un organisateur de colonies/mini-camps</option>
+                            <option value="association">une association</option>
+                            <option value="club sportif">un club sportif</option>
+                            <option value="familial">un groupe familial</option>
+                            <option value="informel">un groupe informel</option>
+                            <option value="agence de voyage/autocariste">une agence de voyage/autocariste</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-4 col-form-label" for="nom-organisme">Nom de l'organisme</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="text" name="nom_organisme" id="nom-organisme" class="form-control" placeholder="Mon Association" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <h6 class="col-lg-12 mt-4 mb-4"><strong>Coordonnées du responsable</strong></h6>
+                    <label class="col-lg-2 col-sm-4 col-form-label" for="prenom">Prénom </label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="text" name="prenom" id="prenom" class="form-control" placeholder="Jean" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-4 col-form-label" for="nom">Nom</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="text" name="nom" id="nom" class="form-control" placeholder="Dupont" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-4 col-form-label" for="email">E-mail</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="jeandupont@gmail.com" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-4 col-form-label" for="telephone">Téléphone</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="tel" name="telephone" id="telephone" class="form-control" minlength="10" maxlength="10" pattern="[0-9]{10}" title="Le numéro de téléphone doit comporter 10 chiffres sans espaces." placeholder="0659413578" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-6 col-form-label" for="personnes">Taille du groupe<br>(nombre de personnes)</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="number" min="1" name="nombre_personnes" id="personnes" class="form-control" placeholder="1" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-sm-6 col-form-label" for="nuits">Nombre de nuits</label>
+                    <div class="col-lg-4 col-sm-8">
+                        <input type="number" min="1" name="nombre_nuits" id="nuits" class="form-control" placeholder="1" required>
+                    </div>
+                </div>
+            </fieldset>
 
-	<div id="alert-bleue">
-		<h4 class="alert-heading" id="heading">&nbsp;Voici 3 comptes déjà existants que vous pouvez tester :</h4>
-		<div id="comptes">
-			<div class="compte">
-				<strong>Gérant</strong>
-				<p>
-					<span class="souligne">Mail :</span> nicole.bertrand@yopmail.com<br>
-					<span class="souligne">Mot de passe :</span> Nicoledu31!
-				</p>
-			</div>
-			<div class="compte">
-				<strong>Client 1</strong>
-				<p>
-					<span class="souligne">Mail :</span> luckyluke-lb@yopmail.com<br>
-					<span class="souligne">Mot de passe :</span> JollyJumper
-				</p>
-			</div>
-			<div class="compte">
-				<strong>Client 2</strong>
-				<p>
-					<span class="souligne">Mail :</span> jeandubalais-lb@yopmail.com<br>
-					<span class="souligne">Mot de passe :</span> cettefoiscamarche
-				</p>
-			</div>
-		</div>
-	</div>
+            <input type="hidden" name="moyen" value="Formulaire d'inscription">
 
-      <form method="post" action="?action=connexion" class="well">
-      <fieldset>
-        <legend>Entrez vos informations de connexion</legend><br/>
-          <div class="form-group row">
-            <label  for="email" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
-            <div class="col-sm-4">
-              <input  type="email" id="email" class="form-control form-control-sm" name="email" required placeholder="" />
-            </div>
-          </div>
-          <div class="form-group row">
-            <label for="mdp" class="col-sm-2 col-form-label col-form-label-sm">Mot de passe</label>
-            <div class="col-sm-4 block">
-				<input  type="password" id="mdp" class="form-control form-control-sm button" name="mdp" required placeholder="" />
-				<button id="bouton" type="button" class="open" title="Afficher le mot de passe"></button>
-            </div>
-          </div><br/>
-        <input type="submit" name="connexion" class="bouton" value="Se connecter"/>
-      </fieldset>
-      </form>
+            <input class="mt-3" type="submit" name="inscription-formulaire" value="Ajouter">
 
-      <a href="?action=recuperer-mdp">Mot de passe oublié ?</a>
-    {% endif %}
+        </form>
     </div>
 
-	<footer class="mt-5">
+    <footer class="mt-5">
 		{% if role == "client" or role == "prospect" or role == "gerant" %}
 			<div class="text-center"> Copyright &copy; <a href="?action=accueil">Appli Boucalais</a> - Tous droits réservés </div>
 		{% else %}
-			<div class="text-center"> Copyright &copy; <a href="?action=connexion">Appli Boucalais</a> - <a href="https://icons8.com/icon/16100/visible" target="_blank">Visible icon by Icons8</a> - Tous droits réservés </div>
+			<div class="text-center"> Copyright &copy; <a href="?action=connexion">Appli Boucalais</a> - Tous droits réservés </div>
 		{% endif %}
 	</footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-	<script>
-
-	{% if acces == "non" %}
-	    // Bouton mot de passe
-		let champ = document.getElementById("mdp");
-		let bouton = document.getElementById("bouton");
-		bouton.addEventListener("click", affiche);
-
-		// Au clic du bouton, on change le type du champs (password/text) et on rajoute/supprime la classe open et la classe closed (pour changer d'icône)
-		function affiche(evt)
-		{
-			evt.preventDefault();
-			if(bouton.className == "open")
-			{
-				champ.type = "text";
-			}
-			else
-			{
-				champ.type = "password";
-			}
-			bouton.classList.toggle("open");
-			bouton.classList.toggle("closed");
-		}
-	{% endif %}
-
-  {# Si la connexion est réussie, on redirige vers la page accueil #}
-  {% if acces == "oui" %}
-  
-    if(document.location.href == "https://aiolah-vaiti.fr/appli-boucalais/?action=connexion")
-    {
-        setTimeout("window.location='https://aiolah-vaiti.fr/appli-boucalais/?action=accueil'", 1000);
-    }
-
-  {% endif %}
-
-  </script>
-</body>
-</html>

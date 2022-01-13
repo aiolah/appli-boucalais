@@ -325,7 +325,7 @@
     function takePrix(idPriceChanged)
     {
         let fetchOptions = { method: 'GET' };
-        const url = 'http://leboucalais.fr/application/API/prixSejours.php';
+        const url = 'https://aiolah-vaiti.fr/appli-boucalais/API/prixSejours.php';
         fetch(url, fetchOptions)
         .then( (response) => { return response.json() } )
         .then( (dataJSON) => {
@@ -386,7 +386,7 @@
                 method: 'POST',
                 body : JSON.stringify(sejour)
             };
-            const url = 'http://leboucalais.fr/application-dev/API/savePrix.php';
+            const url = 'https://aiolah-vaiti.fr/appli-boucalais/API/savePrix.php';
             fetch(url, fetchOptions)
             .then( (response) => { return response.json() } )
             .then( (dataJSON) => {

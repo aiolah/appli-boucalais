@@ -21,7 +21,7 @@
     {% if acces == "non" %}
       <form method="post" action="?action=inscription" class="well">
             <fieldset>
-            <legend>Commençons par vous inscrire ! Vous aurez ensuite accès à toutes les fonctionnalités de l'application.</legend><br/>
+            <legend>Finalisons votre inscription ! Vous aurez ensuite accès à toutes les fonctionnalités de l'application.</legend><br/>
                 <div class="form-group row">
                   <label for="email" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
                   <div class="col-sm-4">
@@ -77,9 +77,9 @@
   {# Si la connexion est réussie, on redirige vers la page accueil au bout de 5 secondes #}
   {% if acces == "oui" %}
 
-      if(document.location.href == "http://leboucalais.fr/application/?action=inscription")
+      if(document.location.href == "https://aiolah-vaiti.fr/appli-boucalais/?action=inscription")
       {
-          setTimeout("window.location='http://leboucalais.fr/application/?action=accueil'", 5000);
+          setTimeout("window.location='https://aiolah-vaiti.fr/appli-boucalais/?action=accueil'", 5000);
       }
 
   {% endif %}

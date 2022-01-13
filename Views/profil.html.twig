@@ -53,11 +53,34 @@
 document.getElementById("delete").addEventListener("click", ohNo);
 function ohNo(e)
 {
-    if(confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et entraîne la suppression de toutes vos données ainsi que de vos devis."))
+    if("{{user.nomGroupe}}"  == "Les Fondus" || "{{user.nomGroupe}}"  == "Far West" || "{{user.mail}}"  == "nicole.bertrand@yopmail.com")
+    {
+        e.preventDefault();
+    }
+    else if(confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et entraîne la suppression de toutes vos données ainsi que de vos devis."))
     {
         return;
     }
     else
+    {
+        e.preventDefault();
+    }
+}
+
+if("{{user.nomGroupe}}"  == "Les Fondus" || "{{user.nomGroupe}}"  == "Far West" || "{{user.mail}}"  == "nicole.bertrand@yopmail.com")
+{
+    for(let a of document.getElementsByTagName('a'))
+    {
+        if(a.classList.contains('btn'))
+        {
+            a.addEventListener('click', inactive);
+            a.href = '';
+            a.style.cursor = "not-allowed";
+        }
+        document.getElementById("delete").style.cursor = "not-allowed";
+    }
+
+    function inactive(e)
     {
         e.preventDefault();
     }
