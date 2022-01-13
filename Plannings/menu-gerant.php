@@ -41,11 +41,11 @@
                     Clients
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=aperçu">Aperçu</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=clients">Tous</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=aperçu">Aperçu</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=clients">Tous</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=ajouter-client">Ajouter</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=attribuer-devis">Attribuer un devis</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=ajouter-client">Ajouter</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=attribuer-devis">Attribuer un devis</a>
                 </div>
             </li>
 
@@ -54,9 +54,9 @@
                     Plannings
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/Plannings/planning-devis.php">Planning des devis</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/Plannings/planning-demandes-reservation.php">Planning des demandes de réservation</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/Plannings/planning.php">Planning</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/Plannings/planning-devis.php">Planning des devis</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/Plannings/planning-demandes-reservation.php">Planning des demandes de réservation</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/Plannings/planning.php">Planning</a>
                 </div>
             </li>
 
@@ -65,11 +65,11 @@
                     Paramétrage
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=documents_gerant">Documents</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=documents_gerant">Documents</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=prix-devis">Prix devis</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=liste-activite">Activités devis</a>
-                    <a class="dropdown-item" href="http://leboucalais.fr/application/?action=liste-option">Options devis</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=prix-devis">Prix devis</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=liste-activite">Activités devis</a>
+                    <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=liste-option">Options devis</a>
                 </div>
             </li>
         </ul>
@@ -79,8 +79,8 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black;">Bonjour <?= $user->getPrenom(); ?></a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="http://leboucalais.fr/application/?action=profil">Mon profil</a>
-                        <a class="dropdown-item" href="http://leboucalais.fr/application/?action=logout">Déconnexion</a>
+                        <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=profil">Mon profil</a>
+                        <a class="dropdown-item" href="http://aiolah-vaiti.fr/appli-boucalais/?action=logout">Déconnexion</a>
                     </div>
                 </li>
             </ul>
