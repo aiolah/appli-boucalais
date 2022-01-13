@@ -37,7 +37,12 @@ class UtilisateurManager
 
         $user = $this->getProfilFromEmail($mail);
 
-        if(($statut == 4 || $statut == 5 || $statut == 6 || $statut == 7 || $statut == 8) && $ok)
+        if($statut < 4)
+        {
+            $ok = true;
+            return $ok;
+        }
+        elseif(($statut >= 4 || $statut <= 8) && $ok)
         {
             $stmt = $this->_db->prepare("SELECT MAX(ID_RESERVATION) AS MAXIMUM FROM LE_BOUCALAIS_RESERVATION");
             $stmt->execute();
@@ -62,7 +67,33 @@ class UtilisateurManager
 
             return $ok;
         }
-        else return false;
+
+        // pour debuguer les requêtes SQL
+        $errorInfo = $stmt->errorInfo();
+        if ($errorInfo[0] != 0) {
+            print_r($errorInfo);
+        }
+    }
+
+    /**
+     * Insère un nouveau prospect en base de données par le biais du formulaire d'inscription
+     * @param prenom
+     * @param nom
+     * @param nom_groupe
+     * @param type_groupe
+     * @param mail
+     * @param telephone
+     * @param taille_groupe
+     * @param nombre_nuits
+     * @param moyen
+     */
+    public function inscriptionFormulaire($prenom, $nom, $nom_groupe, $type_groupe, $mail, $telephone, $taille_groupe, $nombre_nuits, $moyen)
+    {
+        $req = "INSERT INTO LE_BOUCALAIS_UTILISATEUR(prenom, nom, nom_groupe, type_groupe, mail, telephone, taille_groupe, nombre_nuits, date, moyen, role) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->_db->prepare($req);
+        $ok = $stmt->execute(array($prenom, $nom, $nom_groupe, $type_groupe, $mail, $telephone, $taille_groupe, $nombre_nuits, date('Y-m-j'), $moyen, 'prospect'));
+
+        return $ok;
 
         // pour debuguer les requêtes SQL
         $errorInfo = $stmt->errorInfo();
