@@ -81,6 +81,7 @@
 				{% endif %}
 
 				{% if acces == "non" %}
+					<li class="nav-item"><a class="nav-link" href="?action=inscription-formulaire">Inscription</a></li>       
 					<li class="nav-item"><a class="nav-link" href="?action=connexion">Connexion</a></li>       
 				{% endif %}
 			</ul>
@@ -131,7 +132,7 @@
 			{% block recupererMdp %}
 			{% endblock %}
 			{% if pageRecupererMdp is not defined and logout is not defined and supprimerCompte is not defined %}
-				<div class="alert alert-secondary" role="alert"><a href="?action=connexion" class="alert-link">Connectez-vous</a> pour pouvoir accéder à l'application</div>
+				<div class="alert alert-secondary" role="alert"><a href="?action=connexion" class="alert-link">Connectez-vous</a> ou <a href="?action=inscription-formulaire" class="alert-link">inscrivez-vous</a> pour pouvoir accéder à l'application</div>
 			{% endif %}
 			{% if alert is defined and alert == "success" %}
 				<div class="alert alert-success" role="alert">{{message|raw}}</div>
