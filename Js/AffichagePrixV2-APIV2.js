@@ -2,7 +2,7 @@
 
 let prixSejours = ['1er item du tableau créé dans le but que les id des prix soient égaux à leur key (du tableau). Les tableaux en javascript commencent en effet par la key 0..'];
 let fetchOptions = { method: 'GET' };
-fetch('http://leboucalais.fr/application/API/prixSejours.php', fetchOptions)
+fetch('https://aiolah-vaiti.fr/appli-boucalais/API/prixSejours.php', fetchOptions)
 .then( (response) => { return response.json() } )
 .then( (dataJSON) => {
     dataJSON.forEach( (prixSejour) => {
@@ -14,7 +14,7 @@ fetch('http://leboucalais.fr/application/API/prixSejours.php', fetchOptions)
 });
 
 let prixOptions = [0];
-fetch('http://leboucalais.fr/application/API/prixOptions.php', fetchOptions)
+fetch('https://aiolah-vaiti.fr/appli-boucalais/API/prixOptions.php', fetchOptions)
 .then( (response) => { return response.json() } )
 .then( (dataJSON) => {
     dataJSON.forEach( (prixOption) => {
